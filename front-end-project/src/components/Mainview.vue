@@ -1,7 +1,7 @@
 <template>
   <router-view v-slot="{ Component }">
 
-    <keep-alive :include="cacheTagsName">
+    <keep-alive>
       <component :is="Component" />
     </keep-alive>
 
