@@ -163,10 +163,10 @@
     "@docsearch/css" "3.2.0"
     "algoliasearch" "^4.0.0"
 
-"@element-plus/icons-vue@^2.0.6":
-  "integrity" "sha512-lPpG8hYkjL/Z97DH5Ei6w6o22Z4YdNglWCNYOPcB33JCF2A4wye6HFgSI7hEt9zdLyxlSpiqtgf9XcYU+m5mew=="
-  "resolved" "https://registry.npmjs.org/@element-plus/icons-vue/-/icons-vue-2.0.6.tgz"
-  "version" "2.0.6"
+"@element-plus/icons-vue@^2.0.6", "@element-plus/icons-vue@^2.0.8":
+  "integrity" "sha512-78dqCh4zecIxn14obD//T1kyqRHdpY5y2uJ8tth933YrG1Aqg3i+a1mhspuL8boEkr9ZhH0reYwsJt4EcRZLtQ=="
+  "resolved" "https://registry.npmjs.org/@element-plus/icons-vue/-/icons-vue-2.0.8.tgz"
+  "version" "2.0.8"
 
 "@floating-ui/core@^0.7.3":
   "integrity" "sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg=="

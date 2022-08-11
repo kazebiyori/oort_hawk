@@ -7,5 +7,6 @@ export const store = createStore({
   modules: {
     app,
     tagbar,
+  
   },
 });

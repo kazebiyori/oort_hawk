@@ -12,7 +12,7 @@
     "docs:serve": "vitepress serve docs"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
+    "@element-plus/icons-vue": "^2.0.8",
     "axios": "^0.27.2",
     "element-plus": "^2.2.12",
     "normalize.css": "^8.0.1",
