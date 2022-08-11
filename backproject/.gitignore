@@ -1,7 +1,3 @@
-
-.DS_Store
-
-# backproject
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -13,7 +9,3 @@ target/
 *.iws
 *.iml
 *.ipr
-backproject/mvnw
-backproject/mvnw.cmd
-backproject/pom.xml
-backproject/.mvn/
