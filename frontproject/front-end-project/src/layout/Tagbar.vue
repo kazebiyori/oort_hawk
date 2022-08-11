@@ -1,13 +1,13 @@
 <template>
 
-  <el-tabs v-model="activeName" type="card" class="demo-tabs" editable @tab-click="handleClick" @edit="handleEdit">
-
-    <template v-for="tag in tags" :key="tag">
-      <el-tab-pane :label="generateTagName(tag)" :name="tag">
-      </el-tab-pane>
-    </template>
-
-  </el-tabs>
+  <div>
+    <el-tabs v-model="activeName" type="card" class="demo-tabs" editable @tab-click="handleClick" @edit="handleEdit">
+      <template v-for="tag in tags" :key="tag">
+        <el-tab-pane :label="generateTagName(tag)" :name="tag">
+        </el-tab-pane>
+      </template>
+    </el-tabs>
+  </div>
 
 </template>
 
@@ -82,82 +82,8 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/a-my-variables.scss';
 
-.el-tabs__new-tab {
+::v-deep .el-tabs__new-tab {
   height: 0px;
-  width: 0px
-}
-
-.el-scrollbar {
-  background-color: #42b983;
-}
-
-.tags-view-item {
-  text-decoration: none;
-  display: inline-block;
-
-  cursor: pointer;
-  height: 26px;
-  line-height: 26px;
-  border: 1px solid #d8dce5;
-  color: #495060;
-  background: #fff;
-  padding: 0 8px;
-  font-size: 12px;
-  margin-left: 3px;
-
-  &:first-of-type {
-    margin-left: 10px;
-  }
-
-  &:last-of-type {
-    margin-right: 15px;
-  }
-
-  &.el-icon-clos {
-    display: block;
-    margin: auto;
-    margin-top: 13px;
-  }
-
-  &.active {
-    background-color: #42b983;
-    color: #fff;
-
-    &::before {
-      content: '';
-      background: #fff;
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      position: relative;
-      margin-right: 2px;
-    }
-  }
-
-  router-link {
-    text-decoration: none;
-  }
-}
-
-.el-icon-close {
-  width: 16px;
-  height: 16px;
-  vertical-align: 2px;
-  border-radius: 50%;
-  text-align: center;
-  transition: all .3s cubic-bezier(.645, .045, .355, 1);
-  transform-origin: 100% 50%;
-
-  &:before {
-    transform: scale(.6);
-    display: inline-block;
-    vertical-align: -3px;
-  }
-
-  &:hover {
-    background-color: #b4bccc;
-    color: #fff;
-  }
+  width: 0px;
 }
 </style>

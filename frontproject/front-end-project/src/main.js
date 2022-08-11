@@ -4,14 +4,16 @@ import { store } from "@/store/index.js";
 import App from "@/App.vue";
 import router from "@/router/index.js";
 
+import "@/mock/index.js";
+
 // 使用viewUIPlus
 // import ViewUIPlus from "view-ui-plus";
 // import "view-ui-plus/dist/styles/viewuiplus.css";
 
 // 导入样式
 import "normalize.css/normalize.css";
-// import "@/styles/index.scss"; // global css
-// import "@/styles/element-variables.scss";
+import "@/styles/index.scss"; // global css
+import "@/styles/element-variables.scss";
 
 // 导入element图标资源
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";

@@ -1,7 +1,8 @@
-$navbarHeight: 5vw;
 $sidebarFixedWidth: 2vw;
 $sidebarActiceWidth: 15vw;
 $mainWidth: 98vw - $sidebarActiceWidth;
-$sidebarHeight: 83vw;
-$maintopHeight: 3vw;
-$mainbottomHeight: 80vw;
+
+$navbarHeight: 5vh;
+$sidebarHeight: 100vh - $navbarHeight;
+$maintopHeight: 3vh;
+$mainbottomHeight: 100vh - $navbarHeight -$maintopHeight;

@@ -30,10 +30,12 @@ export default {
         {
           text: "8月",
           items: [
+            { text: "从零开始的前端项目开发", link: "/blog/22-08-06" },
             { text: "22-08-07", link: "/blog/22-08-07" },
             { text: "22-08-08", link: "/blog/22-08-08" },
             { text: "22-08-09", link: "/blog/22-08-09" },
             { text: "22-08-10", link: "/blog/22-08-10" },
+            { text: "22-08-11", link: "/blog/22-08-11" },
           ],
         },
       ],

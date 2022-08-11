@@ -16,6 +16,30 @@ let criterionInfo = Mock.mock({
   ],
 });
 
-Mock.mock(/api/, "get", () => {
-  return criterionInfo;
+let dataList = Mock.mock({
+  "data|50": [
+    {
+      "ID|+1": 1,
+      Group: /[1-2]/,
+      Name: /data-[0-9]/,
+    },
+  ],
 });
+
+Mock.mock(/api/, "get", () => {
+  return dataList;
+});
+
+// export default [
+//   {
+//     url: "/api/",
+//     method: "get",
+//     response: () => {
+//       return {
+//         code: 200,
+//         message: "ok",
+//         data: ["tom", "jerry"],
+//       };
+//     },
+//   },
+// ];

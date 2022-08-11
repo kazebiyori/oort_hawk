@@ -1,23 +1,20 @@
 <template>
-  <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
-    active-text-color="#ffd04b">
+  <div class="nav-container">
+    <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
+      active-text-color="#ffd04b">
 
-    <div class="flod-icon-container" @click="TOGGLE_SIDEBAR">
-      <el-icon :size="30" class="flod-icon">
-        <component :is="isOpened ? 'Fold' : 'Expand'"></component>
-      </el-icon>
-    </div>
-    <div class="flod-icon-container" @click="screenFull">
-      <el-icon :size="30" class="flod-icon">
-        <FullScreen />
-      </el-icon>
-    </div>
-    <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
-    <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
-    <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
-    <el-menu-item index="4" @click="addTag(4)">编辑判据</el-menu-item>
+      <!-- <div class="flod-icon-container" @click="screenFull">
+        <el-icon :size="30" class="flod-icon">
+          <FullScreen />
+        </el-icon>
+      </div> -->
 
-  </el-menu>
+      <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
+      <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
+      <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
+      <el-menu-item index="4" @click="addTag(4)">编辑判据</el-menu-item>
+    </el-menu>
+  </div>
 
 </template>
 
@@ -96,25 +93,22 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/a-my-variables.scss';
 
+.nav-container {
+  width: 100vw;
+  height: $navbarHeight;
+}
+
 .flod-icon-container {
   width: 50px;
 
   &:hover {
     cursor: pointer;
   }
-
 }
 
 .flod-icon {
   display: block;
   margin: auto;
   margin-top: 13px;
-}
-
-take {
-  background-color: red;
-  width: 100vw-$sidebarWidth;
-  height: 30px;
-  overflow: auto;
 }
 </style>

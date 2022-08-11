@@ -79,6 +79,5 @@ div {
   background-color: green;
   width: $mainWidth;
   height: $mainbottomHeight;
-
 }
 </style>
