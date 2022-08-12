@@ -25,10 +25,12 @@
             <img src="../SVG/filter.svg" alt="#" @click="changewidth">
         </div>
     </div>
+
     <!-- 数据列表 -->
     <div class="datalistdispalay">
         <el-tree :data="dataSource" show-checkbox node-key="id" default-expand-all />
     </div>
+
     <div class="filterpanel">
         <Sidebarfilterpanel :class="{ 'open': isOpened, 'close': !isOpened }"></Sidebarfilterpanel>
     </div>
@@ -179,7 +181,6 @@ img {
     width: $sidebarFilterPanelWidth;
     height: $sidebarHeight;
     background-color: rgb(152, 77, 209);
-
 }
 
 .close {

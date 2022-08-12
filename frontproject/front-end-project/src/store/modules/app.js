@@ -1,6 +1,7 @@
 const state = {
   sidebar: {
-    isOpened: true,
+    showDataList: true,
+    showFilter: false,
   },
 };
 
@@ -12,7 +13,10 @@ const getters = {
 
 const mutations = {
   TOGGLE_SIDEBAR(state, payload) {
-    state.sidebar.isOpened = !state.sidebar.isOpened;
+    state.sidebar.showDataList = !state.sidebar.showDataList;
+  },
+  TOGGLE_FILTER(state, payload) {
+    state.sidebar.showFilter = !state.sidebar.showFilter;
   },
 };
 

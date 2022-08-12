@@ -2,7 +2,7 @@
 
   <Sidebar class="sidebar"></Sidebar>
 
-  <div :class="{ mainWithSide: isOpened, mainWithoutSide: !isOpened }">
+  <div :class="{ 'mainWithSide': showDataList,'mainWithoutSide': !showDataList }">
     <Tagbar class="tagbar"></Tagbar>
     <router-view v-slot="{ Component }">
       <keep-alive>
@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState({
       tags: state => state.tagbar.cacheTags,
-      isOpened: state => state.app.sidebar.isOpened
+      showDataList: state => state.app.sidebar.showDataList
     }),
     ...mapGetters([
       'cacheTagsName'
@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/a-my-variables.scss';
+@import '@/styles/variables.scss';
 
 .sidebar {
   display: inline-block;
@@ -49,7 +49,7 @@ export default {
 
 .mainWithSide {
   display: inline-block;
-  transition: width 0.2s;
+  transition: width $animationTime;
 
   width: $mainWithSideWidth;
   height: $sidebarHeight;
@@ -58,7 +58,7 @@ export default {
 
 .mainWithoutSide {
   display: inline-block;
-  transition: width 0.2s;
+  transition: width $animationTime;
 
   width: $mainWithoutSideWidth;
   height: $sidebarHeight;

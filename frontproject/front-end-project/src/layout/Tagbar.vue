@@ -80,7 +80,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import '@/styles/a-my-variables.scss';
+@import '@/styles/variables.scss';
 
 ::v-deep .el-tabs__new-tab {
   height: 0px;

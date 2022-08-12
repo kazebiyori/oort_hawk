@@ -3,12 +3,6 @@
     <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
       active-text-color="#ffd04b">
 
-      <!-- <div class="flod-icon-container" @click="screenFull">
-        <el-icon :size="30" class="flod-icon">
-          <FullScreen />
-        </el-icon>
-      </div> -->
-
       <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
       <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
       <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
@@ -91,24 +85,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/a-my-variables.scss';
+@import '@/styles/variables.scss';
 
 .nav-container {
   width: 100vw;
   height: $navbarHeight;
 }
+// 清除element-ui navbar默认样式
 
-.flod-icon-container {
-  width: 50px;
 
-  &:hover {
-    cursor: pointer;
-  }
-}
 
-.flod-icon {
-  display: block;
-  margin: auto;
-  margin-top: 13px;
-}
+
 </style>
