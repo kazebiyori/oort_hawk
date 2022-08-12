@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             // 虚假数据
-            isOpened: true,
+            isOpened: false,
             dataSource: [
                 {
                     id: 1,
