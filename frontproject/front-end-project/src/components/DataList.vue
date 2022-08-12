@@ -1,14 +1,14 @@
 <template>
 
   <div>
-    <el-tree-v2 :data="dataList" :props="props" show-checkbox highlight-current :height="dataHeight">
-      <template #default="{ node }">
-        <el-icon :size="12">
-          <WindPower />
-        </el-icon>
-        <span>{{ node.label }}</span>
-      </template>
-    </el-tree-v2>
+
+  <el-tree
+    :props="props"
+    :data="dataList"
+    show-checkbox
+    @check-change="handleCheckChange"
+    default-expand-all
+  />
   </div>
 
 
@@ -27,7 +27,7 @@ export default {
       props: {
         value: 'ID',
         label: 'Name',
-        children: 'children',
+        children: 'Children',
       }
     }
   },

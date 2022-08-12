@@ -6,12 +6,14 @@ $maintopHeight: 30px;
 $mainbottomHeight: calc(100vh - $navbarHeight - $maintopHeight);
 
 // 侧边栏宽度
-$sidebarFixedWidth: 25px;
+$sidebarFixedWidth: 18px;
 $sidebarActiveWidth: 200px;
 $sidebarFilterPanelWidth: 200px;
 
 // 侧边栏高度
 $sidebarHeight: calc(100vh - $navbarHeight);
+$sidebarOpContainerHeight: 30px;
+$sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - 30px);
 
 // 主视区宽度
 $mainWithSideWidth: calc(100vw - $sidebarFixedWidth - $sidebarActiveWidth);
@@ -19,6 +21,10 @@ $mainWithoutSideWidth: calc(100vw - $sidebarFixedWidth);
 
 
 // 动画
-$animationTime: 0.1s
+$animationTime: 0.1s;
 
+// 颜色
+$iconSelected: #dddfe6;
 
+// 边框
+$borderStyle: 1px solid var(--el-border-color);

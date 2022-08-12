@@ -1,26 +1,26 @@
 <template>
   <div>
+
+    <!-- 侧边栏-固定 -->
     <div class="sidebar-fix" @click="TOGGLE_SIDEBAR">
+      <Icon class="sidebar-icon" type="md-code" />
     </div>
 
-    <div :class="{ 'active': showDataList, 'close': !showDataList }">
-      <!-- {{ dataList }} -->
-        <div class="op-container">
-          <el-icon @click="TOGGLE_FILTER" class="icon-right" :size="20" :class="{'icon-active':showFilter}">
-            <Filter />
-          </el-icon>
-
-          <el-icon class="icon-right" :size="20">
-            <Sort />
-          </el-icon>
+    <!-- 侧边栏-数据 -->
+    <div :class="{ 'sidebar-active': showDataList, 'sidebar-close': !showDataList }">
+      <div class="op-container">
+        <el-icon @click="TOGGLE_FILTER" class="icon-right" :size="20" :class="{'icon-active':showFilter}"><Filter /></el-icon>
+        <el-icon class="icon-right" :size="20"> <CloseBold /></el-icon>
+        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left">
+        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" style="transform:rotate(90deg)" >
+        <el-icon class="icon-left" :size="20"><Sort /></el-icon>
       </div>
-
-      <DataList></DataList>
+      
+      <div class="datalist"><DataList></DataList></div>
+      
     </div>
 
-<!-- filter-panel的三种变化状态 :  -->
-<!-- sidebar展开时的  收缩、展开 -->
-<!-- sidebar 的收缩、展开 -->
+    <!-- 侧边栏-过滤 -->
     <div :class="{ 'filter-panel-active': showDataList, 'filter-panel-close': !showDataList || !showFilter,}">
       <DataFilter></DataFilter>
     </div>
@@ -58,14 +58,42 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
+.datalist{
+  overflow: scroll;
+  width:$sidebarActiveWidth;
+  height:$sidebarDatalistHeight;
+}
+.plane-icon{
+  width:20px;
+  height:20px;  
+  display:inline-block;
+}
+
+.sidebar-icon{
+  position: absolute;
+  margin: auto;
+  top:50%;
+
+}
 .op-container {
   margin: 10px;
   overflow: hidden;
+  height:$sidebarOpContainerHeight;
+  
 }
 
 .icon-left {
   cursor: pointer;
   float: left;
+  margin-right: 3px;
+  box-sizing: content-box;
+  padding:0px;
+  
+  &:hover{
+    background-color: $iconSelected;
+    border-radius: 3px;
+
+  }
 }
 
 .icon-right {
@@ -73,26 +101,34 @@ export default {
   float: right;
   margin-left: 3px;
   box-sizing: content-box;
-  padding:5px;
+  padding:0px;
+
+  &:hover{
+    background-color: $iconSelected;
+  border-radius: 3px;
+
+  }
 }
 
 .icon-active{
-  background-color: antiquewhite;
+  background-color: $iconSelected;
   border-radius: 3px;
 }
 
 .sidebar-fix {
   width: $sidebarFixedWidth;
   display: inline-block;
-  background-color: #007;
   height: $sidebarHeight;
+  overflow: hidden;
+  border: $borderStyle;
 
   cursor: pointer;
 
 }
 
-.active {
-  border: 1px solid black;
+.sidebar-active {
+  border: $borderStyle;
+
 
   width: $sidebarActiveWidth;
   height: $sidebarHeight;
@@ -102,7 +138,7 @@ export default {
   overflow: hidden;
 }
 
-.close {
+.sidebar-close {
   width: 0;
   transition: width $animationTime;
   height: $sidebarHeight;
@@ -120,7 +156,8 @@ export default {
     height: $sidebarHeight;
 
     background-color: white;
-    border: 1px solid black;
+  border: $borderStyle;
+
 
 }
 
