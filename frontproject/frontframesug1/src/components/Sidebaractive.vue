@@ -120,6 +120,7 @@ export default {
 img {
     width: 25px;
     height: 25px;
+    margin-top: 0.5vh;
 
 }
 
@@ -162,8 +163,8 @@ img {
 }
 
 .datalistdispalay {
-    height: $navbarHeight;
-    background-color: pink;
+    height: $navbarHeight - 1vh;
+    margin-top: 1vh;
     justify-content: space-between;
     font-size: 14px;
 }
@@ -175,7 +176,7 @@ img {
     top: $navbarHeight;
     left: 17vw;
     z-index: 20px;
-    width: 20vw;
+    width: $sidebarFilterPanelWidth;
     height: $sidebarHeight;
     background-color: rgb(152, 77, 209);
 
@@ -188,7 +189,7 @@ img {
     top: $navbarHeight;
     left: 17vw;
     z-index: 20px;
-    width: 20vw;
+    width: $sidebarFilterPanelWidth;
     height: $sidebarHeight;
     background-color: rgb(152, 77, 209);
 }
