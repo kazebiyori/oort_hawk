@@ -1,7 +1,6 @@
 <template>
   <div class="nav-container">
-    <el-menu class="el-menu-demo" mode="horizontal">
-
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
       <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
       <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
       <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
@@ -13,18 +12,41 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import screenfull from 'screenfull'
 
 import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionEditing } from '@/utiles/asyncComponents.js'
+
+import tinykeys from "tinykeys";
+
 
 export default {
   data() {
     return {
-      n: 0
+      n: 1,
+      activeIndex: 1
     }
+  },
+  created() {
+    tinykeys(window, {
+      "Shift+N": () => {
+        this.addTag(this.activeIndex)
+      },
+      "Shift+Digit1": () => {
+        this.addTag(1)
+      },
+      "Shift+Digit2": () => {
+        this.addTag(2)
+      },
+      "Shift+Digit3": () => {
+        this.addTag(3)
+      },
+      "Shift+Digit4": () => {
+        this.addTag(4)
+      },
+    });
   },
   methods: {
     async addTag(id) {
+      this.activeIndex = id
       switch (id) {
         case 1: {
           const name = `datadisplay${++this.n}`
@@ -64,16 +86,6 @@ export default {
       'TOGGLE_SIDEBAR',
       'PUSH_TAG'
     ]),
-    screenFull() {
-      if (!screenfull.isEnabled) {
-        this.$message({ message: '你的浏览器不支持全屏', type: 'warning' })
-        return false
-      }
-      screenfull.toggle();
-    },
-    debug() {
-      console.log('debug');
-    }
   },
   computed: {
     ...mapState({
@@ -90,9 +102,6 @@ export default {
   width: 100vw;
   height: $navbarHeight;
 }
+
 // 清除element-ui navbar默认样式
-
-
-
-
 </style>

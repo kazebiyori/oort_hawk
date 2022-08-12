@@ -1,5 +1,5 @@
 const state = {
-  cacheTags: ["/datadisplay", "/datastatistics"],
+  cacheTags: ["/datadisplay"],
   activeTag: "/datadisplay",
 };
 

@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="datafilter">
         <div class="button">
-            <Button type="primary">重置</Button>
+            <Button>重置</Button>
         </div>
         <div class="choosegroup">
             <!-- 复选框 -->
@@ -89,21 +89,21 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
-
+.datafilter {
+    height: $sidebarHeight;
+    overflow: scroll;
+}
 
 .button {
-    margin-top: 1vh;
-    margin-right: 1w;
-    margin-bottom: 1h;
-    margin-left:   calc($sidebarFilterPanelWidth - 5vw);
+    margin-top: 10px;
+    margin-left: calc($sidebarFilterPanelWidth - 80px);
 }
 
 .choosegroup {
-    // margin: 1px 15px 50px 15px;
-    margin: 1vh 1vw 10vh 1vw;
+    margin: 30px 15px 50px 15px;
 }
 
 .select {
-    margin-top: 1vh;
+    margin-top: 10px;
 }
 </style>

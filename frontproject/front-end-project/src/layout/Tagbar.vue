@@ -13,6 +13,9 @@
 
 <script>
 import { mapMutations, mapState, mapGetters } from 'vuex'
+import tinykeys from "tinykeys";
+import screenfull from 'screenfull';
+
 export default {
   data() {
     return {
@@ -33,6 +36,21 @@ export default {
       activeTag: state => state.tagbar.activeTag
     })
   },
+  created() {
+
+    // 为app添加快捷键功能
+    tinykeys(window, {
+      "Shift+W": () => {
+        this.handleCloseKeyShot()
+      },
+      "Shift+F": () => {
+        this.screenFull()
+      },
+      "Shift+N": () => {
+
+      }
+    });
+  },
   methods: {
     handleEdit(targetName) {
       this.DELETE_TAG(targetName)
@@ -40,11 +58,14 @@ export default {
       this.activeName = this.activeTag
       this.$router.push(this.activeTag)
     },
+    handleCloseKeyShot() {
+      this.handleEdit(this.activeTag)
+    },
     handleClick(tabs, event) {
       this.$router.push(tabs.paneName)
-    }
+    },
 
-    ,
+    // 根据路径匹配显示中文
     generateTagName(path) {
       switch (path.match(/[a-zA-Z]+/)[0]) {
         case 'datadisplay':
@@ -66,6 +87,8 @@ export default {
       'DELETE_TAG',
       'SET_TAG'
     ]),
+
+    // app全屏
     screenFull() {
       if (!screenfull.isEnabled) {
         this.$message({ message: '你的浏览器不支持全屏', type: 'warning' })

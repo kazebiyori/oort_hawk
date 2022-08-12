@@ -12,6 +12,7 @@ import "view-ui-plus/dist/styles/viewuiplus.css";
 
 // 导入样式
 import "normalize.css/normalize.css";
+import "@/styles/global.scss";
 import "@/styles/template/index.scss"; // global css
 import "@/styles/template/element-variables.scss";
 
