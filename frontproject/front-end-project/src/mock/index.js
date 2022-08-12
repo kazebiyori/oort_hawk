@@ -17,11 +17,18 @@ let criterionInfo = Mock.mock({
 });
 
 let dataList = Mock.mock({
-  "data|50": [
+  "data|30": [
     {
       "ID|+1": 1,
       Group: /[1-2]/,
       Name: /data-[0-9]/,
+      "Children|5":[
+        {
+          "ID|+1": 1,
+          Group: /[1-2]/,
+          Name: /child-[0-9]/
+        },
+      ]
     },
   ],
 });

@@ -1,7 +1,6 @@
 <template>
   <div class="nav-container">
-    <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
-      active-text-color="#ffd04b">
+    <el-menu class="el-menu-demo" mode="horizontal">
 
       <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
       <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
