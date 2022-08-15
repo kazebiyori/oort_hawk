@@ -6,6 +6,9 @@ import router from "@/router/index.js";
 
 import "@/mock/index.js";
 
+// 使用echarts
+import * as echarts from "echarts";
+
 // 使用viewUIPlus
 import ViewUIPlus from "view-ui-plus";
 import "view-ui-plus/dist/styles/viewuiplus.css";
@@ -26,6 +29,9 @@ const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
+
+// 注入echarts
+app.provide("$echarts", echarts);
 
 // 挂载路由
 app.use(router);

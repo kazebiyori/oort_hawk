@@ -105,7 +105,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
-::v-deep .el-tabs__new-tab {
+:deep(.el-tabs__new-tab) {
   height: 0px;
   width: 0px;
 }

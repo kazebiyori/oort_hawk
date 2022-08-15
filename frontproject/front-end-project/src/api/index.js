@@ -1,4 +1,4 @@
-import request from "@/utiles/request";
+import request from "@/utils/request";
 
 export const fetchData = () => {
   return request({

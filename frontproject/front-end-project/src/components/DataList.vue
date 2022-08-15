@@ -2,13 +2,7 @@
 
   <div>
 
-  <el-tree
-    :props="props"
-    :data="dataList"
-    show-checkbox
-    @check-change="handleCheckChange"
-    default-expand-all
-  />
+    <el-tree :props="props" :data="dataList" show-checkbox @check-change="handleCheckChange" default-expand-all />
   </div>
 
 
@@ -65,7 +59,7 @@ export default {
   }
 }
 
-::v-deep .el-cascader {
+:deep(.el-cascader) {
 
   margin: auto !important
 }

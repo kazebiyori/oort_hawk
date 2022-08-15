@@ -13,7 +13,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 
-import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionEditing } from '@/utiles/asyncComponents.js'
+import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionEditing } from '@/utils/asyncComponents.js'
 
 import tinykeys from "tinykeys";
 
@@ -97,6 +97,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+
+:deep(.el-menu-item) {
+  font-size: 20px;
+}
 
 .nav-container {
   width: 100vw;

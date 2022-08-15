@@ -91,7 +91,7 @@ export default {
 
 .datafilter {
     height: $sidebarHeight;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .button {

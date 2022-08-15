@@ -1,24 +1,34 @@
-
 // 导航栏高度
 $navbarHeight: 59px;
-
-// 主视图高度
-$maintopHeight: 30px;
-$mainbottomHeight: calc(100vh - $navbarHeight - $maintopHeight);
-
-// 侧边栏宽度
-$sidebarFixedWidth: 18px;
-$sidebarActiveWidth: 200px;
-$sidebarFilterPanelWidth: 200px;
 
 // 侧边栏高度
 $sidebarHeight: calc(100vh - $navbarHeight);
 $sidebarOpContainerHeight: 30px;
 $sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - 30px);
+// 侧边栏宽度
+$sidebarFixedWidth: 18px;
+$sidebarActiveWidth: 200px;
+$sidebarFilterPanelWidth: 200px;
 
+// 主视图高度
+$maintopHeight: 39px;
+$mainbottomHeight: calc(100vh - $navbarHeight - $maintopHeight);
 // 主视区宽度
 $mainWithSideWidth: calc(100vw - $sidebarFixedWidth - $sidebarActiveWidth);
 $mainWithoutSideWidth: calc(100vw - $sidebarFixedWidth);
+
+// 主页面尺寸
+// 「数据展示」高度、
+$dataDisplayHeight: calc(100vh - $maintopHeight - $navbarHeight);
+
+$dataDisplayTopHeight: 280px;
+$dataDisplayBottomHeight: calc($dataDisplayHeight - $dataDisplayTopHeight);
+
+$dataDisplayTopLeftHeight: 400px;
+$dataDisplayTopLeftWidth: 400px;
+$dataDisplayTopRight: calc($dataDisplayHeight - $dataDisplayTopHeight);
+
+
 
 
 // 动画

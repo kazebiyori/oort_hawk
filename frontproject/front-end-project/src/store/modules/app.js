@@ -1,6 +1,6 @@
 const state = {
   sidebar: {
-    showDataList: true,
+    showDataList: false,
     showFilter: false,
   },
 };

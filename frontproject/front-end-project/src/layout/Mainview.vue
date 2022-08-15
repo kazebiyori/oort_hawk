@@ -2,7 +2,7 @@
 
   <Sidebar class="sidebar"></Sidebar>
 
-  <div :class="{ 'mainWithSide': showDataList,'mainWithoutSide': !showDataList }">
+  <div :class="{ 'mainWithSide': showDataList, 'mainWithoutSide': !showDataList }">
     <Tagbar class="tagbar"></Tagbar>
     <router-view v-slot="{ Component }">
       <keep-alive>
@@ -40,7 +40,6 @@ export default {
 
 .sidebar {
   display: inline-block;
-
 }
 
 .tagbar {
