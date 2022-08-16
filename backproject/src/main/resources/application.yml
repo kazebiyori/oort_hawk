@@ -1,0 +1,35 @@
+server:
+  #端口
+  port: 8081
+
+spring:
+  application:
+    #应用名称（可选）
+    name: fdps
+
+  #数据源
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/fdps?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 1234
+
+  main:
+    #循环依赖注入
+    allow-circular-references: true
+
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    #user_name --> userName
+    map-underscore-to-camel-case: true
+    #数据库操作日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  global-config:
+    db-config:
+      #主键id生成策略：雪花算法
+      id-type: ASSIGN_ID
+      #表名前缀
+      table-prefix: t_
