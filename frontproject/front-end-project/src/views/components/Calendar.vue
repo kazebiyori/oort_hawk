@@ -77,6 +77,7 @@ const chartConfigInit = {
     },
   },
   calendar: {
+    top: 'auto',
     splitLine: {
       show: false,
     },
@@ -201,20 +202,20 @@ onMounted(() => {
     } else if (selectMoment < startMoment) {
       startDate.value = selectDate
     }
-    else {
+    else if ((endMoment - selectMoment) > (selectMoment - startMoment)) {
+      startDate.value = selectDate
+    } else {
+      endDate.value = selectDate
     }
   })
 })
 
-
-
 </script>
 
-<style>
+<style scoped>
 .date-picker {
   width: 1000px;
   margin: 12px auto;
-
   text-align: center;
 }
 

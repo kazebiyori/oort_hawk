@@ -19,16 +19,11 @@ $mainWithoutSideWidth: calc(100vw - $sidebarFixedWidth);
 
 // 主页面尺寸
 // 「数据展示」高度、
-$dataDisplayHeight: calc(100vh - $maintopHeight - $navbarHeight);
-
+$dataDisplayHeight: calc($sidebarHeight - $maintopHeight);
 $dataDisplayTopHeight: 280px;
 $dataDisplayBottomHeight: calc($dataDisplayHeight - $dataDisplayTopHeight);
 
-$dataDisplayTopLeftHeight: 400px;
 $dataDisplayTopLeftWidth: 400px;
-$dataDisplayTopRight: calc($dataDisplayHeight - $dataDisplayTopHeight);
-
-
 
 
 // 动画
@@ -36,6 +31,7 @@ $animationTime: 0.1s;
 
 // 颜色
 $iconSelected: #dddfe6;
+$fontColor: #000;
 
 // 边框
 $borderStyle: 1px solid var(--el-border-color);

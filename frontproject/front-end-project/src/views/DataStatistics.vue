@@ -18,13 +18,28 @@
           </TabPane>
 
           <TabPane label="发动机" icon="ios-bowtie-outline">
-
+            <Carousel v-model="selectListID2" scroll>
+              <CarouselItem>
+                <img src="@/assets/img/像素-街角.png" alt="街角">
+              </CarouselItem>
+              <CarouselItem>
+                <img src="@/assets/img/像素-夕阳.jpeg" alt="夕阳">
+              </CarouselItem>
+            </Carousel>
           </TabPane>
         </Tabs>
 
         <div class="select-container">
-          <label>飞机编号：</label>
-          <Select class='select' v-model="selectItem" style="width: 120px">
+
+          <Tooltip placement="bottom-start" :delay="500" theme="light" transfer="true">
+            <label sytle="cursor: pointer;">飞机编号：</label>
+            <template #content>
+              <p>                                          </p>
+              <Table border :columns="columns" :data="data" width="500px"></Table>
+            </template>
+          </Tooltip>
+
+          <Select v-model="selectItem" style="width: 120px" default-label="路径">
             <Option v-for="item in selectList" :value="item" :key="item">{{ item }}</Option>
           </Select>
         </div>
@@ -36,12 +51,12 @@
 
     </div>
     <div class="bottom">
-
       <div class="bottom-left">
-        左
-      </div>
 
-      <div class="bottom-right">右</div>
+      </div>
+      <div class="bottom-right">
+        <LineChart></LineChart>
+      </div>
     </div>
   </div>
 </template>
@@ -49,13 +64,40 @@
 <script setup>
 
 import Calendar from './components/Calendar.vue';
+import LineChart from './components/LineChart.vue';
+
 import { ref, computed } from 'vue';
 
+const columns = ref([
+  {
+    title: '参数',
+    key: 'param'
+  },
+  {
+    title: '数值',
+    key: 'value'
+  }
+])
+
+const data = ref([
+  {
+    param: '飞机编号',
+    value: 1
+  }, {
+    param: '试车类型',
+    value: 'AAA'
+  }, {
+    param: 'xxx',
+    value: 'xxx'
+  },
+
+])
 
 let selectListID = ref(0)
+let selectListID2 = ref(0)
 let selectLists = ref([['路径', '路灯', '草坪'], ['夕阳', '背影'], ['海', '自行车', '红蓝']])
 
-const selectItem = ref('')
+const selectItem = ref('init')
 
 let selectList = computed(() => {
   return selectLists.value[selectListID.value]
@@ -86,7 +128,8 @@ let selectList = computed(() => {
 }
 
 .top-left {
-  display: inline-block;
+  display: block;
+  float: left;
   border: $borderStyle;
 
   border-bottom: 0px;
@@ -94,22 +137,50 @@ let selectList = computed(() => {
   border-top: 0px;
 
   width: $dataDisplayTopLeftWidth;
-  height: $dataDisplayTopLeftHeight;
+  height: $dataDisplayTopHeight;
 
 
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .top-right {
   display: inline-block;
+  border: $borderStyle;
+  border-bottom: 0px;
+  border-left: 0px;
+  border-top: 0px;
+
+  width: calc(100% - $dataDisplayTopLeftWidth);
+  height: $dataDisplayTopHeight;
+  overflow: auto;
+
+}
+
+.bottom-left {
+  display: block;
+  float: left;
   border: $borderStyle;
 
   border-bottom: 0px;
   border-left: 0px;
   border-top: 0px;
 
+  width: $dataDisplayTopLeftWidth;
+  height: $dataDisplayBottomHeight;
+
+
+  overflow: scroll;
+}
+
+.bottom-right {
+  display: inline-block;
+  border: $borderStyle;
+  border-bottom: 0px;
+  border-left: 0px;
+  border-top: 0px;
+
   width: calc(100% - $dataDisplayTopLeftWidth);
-  height: 400px;
+  height: $dataDisplayBottomHeight;
   overflow: scroll;
 
 }

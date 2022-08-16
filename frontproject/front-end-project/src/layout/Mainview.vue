@@ -52,7 +52,7 @@ export default {
 
   width: $mainWithSideWidth;
   height: $sidebarHeight;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .mainWithoutSide {
@@ -61,6 +61,6 @@ export default {
 
   width: $mainWithoutSideWidth;
   height: $sidebarHeight;
-  overflow: auto;
+  overflow: hidden;
 }
 </style>
