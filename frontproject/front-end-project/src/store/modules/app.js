@@ -3,6 +3,9 @@ const state = {
     showDataList: false,
     showFilter: false,
   },
+  datadisplayselector:{
+    showSelector:true,
+  },
 };
 
 const getters = {
@@ -18,11 +21,23 @@ const mutations = {
   TOGGLE_FILTER(state, payload) {
     state.sidebar.showFilter = !state.sidebar.showFilter;
   },
+  OPEN_DATADISPLAYSELECTOR(state, payload) {
+    state.datadisplayselector.showSelector = true;
+  },
+  CLOSE_DATADISPLAYSELECTOR(state, payload) {
+    state.datadisplayselector.showSelector = false;
+  },
 };
 
 const actions = {
   toggleSideBar({ commit }) {
     commit("TOGGLE_SIDEBAR");
+  },
+  openDatadisplayselector({ commit }) {
+    commit("OPEN_DATADISPLAYSELECTOR");
+  },
+  closeDatadisplayselector({ commit }) {
+    commit("CLOSE_DATADISPLAYSELECTOR");
   },
 };
 
