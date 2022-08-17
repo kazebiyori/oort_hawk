@@ -1,5 +1,6 @@
 <template>
   <div ref="chart" id="chart"></div>
+
   <div class="date-picker">
     <el-button style="float:left" @click="currentYear = parseInt(currentYear) - 1 + ''">上年</el-button>
     <label>日期选择：</label>
@@ -36,6 +37,15 @@ let startDate = ref('')
 let endDate = ref('')
 let selectDays = []
 
+// 与父组件进行数据交互
+// const props = defineProps(['tmpDate'])
+const emit = defineEmits(['dayChange'])
+
+// 向父组件修改日期信息（！！注意使用.value）
+function dayChange() {
+  emit('dayChange', [startDate.value, endDate.value])
+}
+
 // 动态设置各年份背景日期
 let bgDays = getDaysBetween(startYear + '-01-01', endYear + '-12-31', 0)
 
@@ -59,6 +69,7 @@ watch([startDate, endDate], ([newStartDate, newEndDate]) => {
   selectDays = getDaysBetween(newStartDate, newEndDate, 50)
   chartConfigSelected.series[1].data = selectDays
   myChart.setOption(chartConfigSelected)
+  dayChange()
 })
 
 // 图表配置信息-初始化
@@ -214,14 +225,16 @@ onMounted(() => {
 
 <style scoped>
 .date-picker {
+  position: relative;
+  top: -12px;
   width: 1000px;
-  margin: 12px auto;
+  margin: 0px auto;
   text-align: center;
 }
 
 #chart {
   width: 900px;
   height: 210px;
-  margin: 5px auto;
+  margin: 15px auto;
 }
 </style>

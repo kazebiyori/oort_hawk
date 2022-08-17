@@ -1,8 +1,8 @@
 import request from "@/utils/request";
 
-export const fetchData = () => {
+export const fetchDataStatistics = () => {
   return request({
-    url: "/sidebardata",
+    url: "/statistics",
     method: "get",
   });
 };

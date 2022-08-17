@@ -1,15 +1,5 @@
 import { assert, expect, test, it, describe } from "vitest";
 
-import { getDaysBetween } from "@/utils/date";
-// Edit an assertion and save to see HMR in action
-
-it("getDaysBetween()", () => {
-  expect(getDaysBetween("2022-01-01", "2022-01-02")).toStrictEqual([
-    ["2022-01-01", 1],
-    ["2022-01-02", 1],
-  ]);
-});
-
 test("Math.sqrt()", () => {
   expect(Math.sqrt(4)).toBe(2);
   expect(Math.sqrt(144)).toBe(12);

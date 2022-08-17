@@ -41,5 +41,8 @@ export function asyncDataDisplay(compname, path) {
 }
 export function asyncDataStatistics(compname, path) {
   return () =>
-    dynamicRouteComponent(import("@/views/DataStatistics.vue"), compname);
+    dynamicRouteComponent(
+      import("@/views/DataStatistics/DataStatistics.vue"),
+      compname
+    );
 }

@@ -1,6 +1,6 @@
 const state = {
-  cacheTags: ["/datastatistics"],
-  activeTag: "/datastatistics",
+  cacheTags: ["/datadisplay"],
+  activeTag: "/datadisplay",
 };
 
 const getters = {

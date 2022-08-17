@@ -46,7 +46,7 @@
       </div>
 
       <div class="top-right">
-        <Calendar />
+        <Calendar @dayChange="dayChange" />
       </div>
 
     </div>
@@ -55,7 +55,7 @@
 
       </div>
       <div class="bottom-right">
-        <LineChart></LineChart>
+        <LineChart :startDate="startDate" :endDate="endDate"></LineChart>
       </div>
     </div>
   </div>
@@ -65,9 +65,22 @@
 
 import Calendar from './components/Calendar.vue';
 import LineChart from './components/LineChart.vue';
+import { getFormatDay } from '@/utils/date';
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
+// 数据统计起止时间
+let startDate = ref('')
+let endDate = ref('')
+watch(startDate, (newVal) => {
+
+})
+function dayChange(payload) {
+  startDate.value = getFormatDay(payload[0])
+  endDate.value = getFormatDay(payload[1])
+}
+
+// 鼠标悬停，显示缩略信息
 const columns = ref([
   {
     title: '参数',
@@ -78,7 +91,6 @@ const columns = ref([
     key: 'value'
   }
 ])
-
 const data = ref([
   {
     param: '飞机编号',
@@ -93,6 +105,7 @@ const data = ref([
 
 ])
 
+// 轮播图信息
 let selectListID = ref(0)
 let selectListID2 = ref(0)
 let selectLists = ref([['路径', '路灯', '草坪'], ['夕阳', '背影'], ['海', '自行车', '红蓝']])
@@ -102,6 +115,7 @@ const selectItem = ref('init')
 let selectList = computed(() => {
   return selectLists.value[selectListID.value]
 })
+
 
 
 </script>

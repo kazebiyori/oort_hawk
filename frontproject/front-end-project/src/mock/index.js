@@ -1,3 +1,4 @@
+import { dateEquals } from "element-plus";
 import Mock from "mockjs";
 
 let criterionInfo = Mock.mock({
@@ -33,8 +34,32 @@ let dataList = Mock.mock({
   ],
 });
 
-Mock.mock(/api/, "get", () => {
+let dataStatistics = Mock.mock({
+  "array|1000": [[/202[0-2]-0[0-9]-0[0-9]/, /[1-9]/]],
+});
+
+let dataStatistics_bk = Mock.mock([
+  ["2020-10-1", 450],
+  ["2020-10-2", 350],
+  ["2020-10-3", 290],
+  ["2020-10-4", 380],
+  ["2020-10-5", 540],
+  ["2020-10-6", null],
+  ["2020-10-7", null],
+  ["2020-10-8", 430],
+  ["2020-10-9", 330],
+  ["2020-10-10", 280],
+  ["2020-10-11", 340],
+  ["2020-10-12", 455],
+  ["2020-10-13", 330],
+]);
+
+Mock.mock(/api\/sidebardata/, "get", () => {
   return dataList;
+});
+
+Mock.mock(/api\/statistics/, "get", () => {
+  return dataStatistics;
 });
 
 // export default [
