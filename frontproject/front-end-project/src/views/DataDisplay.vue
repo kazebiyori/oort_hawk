@@ -16,39 +16,41 @@
     <div class="selector">
 
       <div class="foldicon">
-        <img src="../assets/left.svg" alt="#" class="left">
-        <img src="../assets/right.svg" alt="#" class="right">
+        <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
+        <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
       </div>
-      <div class="tips">
-        已选择7项，展示3项
-        <hr>
-      </div>
-      <div class="functionicon">
-        <img src="../assets/加.svg" alt="#">
-        <img src="../assets/多选框.svg" alt="#">
-        <img src="../assets/重做.svg" alt="#">
-        <img src="../assets/删除.svg" alt="#">
-      </div>
-      <div class="selectboard">
-        <div class="selectedlist">
-          <div class="demo-color-block">
-            <el-color-picker v-model="color1" />
-          </div>
-          <div class="dataselect">
-            <Select v-model="model" style="width:80px" placeholder="数据A">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
+      <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
+        <div class="tips">
+          已选择7项，展示3项
+          <hr>
+        </div>
+        <div class="functionicon">
+          <img src="../assets/加.svg" alt="#">
+          <img src="../assets/多选框.svg" alt="#">
+          <img src="../assets/重做.svg" alt="#">
+          <img src="../assets/删除.svg" alt="#">
+        </div>
+        <div class="selectboard">
+          <div class="selectedlist">
+            <div class="demo-color-block">
+              <el-color-picker v-model="color1" />
+            </div>
+            <div class="dataselect">
+              <Select v-model="model" style="width:80px" placeholder="数据A">
+                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              </Select>
 
-          </div>
-          <div class="parameterselect">
-            <Cascader :data="data" v-model="value" v-width="80" placeholder="参数A" />
-          </div>
+            </div>
+            <div class="parameterselect">
+              <Cascader :data="data" v-model="value" v-width="80" placeholder="参数A" />
+            </div>
 
-          <div class="eye">
-            <img src="../assets/看.svg" alt="#">
-          </div>
-          <div class="deleteself">
-            <img src="../assets/删除.svg" alt="#">
+            <div class="eye">
+              <img src="../assets/看.svg" alt="#">
+            </div>
+            <div class="deleteself">
+              <img src="../assets/删除.svg" alt="#">
+            </div>
           </div>
         </div>
       </div>
@@ -59,6 +61,7 @@
 
 <script>
 import { Datadisplay } from '.'
+import { mapActions, mapMutations, mapState } from 'vuex';
 // import { Datadisplayselector } from '@/components/index.js'
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口。
 import * as echarts from 'echarts/core';
@@ -177,11 +180,21 @@ export default {
 
     }
   },
+  computed: {
+    ...mapState({
+      showSelector: state => state.app.datadisplayselector.showSelector,
+    }),
+  },
   mounted() {
     // 在通过mounted调用即可
-    this.echartsInit()
+    this.echartsInit(),
+      document.getElementById('datadisplaypicture').setAttribute('_echarts_instance_', '');
   },
   methods: {
+    ...mapMutations([
+      'OPEN_DATADISPLAYSELECTOR',
+      'CLOSE_DATADISPLAYSELECTOR'
+    ]),
     //初始化echarts
     echartsInit() {
       echarts.init(document.getElementById('datadisplaypicture')).setOption({
@@ -324,21 +337,23 @@ window.onresize = function () {
   height: $datadispalyleftbodyHeihgt ;
 }
 
-.selector {
+.selector-open {
   float: right;
   width: $datadispalyslectorWith;
-  height: $mainbottomHeight;
-  // background-color: red;
+  height: calc($mainbottomHeight - 20vh);
   border-left-color: aqua;
   border-left-width: 2px;
   border-left-style: solid;
-
 }
 
-.selector .foldicon {
-  margin-left: calc($datadispalyslectorWith - 100px);
-  margin-top: 20px;
-
+.selector-close {
+  float: right;
+  width: 0px;
+  height: calc($mainbottomHeight - 20vh);
+  border-left-color: aqua;
+  border-left-width: 2px;
+  border-left-style: solid;
+  opacity: 0;
 }
 
 .selector .functionicon {
@@ -353,12 +368,25 @@ img {
 
 .selector .foldicon .left {
   display: inline-block;
-  margin-right: 0px;
+  margin-left: calc($datadispalyslectorWith - 100px);
+  cursor: pointer;
+
+  &:hover {
+    background-color: $iconSelected;
+    border-radius: 3px;
+
+  }
 }
 
 .selector .foldicon .right {
   display: inline-block;
+  cursor: pointer;
 
+  &:hover {
+    background-color: $iconSelected;
+    border-radius: 3px;
+
+  }
 }
 
 .demo-color-block {
