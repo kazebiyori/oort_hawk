@@ -5,6 +5,7 @@
       <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
       <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
       <el-menu-item index="4" @click="addTag(4)">编辑判据</el-menu-item>
+      <el-menu-item index="5" @click="addTag(5)">数据上传</el-menu-item>
     </el-menu>
   </div>
 
@@ -77,6 +78,10 @@ export default {
           this.PUSH_TAG({ tag: `/${name}` })
           this.$router.push(`/${name}`)
           break
+        } case 5: {
+          // 数据上传不添加标签页
+          // this.PUSH_TAG({ tag: 'dataupload' })
+          this.$router.push('/dataupload')
         }
       }
 
