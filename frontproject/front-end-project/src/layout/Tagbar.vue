@@ -76,6 +76,8 @@ export default {
           return '数据判读'
         case 'criterionediting':
           return '编辑判据'
+        case 'dataupload':
+          return '数据上传'
         default:
           return '无名氏'
       }

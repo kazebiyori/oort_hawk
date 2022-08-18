@@ -25,7 +25,10 @@ const mutations = {
   },
 
   PUSH_TAG(state, payload) {
-    state.cacheTags.push(payload.tag);
+    // 对于已存在标签，不添加进cachetags中
+    if (!state.cacheTags.find((item) => item == payload.tag)) {
+      state.cacheTags.push(payload.tag);
+    }
     state.activeTag = payload.tag;
   },
 

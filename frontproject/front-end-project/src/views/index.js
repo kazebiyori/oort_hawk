@@ -3,3 +3,4 @@ export { default as Datacriterion } from "./DataCriterion.vue";
 // export { default as Datadisplay } from "./DataDisplay.vue";
 export { default as Datadisplay } from "./DataDisplay.vue";
 export { default as Datastatistics } from "./DataStatistics/DataStatistics.vue";
+export { default as Dataupload } from "./DataUpload.vue";
