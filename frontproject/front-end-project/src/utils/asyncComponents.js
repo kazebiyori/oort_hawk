@@ -27,9 +27,9 @@ function dynamicRouteComponent(_import, routeName) {
  * @param path
  * @returns {function(*): void}
  */
-export function asyncCriterionEditing(compname, path) {
+export function asyncCriterionDisplay(compname, path) {
   return () =>
-    dynamicRouteComponent(import("@/views/CriterionEditing.vue"), compname);
+    dynamicRouteComponent(import("@/views/CriterionDisplay.vue"), compname);
 }
 export function asyncDataCriterion(compname, path) {
   return () =>
@@ -46,3 +46,10 @@ export function asyncDataStatistics(compname, path) {
       compname
     );
 }
+// export function asyncCriterionEdition(compname, path) {
+//   return () =>
+//     dynamicRouteComponent(
+//       import("@/views/CriterionEdition.vue"),
+//       compname
+//     );
+// }

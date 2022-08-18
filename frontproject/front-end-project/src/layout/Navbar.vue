@@ -13,7 +13,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 
-import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionEditing } from '@/utils/asyncComponents.js'
+import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionDisplay } from '@/utils/asyncComponents.js'
 
 import tinykeys from "tinykeys";
 
@@ -71,8 +71,8 @@ export default {
           this.$router.push(`/${name}`)
           break
         } case 4: {
-          const name = `criterionediting${++this.n}`
-          const com = await asyncCriterionEditing(name)
+          const name = `criteriondisplay${++this.n}`
+          const com = await asyncCriterionDisplay(name)
           this.$router.addRoute({ path: `/${name}`, component: com })
           this.PUSH_TAG({ tag: `/${name}` })
           this.$router.push(`/${name}`)

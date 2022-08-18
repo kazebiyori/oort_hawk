@@ -74,7 +74,7 @@ export default {
           return '数据统计'
         case 'datacriterion':
           return '数据判读'
-        case 'criterionediting':
+        case 'criteriondisplay':
           return '编辑判据'
         default:
           return '无名氏'

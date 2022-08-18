@@ -3,7 +3,8 @@ import {
   Datastatistics,
   Datadisplay,
   Datacriterion,
-  Criterionediting,
+  CriterionDisplay,
+  CriterionEdition
 } from "@/views";
 
 // 把组件名称改为首字母大写，为了让路由路径与组件名称之间对应关系方便用函数实现
@@ -14,7 +15,8 @@ const router = createRouter({
     { path: "/datadisplay", component: Datadisplay },
     { path: "/datastatistics", component: Datastatistics },
     { path: "/datacriterion", component: Datacriterion },
-    { path: "/criterionediting", component: Criterionediting },
+    { path: "/criteriondisplay", component: CriterionDisplay },
+    { path: "/criterionedition", component: CriterionEdition },
   ],
 });
 
