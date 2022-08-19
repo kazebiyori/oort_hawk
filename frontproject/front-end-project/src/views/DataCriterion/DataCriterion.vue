@@ -237,7 +237,7 @@ const data = [
 
 .criterionTable {
   margin-top: 30px;
-  border: $borderStyle;
+  //]border: $borderStyle;
 }
 
 .selectItem {
@@ -252,7 +252,7 @@ const data = [
 }
 
 .item {
-  margin: 5px;
+  margin: 10px;
   border: $borderStyle
 }
 
@@ -267,7 +267,7 @@ const data = [
   height: 100%;
   width: 25%;
   // background-color: blue;
-  border: $borderStyle;
+  // border: $borderStyle;
 
 }
 
