@@ -33,7 +33,10 @@ export function asyncCriterionDisplay(compname, path) {
 }
 export function asyncDataCriterion(compname, path) {
   return () =>
-    dynamicRouteComponent(import("@/views/DataCriterion.vue"), compname);
+    dynamicRouteComponent(
+      import("@/views/DataCriterion/DataCriterion.vue"),
+      compname
+    );
 }
 export function asyncDataDisplay(compname, path) {
   return () =>

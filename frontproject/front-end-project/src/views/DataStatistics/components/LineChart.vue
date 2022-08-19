@@ -1,6 +1,5 @@
 <template>
   <div ref="chart" id="chart"></div>
-  {{ startDate }}
 </template>
 
 <script setup>
@@ -112,8 +111,8 @@ onMounted(() => {
 
 <style scoped>
 #chart {
-  width: 1000px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   margin: 5px auto;
 }
 </style>

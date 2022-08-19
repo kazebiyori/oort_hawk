@@ -3,7 +3,7 @@
     <div class="top">
       <div class="top-left">
         <Tabs>
-          <TabPane label="飞机" icon="ios-bowtie">
+          <TabPane label="飞机">
             <Carousel v-model="selectListID" scroll>
               <CarouselItem>
                 <img src="@/assets/img/像素-街角.png" alt="街角">
@@ -17,7 +17,7 @@
             </Carousel>
           </TabPane>
 
-          <TabPane label="发动机" icon="ios-bowtie-outline">
+          <TabPane label="发动机">
             <Carousel v-model="selectListID2" scroll>
               <CarouselItem>
                 <img src="@/assets/img/像素-街角.png" alt="街角">
@@ -53,10 +53,22 @@
     <div class="bottom">
       <div class="bottom-left">
 
+        <template v-for="item in info">
+          <Card class="card">
+            <div class="left">
+              <div>{{ item.name }}</div>
+              <img :src="item.iconPath" alt="#" class="icon-list">
+            </div>
+            <div class="right">{{ item.info }}</div>
+          </Card>
+        </template>
+
       </div>
+
       <div class="bottom-right">
         <LineChart :startDate="startDate" :endDate="endDate"></LineChart>
       </div>
+
     </div>
   </div>
 </template>
@@ -116,12 +128,59 @@ let selectList = computed(() => {
   return selectLists.value[selectListID.value]
 })
 
+// 统计信息-左下角
 
-
+import planeSvg from "@/assets/plane.svg"
+let info = ref([
+  { name: '飞机类型', iconPath: planeSvg, info: 1111 },
+  { name: '飞机编号', iconPath: planeSvg, info: 222 },
+  { name: '发动机类型', iconPath: planeSvg, info: 999 },
+  { name: '发动机编号', iconPath: planeSvg, info: 333 },
+  { name: '试飞时间', iconPath: planeSvg, info: '2020-07-10' },
+  { name: '试飞类型', iconPath: planeSvg, info: 1111 },])
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+
+.card {
+  width: 180px;
+  height: 80px;
+  margin: 9px;
+  margin-top: 30px;
+  display: inline-block;
+  border: $borderStyle;
+  border-style: dashed;
+  overflow: hidden;
+
+  & .left {
+    display: inline-block;
+  }
+
+  & .right {
+    display: block;
+    float: right;
+    text-align: center;
+    line-height: 42px;
+    width: 70px;
+    height: 42px;
+    color: blue;
+    font-weight: bolder;
+    font-size: smaller;
+  }
+
+  & .icon-list {
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+    margin-top: 5px;
+    float: left;
+
+    &:hover {
+      background-color: none;
+    }
+  }
+}
 
 .data-display-container {
   height: $dataDisplayHeight;

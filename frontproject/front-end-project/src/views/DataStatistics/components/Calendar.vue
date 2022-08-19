@@ -233,7 +233,7 @@ onMounted(() => {
 }
 
 #chart {
-  width: 900px;
+  width: 80%;
   height: 210px;
   margin: 15px auto;
 }
