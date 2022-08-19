@@ -1,23 +1,28 @@
 @import '@/styles/variables.scss';
+@import '@/styles/color.module.scss';
 
 // 添加全局样式
 
 
-@font-face {
-  /* 重命名字体名 */
-  font-family: 'chinafont';
-  /* 引入字体 */
-  src: url('@/assets/fonts/LXGWWenKai-Regular.ttf');
-  font-weight: normal;
-  font-style: normal;
+// @font-face {
+//   /* 重命名字体名 */
+//   font-family: 'chinafont';
+//   /* 引入字体 */
+//   src: url('@/assets/fonts/LXGWWenKai-Regular.ttf');
+//   font-weight: normal;
+//   font-style: normal;
+// }
+
+// 清理element-ui默认样式
+.el-tabs--border-card>.el-tabs__content {
+  padding: 0px;
 }
 
-body{
-  // font-family: chinafont;
-}
+
 
 body{
   overflow:hidden;
+  color:$globalColor;
 }
 
 .icon{

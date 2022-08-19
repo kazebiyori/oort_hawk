@@ -1,11 +1,81 @@
 <template>
   <div class="nav-container">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
-      <el-menu-item index="1" @click="addTag(1)">数据展示</el-menu-item>
-      <el-menu-item index="2" @click="addTag(2)">数据统计</el-menu-item>
-      <el-menu-item index="3" @click="addTag(3)">数据判读</el-menu-item>
-      <el-menu-item index="4" @click="addTag(4)">编辑判据</el-menu-item>
-      <el-menu-item index="5" @click="addTag(5)">数据上传</el-menu-item>
+
+    <!-- <Row justify="start" class="code-row-bg">
+      <Col span="1">
+      <el-button style="height:60px;">数据展示</el-button>
+      </Col>
+      <Col span="1">
+      <el-button style="height:60px">数据展示</el-button>
+      </Col>
+      <Col span="1">
+      <el-button style="height:60px">数据展示</el-button>
+      </Col>
+      <Col span="1">
+      <el-button style="height:60px">数据展示</el-button>
+      </Col>
+    </Row> -->
+    <el-menu class="el-menu-demo" mode="horizontal" :background-color="color.navbarColor" text-color="#767580"
+      active-text-color="#fff" :ellipsis='false'>
+      <div class="navbar-info">
+        <Avatar icon="ios-person" size="large" class='avatar' />
+        <span>软件组</span>
+      </div>
+      <el-menu-item index="1" @click="addTag(1)">
+        <!-- <el-icon style="vertical-align: middle;">
+          <search />
+        </el-icon> -->
+        <!-- <img src="@/assets/svg/chart.svg" alt="lipu" width="20px" style="display:inline-block">
+         -->
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-database">
+          <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+        </svg>
+        数据展示
+      </el-menu-item>
+      <el-menu-item index="2" @click="addTag(2)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-bar-chart-2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>数据统计
+      </el-menu-item>
+      <el-menu-item index="3" @click="addTag(3)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-pie-chart">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+        </svg>
+        数据判读
+      </el-menu-item>
+      <el-menu-item index="4" @click="addTag(4)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-edit">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>判据编辑
+      </el-menu-item>
+      <el-menu-item index="5" @click="addTag(5)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-upload">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>数据上传
+      </el-menu-item>
+      <div class="navbar-user">
+        <Avatar icon="ios-person" size="large" class='avatar' />
+        <span>Rumoi</span>
+      </div>
     </el-menu>
   </div>
 
@@ -13,17 +83,17 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-
 import { asyncDataStatistics, asyncDataDisplay, asyncDataCriterion, asyncCriterionDisplay } from '@/utils/asyncComponents.js'
-
 import tinykeys from "tinykeys";
 
+import color from '@/styles/color.module.scss';
 
 export default {
   data() {
     return {
       n: 1,
-      activeIndex: 1
+      activeIndex: 1,
+      color: color,
     }
   },
   created() {
@@ -96,12 +166,43 @@ export default {
     ...mapState({
       isOpened: state => state.app.sidebar.isOpened
     })
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+
+.navbar-info {
+  width: calc($sidebarActiveWidth + $sidebarFixedWidth);
+  color: white;
+  height: $navbarHeight;
+
+  span {
+    position: relative;
+    top: 10px;
+    margin-left: 30px;
+  }
+}
+
+.navbar-user {
+  position: absolute;
+  right: 0px;
+  width: 200px;
+  height: $navbarHeight;
+  color: white;
+
+  span {
+    position: relative;
+    top: 10px;
+    margin-left: 10px;
+  }
+}
+
+:deep(.avatar) {
+  position: relative;
+  top: 10px;
+}
 
 :deep(.el-menu-item) {
   font-size: 20px;
@@ -110,6 +211,15 @@ export default {
 .nav-container {
   width: 100vw;
   height: $navbarHeight;
+}
+
+:deep(.el-menu-demo) {
+  // background-color: $navbarColor;
+}
+
+:deep(.el-menu-demo) {
+  width: 100vw;
+
 }
 
 // 清除element-ui navbar默认样式

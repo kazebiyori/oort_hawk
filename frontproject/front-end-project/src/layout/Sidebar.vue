@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="sidebar-wrapper">
     <!-- 侧边栏-固定 -->
     <div class="sidebar-fix" @click="TOGGLE_SIDEBAR">
       <Icon class="sidebar-icon" type="md-code" />
@@ -63,6 +62,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+@import '@/styles/color.module.scss';
+
+.sidebar-wrapper {
+  //background-color: $sidebarFixColor;
+
+}
+
 
 .datalist {
   overflow: auto;
@@ -131,11 +137,10 @@ export default {
   border: $borderStyle;
 
   cursor: pointer;
-
 }
 
 .sidebar-active {
-  border: $borderStyle;
+  //border: $borderStyle;
 
 
   width: $sidebarActiveWidth;
@@ -163,6 +168,7 @@ export default {
   width: $sidebarFilterPanelWidth;
   height: $sidebarHeight;
 
+  //background-color: $sidebarFixColor;
   background-color: white;
   border: $borderStyle;
 

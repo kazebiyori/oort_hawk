@@ -38,6 +38,7 @@ export default {
             { text: "22-08-11", link: "/blog/22-08-11" },
             { text: "22-08-15", link: "/blog/22-08-15" },
             { text: "22-08-17", link: "/blog/22-08-17" },
+            { text: "22-08-19", link: "/blog/22-08-19" },
           ],
         },
       ],
