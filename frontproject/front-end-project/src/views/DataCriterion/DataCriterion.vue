@@ -18,14 +18,22 @@
     </div>
 
     <div class="right">
-      <Row justify="start" class="code-row-bg">
+      <!-- <Row justify="start" class="code-row-bg">
         <Col span="2" style="font-size:larger;vertical-align:top;">规则分布 > </Col>
         <Col span="1" class="selectItem">地勤</Col>
         <Col span="1" class="selectItem">技术</Col>
         <Col span="1" class="selectItem">计算</Col>
-      </Row>
+      </Row> -->
+
+      <TagSelect v-model="value1" hide-check-all>
+        <span class="selecttips">规则分布 ></span>
+        <TagSelectOption name="tag1">地勤</TagSelectOption>
+        <TagSelectOption name="tag2">技术</TagSelectOption>
+        <TagSelectOption name="tag3">计算</TagSelectOption>
+
+      </TagSelect>
       <br>
-      <Row justify="start" class="code-row-bg">
+      <!-- <Row justify="start" class="code-row-bg">
         <Col span="2" style="font-size:larger;vertical-align:top;">规则类型 > </Col>
         <Col span="1" class="selectItem">启动</Col>
         <Col span="1" class="selectItem">慢车</Col>
@@ -37,16 +45,36 @@
         <Col span="1" class="selectItem">传感器</Col>
         <Col span="1" class="selectItem">性能</Col>
         <Col span="1" class="selectItem">寿命</Col>
-      </Row>
+      </Row> -->
+      <TagSelect v-model="value2" hide-check-all>
+        <span class="selecttips">规则类型 ></span>
+        <TagSelectOption name="tag1">启动</TagSelectOption>
+        <TagSelectOption name="tag2">慢车</TagSelectOption>
+        <TagSelectOption name="tag3">节流</TagSelectOption>
+        <TagSelectOption name="tag4">中间</TagSelectOption>
+        <TagSelectOption name="tag5">压力</TagSelectOption>
+        <TagSelectOption name="tag6">加减速</TagSelectOption>
+        <TagSelectOption name="tag7">特殊过程</TagSelectOption>
+        <TagSelectOption name="tag8">传感器</TagSelectOption>
+        <TagSelectOption name="tag9">性能</TagSelectOption>
+        <TagSelectOption name="tag10">寿命</TagSelectOption>
+      </TagSelect>
       <br>
 
-      <Row justify="start" class="code-row-bg">
+      <!-- <Row justify="start" class="code-row-bg">
         <Col span="2" style="font-size:larger;vertical-align:top;">事件类型 > </Col>
         <Col span="2" class="selectItem">起飞依据</Col>
         <Col span="1" class="selectItem">记录</Col>
         <Col span="1" class="selectItem">警告</Col>
-      </Row>
+      </Row> -->
+      <TagSelect v-model="value3" hide-check-all>
+        <span class="selecttips">事件类型 ></span>
+        <TagSelectOption name="tag1">起飞依据</TagSelectOption>
+        <TagSelectOption name="tag2">记录</TagSelectOption>
+        <TagSelectOption name="tag3">警告</TagSelectOption>
 
+      </TagSelect>
+      <Button @click="handleUnCheckAll" style="float:right" type="primary">取消筛选</Button>
 
       <Tabs value="name1" class="criterionTable">
         <TabPane label="飞机1" name="name1">
@@ -224,7 +252,7 @@ const data = [
 
 
 
-<style lang="scss" scoped>
+<style lang="scss" scoped >
 @import '@/styles/variables.scss';
 
 :deep(.ivu-table .table-info-error) {
@@ -300,4 +328,33 @@ const data = [
 
 
 }
+
+.selecttips {
+  font-size: 18px;
+  margin-left: 20px;
+  margin-right: 15px;
+  vertical-align: top;
+}
+
+:deep(.ivu-tag) {
+  font-size: 16px;
+}
 </style>
+<script>
+export default {
+  data() {
+    return {
+      value1: [],
+      value2: [],
+      value3: []
+    }
+  },
+  methods: {
+    handleUnCheckAll() {
+      this.value1 = [];
+      this.value2 = [];
+      this.value3 = [];
+    }
+  }
+}
+</script>

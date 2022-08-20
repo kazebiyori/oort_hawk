@@ -180,7 +180,7 @@ export default {
 
   span {
     position: relative;
-    top: 10px;
+    line-height: $navbarHeight;
     margin-left: 30px;
   }
 }
@@ -194,8 +194,8 @@ export default {
 
   span {
     position: relative;
-    top: 10px;
     margin-left: 10px;
+    line-height: $navbarHeight;
   }
 }
 

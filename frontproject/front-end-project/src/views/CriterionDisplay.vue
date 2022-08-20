@@ -58,7 +58,7 @@
       </div>
 
       <div class="tips">
-        <Alert show-icon>
+        <Alert show-icon style="height: 32px;">
           <span class="text">
             已选择3项
           </span>
