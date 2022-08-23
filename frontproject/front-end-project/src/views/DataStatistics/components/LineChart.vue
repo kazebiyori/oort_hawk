@@ -89,7 +89,7 @@ watch([startDate, endDate], (newVal) => {
 // 初始化操作
 onMounted(() => {
   chart.value.focus()
-  myChart = echarts.init(chart.value)
+  myChart = echarts.init(chart.value, null, { locale: 'ZH', renderer: 'svg' })
   myChart.setOption(
     chartConfigInit
   )
