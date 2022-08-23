@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         toCriteriondisplay() {
-            this.$router.push(`criteriondisplay`)
+            this.$router.go(-1);
         },
     }
 }

@@ -1,24 +1,22 @@
 <template>
   <div class="div">
+    <div class="foldicon">
+      <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
+      <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
+    </div>
     <!-- 左边折线图 -->
-    <div class="leftboard">
-      <div class="linechart">
-        <div class="title">折线图展示
-        </div>
-        <div class="body">
-          <div class="picture" id="datadisplaypicture">
+    <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
+      <div class="title">折线图展示
+      </div>
 
-          </div>
-        </div>
+      <div class="picture" id="datadisplaypicture" ref="bar" :style="{ width: '100%', height: '500px' }">
+
       </div>
     </div>
     <!-- 右边选择框 -->
     <div class="selector">
 
-      <div class="foldicon">
-        <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
-        <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
-      </div>
+
       <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
         <div class="tips">
           已选择7项，展示3项
@@ -62,6 +60,7 @@
 <script>
 import { Datadisplay } from '.'
 import { mapActions, mapMutations, mapState } from 'vuex';
+import { nextTick } from 'vue';
 // import { Datadisplayselector } from '@/components/index.js'
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口。
 import * as echarts from 'echarts/core';
@@ -81,7 +80,9 @@ import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 //dataZoom
 import 'echarts/lib/component/dataZoom';
-
+// 用于监听父元素变化
+// import elementResizeDetectorMaker from "element-resize-detector"
+import { EleResize } from '@/utils/esresize'// 图表自适应
 
 // 注册必须的组件
 echarts.use([
@@ -197,7 +198,13 @@ export default {
     ]),
     //初始化echarts
     echartsInit() {
-      echarts.init(document.getElementById('datadisplaypicture')).setOption({
+      let myChart = echarts.init(document.getElementById('datadisplaypicture'));
+      // 自适应
+      var listener = function () {
+        myChart.resize()
+      }
+      EleResize.on(this.$refs.bar, listener)
+      myChart.setOption({
         tooltip: {
           trigger: 'axis'
         },
@@ -274,82 +281,65 @@ export default {
         ]
 
 
-      }
+      },
 
-      )
-    }
+
+      );
+
+    },
+
   }
 }
 
 
 
-//图标自适应大小
-window.onresize = function () {
-  myChart.resize();
-};
+
 
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
-.div {
-  width: $mainWithSideWidth;
-  height: $mainWithoutSideWidth;
-  margin-top: 10px;
-}
 
-.leftboard {
+.leftboardWithselector {
   float: left;
-  width: calc($mainWithSideWidth - $datadispalyslectorWith);
-  height: $mainbottomHeight;
-  border-left-color: aqua;
-  border-left-width: 2px;
-  border-left-style: solid;
+  width: 80%;
+  height: 100%;
+  position: relative;
 }
 
-.leftboard .linechart {
+.leftboardWithoutselector {
   float: left;
-  width: $datadispalyleftbodypictureWidth;
-  height: $mainbottomHeight;
-  margin-left: 30px;
-  padding-top: 25px;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-.leftboard .linechart .title {
-  height: 50px;
+.title {
+  height: 20px;
   border-bottom-color: gray;
   border-bottom-width: 2px;
   border-bottom-style: solid;
   font-size: 20px;
   color: #000;
-  line-height: 50px;
-}
-
-.leftboard .linechart .body {
-  height: $datadispalyleftbodyHeihgt ;
-}
-
-.leftboard .linechart .body .picture {
-  vertical-align: top;
-  display: inline-block;
-  width: $datadispalyleftbodypictureWidth;
-  height: $datadispalyleftbodyHeihgt ;
+  line-height: 5px;
 }
 
 .selector-open {
   float: right;
-  width: $datadispalyslectorWith;
-  height: calc($mainbottomHeight - 20vh);
+  width: 20%;
+  position: relative;
+  height: 600px;
   border-left-color: aqua;
   border-left-width: 2px;
   border-left-style: solid;
 }
 
 .selector-close {
+  position: relative;
   float: right;
   width: 0px;
-  height: calc($mainbottomHeight - 20vh);
+  height: 600px;
   border-left-color: aqua;
   border-left-width: 2px;
   border-left-style: solid;
@@ -366,26 +356,32 @@ img {
   height: 25px;
 }
 
-.selector .foldicon .left {
-  display: inline-block;
-  margin-left: calc($datadispalyslectorWith - 100px);
-  cursor: pointer;
+.foldicon {
+  margin-left: 95%;
+  margin-top: 10px;
+  z-index: 100px;
 
-  &:hover {
-    background-color: $iconSelected;
-    border-radius: 3px;
+  .left {
+    display: inline-block;
 
-  }
-}
+    cursor: pointer;
 
-.selector .foldicon .right {
-  display: inline-block;
-  cursor: pointer;
+    &:hover {
+      background-color: $iconSelected;
+      border-radius: 3px;
 
-  &:hover {
-    background-color: $iconSelected;
-    border-radius: 3px;
+    }
 
+    .right {
+      display: inline-block;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $iconSelected;
+        border-radius: 3px;
+
+      }
+    }
   }
 }
 
