@@ -5,8 +5,9 @@
 <script setup>
 import { ref, onMounted, inject, watch, defineProps, computed } from 'vue';
 import { fetchDataStatistics } from '@/api/DataStatistics'
-
 import { filterDate } from '@/utils/date'
+import { EleResize } from '@/utils/esresize'// 图表自适应
+
 
 
 // 从根组件获取组件
@@ -105,6 +106,12 @@ onMounted(() => {
       ]
     })
   })
+
+  var listener = function () {
+    myChart.resize()
+  }
+  EleResize.on(chart.value, listener)
+
 })
 
 </script>

@@ -30,7 +30,7 @@ import moment from "moment";
 import { getDaysBetween } from '@/utils/date'
 import { ref, onMounted, inject, watch } from 'vue';
 import { useWindowScroll } from "@vueuse/core";
-import { EleResize } from '@/utils/esresize'// 图表自适应
+import { EleResize } from '@/utils/esresize'
 
 
 // 图表默认字体
@@ -103,14 +103,21 @@ const chartConfigInit = {
     outOfRange: {
     },
   },
+  tooltip: {
+    // show: true,
+    formatter: (param) => {
+      return param.value[0]
+    }
+  },
   calendar: {
-    top: 'auto',
+    // top: 'auto',
     splitLine: {
       show: false,
     },
 
     range: currentYear.value,
-    top: 'center',
+    // top: 'center',
+    top: 45,
     right: 10,
     left: 60,
     yearLabel: {
@@ -118,23 +125,31 @@ const chartConfigInit = {
     },
     monthLabel: {
       nameMap: 'ZH',
-      color: '#000',
+      margin: 10,
+      // fontWeight: 'lighter'
+
     },
     dayLabel: {
       nameMap: 'ZH',
-      color: '#000',
+      firstDay: 1,
+      fontStyle: 'normal',
+      // fontWeight: 'lighter'
     },
     itemStyle: {
       // color: '#f3f3f3',
       // borderColor: '#ccc',
-      borderColor: '#ccc',
+      // borderColor: '#fff',
+      borderWidth: 0
+    },
+    emphasis: {
+
     },
   },
   series: {
     type: 'scatter',
     coordinateSystem: 'calendar',
     symbol: 'roundRect',
-    // symbolSize: Math.min((chart.getWidth() - 70) / 80, 16),
+    // symbolSize: ,
     // symbolSize: 15,
     data: bgDays,
     itemStyle: {},
@@ -187,6 +202,7 @@ let chartConfigSelected = {
 onMounted(() => {
   chart.value.focus()
   myChart = echarts.init(chart.value)
+  chartConfigInit.series.symbolSize = Math.min((myChart.getWidth() - 70) / 80, 16)
   myChart.setOption(
     chartConfigInit
   )
@@ -257,7 +273,7 @@ onMounted(() => {
 
 .date-picker {
   position: relative;
-  bottom: 20px;
+  top: -3px;
   width: 1000px;
   margin: 0px auto;
   text-align: center;
@@ -267,5 +283,7 @@ onMounted(() => {
   width: 85%;
   height: 210px;
   margin: 15px auto;
+  border: $borderStyle;
+  border-radius: 5px;
 }
 </style>
