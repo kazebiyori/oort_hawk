@@ -35,7 +35,7 @@ let dataList = Mock.mock({
 });
 
 let dataStatistics = Mock.mock({
-  "array|1000": [[/202[0-2]-0[0-9]-0[0-9]/, /[1-9]/]],
+  "array|1000": [[/202[0-2]-0[1-9]-0[0-9]/, /[1-9]/]],
 });
 
 let dataStatistics_bk = Mock.mock([

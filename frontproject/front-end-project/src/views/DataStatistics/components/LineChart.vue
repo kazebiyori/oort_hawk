@@ -27,9 +27,12 @@ const endDate = computed(() => props.endDate)
 // 图表配置信息-初始化
 const chartConfigInit = {
   tooltip: {
-    trigger: 'axis',
+    trigger: 'item',
     position: function (pt) {
       return [pt[0], '20%'];
+    },
+    formatter: (param) => {
+      return `日期：　　${param.value[0]}<br>工作时间：${param.value[1]}小时`
     }
   },
   xAxis: {

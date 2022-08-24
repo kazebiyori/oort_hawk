@@ -1,9 +1,9 @@
 import { createApp } from "vue";
 import { store } from "@/store/index.js";
 
-import App from "@/App.vue";
+import App from "@/components/Login.vue";
 import router from "@/router/index.js";
-// 
+//
 
 // 使用viewUIPlus
 import ViewUIPlus from "view-ui-plus";

@@ -1,14 +1,10 @@
 <template>
-  <div>
+  <router-view name="Authentication"></router-view>
+
+  <div v-show="$route.fullPath != '/login' && $route.fullPath != '/register'">
     <navbar />
     <mainview />
   </div>
-
-  <!-- <div>
-    <NavbarLayout></NavbarLayout>
-    <MainviewLayout></MainviewLayout>
-  </div> -->
-
 </template>
 
 <script>
@@ -25,7 +21,7 @@ export default {
   },
   // 刷新页面，自动跳转到起始页面
   beforeCreate() {
-    this.$router.push('/datadisplay')
+    this.$router.push('/')
   },
 }
 </script>
