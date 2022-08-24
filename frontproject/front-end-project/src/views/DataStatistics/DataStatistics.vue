@@ -31,17 +31,19 @@
 
         <div class="select-container">
 
-          <Tooltip placement="bottom-start" :delay="500" theme="light" transfer="true">
+
+          <Poptip placement="bottom-start" width="300" trigger="hover" title="数据详情">
             <label sytle="cursor: pointer;">飞机编号：</label>
             <template #content>
-              <p>                                          </p>
+              <!-- <p>                                          </p> -->
               <Table border :columns="columns" :data="data" width="500px"></Table>
             </template>
-          </Tooltip>
-
-          <Select v-model="selectItem" style="width: 120px" default-label="路径">
+          </Poptip>
+          <Select v-model="selectItem" style="width: 120px;z-index: 10" default-label="路径">
             <Option v-for="item in selectList" :value="item" :key="item">{{ item }}</Option>
           </Select>
+
+
         </div>
       </div>
 
@@ -226,6 +228,7 @@ let info = ref([
   width: calc(100% - $dataDisplayTopLeftWidth);
   height: $dataDisplayTopHeight;
   overflow: auto;
+  z-index: 100;
 
 }
 

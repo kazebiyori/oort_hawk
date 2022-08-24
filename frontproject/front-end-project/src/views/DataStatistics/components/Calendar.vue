@@ -1,21 +1,37 @@
 <template>
-  <div ref="chart" id="chart"></div>
 
-  <div class="date-picker">
-    <el-button style="float:left" @click="currentYear = parseInt(currentYear) - 1 + ''">上年</el-button>
-    <label>日期选择：</label>
-    <DatePicker v-model="startDate" format="yyyy-MM-dd" type="date" placeholder="选择起始日期" style="width: 150px" />
-    ~
-    <DatePicker v-model="endDate" format="yyyy-MM-dd" type="date" placeholder="选择终止日期" style="width: 150px" />
-    <el-button style="float:right" @click="currentYear = parseInt(currentYear) + 1 + ''">下年</el-button>
+  <div>
+    <div class="chart-container ivu-carousel">
+      <div ref="chart" id="chart">
+      </div>
+      <button type="button" class="ivu-carousel-arrow ivu-carousel-arrow-hover right"
+        @click="currentYear = parseInt(currentYear) + 1 + ''"><i
+          class="ivu-icon ivu-icon-ios-arrow-forward"></i></button>
+
+      <button type="button" class="ivu-carousel-arrow ivu-carousel-arrow-hover left"
+        @click="currentYear = parseInt(currentYear) - 1 + ''"><i class="ivu-icon ivu-icon-ios-arrow-back"></i></button>
+    </div>
+
+    <div class="date-picker">
+      <!-- <el-button style="float:left" @click="currentYear = parseInt(currentYear) - 1 + ''">上年</el-button> -->
+      <label>日期选择：</label>
+      <DatePicker v-model="startDate" format="yyyy-MM-dd" type="date" placeholder="选择起始日期" style="width: 150px"
+        transfer='true' />
+      ~
+      <DatePicker v-model="endDate" format="yyyy-MM-dd" type="date" placeholder="选择终止日期" style="width: 150px"
+        transfer='true' />
+      <!-- <el-button style="float:right" @click="currentYear = parseInt(currentYear) + 1 + ''">下年</el-button> -->
+    </div>
   </div>
-
 </template>
 
 <script setup>
 import moment from "moment";
 import { getDaysBetween } from '@/utils/date'
 import { ref, onMounted, inject, watch } from 'vue';
+import { useWindowScroll } from "@vueuse/core";
+import { EleResize } from '@/utils/esresize'// 图表自适应
+
 
 // 图表默认字体
 const defaultFont = "'Open Sans Condensed', sans-serif";
@@ -219,21 +235,36 @@ onMounted(() => {
       endDate.value = selectDate
     }
   })
+
+  var listener = function () {
+    myChart.resize()
+  }
+  EleResize.on(chart.value, listener)
 })
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/styles/variables.scss';
+
+:deep(.ivu-carousel-arrow.left) {
+  left: 45px;
+}
+
+:deep(.ivu-carousel-arrow.right) {
+  right: 45px;
+}
+
 .date-picker {
   position: relative;
-  top: -12px;
+  bottom: 20px;
   width: 1000px;
   margin: 0px auto;
   text-align: center;
 }
 
 #chart {
-  width: 80%;
+  width: 85%;
   height: 210px;
   margin: 15px auto;
 }

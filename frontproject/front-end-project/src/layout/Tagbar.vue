@@ -110,6 +110,13 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
+
+// 修改element-ui默认样式
+:deep(.el-tabs__item .is-icon-close) {
+  position: relative;
+  top: 2px;
+}
+
 :deep(.el-tabs__new-tab) {
   height: 0px;
   width: 0px;

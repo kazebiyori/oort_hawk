@@ -3,14 +3,9 @@
   <div class="container">
     <div class="left">
       <div class="left-top">
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
-        <Item></Item>
+        <template v-for="itemData in itemDatas">
+          <Item :itemData="itemData"></Item>
+        </template>
       </div>
       <div class="left-bottom">
         <div class="chart" ref="chart"></div>
@@ -30,7 +25,6 @@
         <TagSelectOption name="tag1">地勤</TagSelectOption>
         <TagSelectOption name="tag2">技术</TagSelectOption>
         <TagSelectOption name="tag3">计算</TagSelectOption>
-
       </TagSelect>
       <br>
       <!-- <Row justify="start" class="code-row-bg">
@@ -74,7 +68,7 @@
         <TagSelectOption name="tag3">警告</TagSelectOption>
 
       </TagSelect>
-      <Button @click="handleUnCheckAll" style="float:right" type="primary">取消筛选</Button>
+      <Button @click="handleUnCheckAll" style="float:right;width:90px;text-align: center" type="primary">取消筛选</Button>
 
       <Tabs value="name1" class="criterionTable">
         <TabPane label="飞机1" name="name1">
@@ -158,6 +152,36 @@ onMounted(() => {
   };
 })
 
+// 左上角列表数据
+let itemDatas = ref([
+  {
+    label: '数据1',
+    name: 'GS型飞机',
+    number: '1234',
+    numberEngine: '123',
+    typeEngine: '999',
+    typeTrial: '启动',
+    dateTrial: '2021.09.01'
+  },
+  {
+    label: '数据2',
+    name: 'GS型飞机',
+    number: '1234',
+    numberEngine: '1323',
+    typeEngine: '9399',
+    typeTrial: '启动',
+    dateTrial: '2021.09.01'
+  },
+  {
+    label: '数据1',
+    name: 'GS型飞机',
+    number: '1234',
+    numberEngine: '1123',
+    typeEngine: '999',
+    typeTrial: '启动',
+    dateTrial: '2021.09.01'
+  }
+])
 
 //  右下角判据表格
 const columns = [
@@ -264,7 +288,7 @@ const data = [
 }
 
 .criterionTable {
-  margin-top: 30px;
+  margin-top: 32px;
   //]border: $borderStyle;
 }
 

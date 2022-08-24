@@ -1,31 +1,44 @@
 <template>
   <div class="item">
     <div class="left">
-      <label>数据一</label>
+      <label>{{ itemData.label }}</label>
       <br>
       <img src="@/assets/plane.svg" alt="飞机">
     </div>
 
     <div class="right">
-      <label style="color:#5191EB;font-size:x-large">GS型飞机</label> <label>编号：<l style="color:#5191EB;">2222</l>
+      <label style="color:#5191EB;font-size:x-large">{{ itemData.name }}</label> <label>编号：<l style="color:#5191EB;">
+          {{ itemData.number }}</l>
       </label>
-      <p>
-        发动机型号：999    发动机编号：001
-        <br>
-        试飞类型：<span style="color:red">启动</span>    试飞时间：2021.09.06
-      </p>
+
+      <Row justify="start">
+        <Col span="10">发动机型号：{{ itemData.typeEngine }}</Col>
+        <Col span="14">发动机编号：{{ itemData.numberEngine }}</Col>
+      </Row>
+      <Row justify="start">
+        <Col span="10"><span>试飞类型：</span><span :style="{ 'color': itemData.typeTrial == '启动' ? 'red' : '' }">{{
+            itemData.typeTrial
+        }}</span></Col>
+        <Col span="14">试飞时间：{{ itemData.dateTrial }}</Col>
+      </Row>
 
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'DataCriterionItem'
-}
+<script setup>
+import { ref, onMounted, inject, watch, defineProps, computed } from 'vue';
+
+const props = defineProps(['itemData'])
+
 </script>
 
+
 <style lang="scss" scoped>
+.red {
+  color: red
+}
+
 img {
   width: 40px;
   position: relative;
@@ -61,9 +74,5 @@ img {
 
 :deep(p) {
   margin: 5px;
-}
-
-span {
-  color: red;
 }
 </style>

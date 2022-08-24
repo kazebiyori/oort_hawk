@@ -194,7 +194,7 @@ export default {
 
   span {
     position: relative;
-    margin-left: 10px;
+    margin-left: 30px;
     line-height: $navbarHeight;
   }
 }
