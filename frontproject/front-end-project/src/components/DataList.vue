@@ -43,7 +43,8 @@ export default {
     ])
   },
   created() {
-    this.initDataList()
+    // 初始化数据栏
+    // this.initDataList()
   }
 }
 </script>

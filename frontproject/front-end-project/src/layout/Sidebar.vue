@@ -140,7 +140,7 @@ export default {
 }
 
 .sidebar-active {
-  //border: $borderStyle;
+  border: $borderStyle;
 
 
   width: $sidebarActiveWidth;

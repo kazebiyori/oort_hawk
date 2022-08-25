@@ -4,7 +4,7 @@ import { store } from "@/store/index.js";
 import App from "@/App.vue";
 import router from "@/router/index.js";
 
-import "@/mock/index.js";
+// import "@/mock/index.js";
 
 // 使用echarts
 import * as echarts from "echarts";
