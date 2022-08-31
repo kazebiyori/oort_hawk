@@ -10,6 +10,7 @@
 <script>
 
 import { Navbar, Sidebar, Tagbar, Mainview } from '@/layout/index.js'
+import socket from "@/utils/websocket.js"
 // import { NavbarLayout, MainviewLayout } from '@/layout/index.js'
 
 
@@ -23,6 +24,10 @@ export default {
   beforeCreate() {
     this.$router.push('/')
   },
+  mounted() {
+    // socket.send("onMounted");
+    // console.log("sendMseeageSucess");
+  }
 }
 </script>
 

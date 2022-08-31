@@ -1,12 +1,14 @@
 import request from "@/utils/request";
-import FormData from "form-data";
+
+// 返回数据格式
+// {code:integer(0:error, 1:success), msg:string||null, data:object}
 
 /**
  * 登陆
  * @param {userName:string, userPassword:string} data
  * @returns
  */
-export const login = (data) => {
+const login = (data) => {
   return request({
     url: "/user/login",
     method: "post",
@@ -18,7 +20,7 @@ export const login = (data) => {
  * 登出
  * @returns
  */
-export const logout = () => {
+const logout = () => {
   return request({
     url: "/user/logout",
     method: "post",
@@ -30,7 +32,7 @@ export const logout = () => {
  * @param {userName:string, userPassword:string} data
  * @returns
  */
-export const register = (data) => {
+const register = (data) => {
   return request({
     url: "/user",
     method: "post",
@@ -43,7 +45,7 @@ export const register = (data) => {
  * @param {id:number} data
  * @returns
  */
-export const query = (data) => {
+const query = (data) => {
   return request({
     url: `/user/${data.id}`,
     method: "get",
@@ -52,11 +54,14 @@ export const query = (data) => {
 
 /**
  * 更新
+ * @param {id:string, userName, userPassword, intro, emial, phone} data
+ * @returns
  */
-export const update = () => {
+const update = (data) => {
   return request({
     url: "/user",
     method: "put",
+    data: data,
   });
 };
 
@@ -65,9 +70,48 @@ export const update = () => {
  * @param {id:number} data
  * @returns
  */
-export const del = (data) => {
+const del = (data) => {
   return request({
     url: `/user/${data.id}`,
     method: "delete",
   });
+};
+
+/**
+ * 设置头像
+ * let pic = new FormData();
+ * pic.append("file", fs.createReadStream("filepath"));
+ * @param {pic:FormData} data
+ * @returns
+ */
+const setAvatar = (data) => {
+  return request({
+    url: "/user/setDefaultAvatar",
+    method: "post",
+    data: data,
+  });
+};
+
+/**
+ * 请求头像
+ * @param {id:number} data
+ * @returns
+ */
+const getAvatar = (data) => {
+  return request({
+    url: `/user/avatar${data.id}`,
+    method: "get",
+    data: data,
+  });
+};
+
+export default {
+  login,
+  logout,
+  register,
+  query,
+  update,
+  del,
+  setAvatar,
+  getAvatar,
 };

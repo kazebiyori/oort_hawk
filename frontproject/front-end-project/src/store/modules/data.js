@@ -1,4 +1,4 @@
-import { fetchData } from "@/api/index.js";
+// import { fetchData } from "@/api/index.js";
 
 const state = {
   dataList: [],
@@ -18,8 +18,8 @@ const mutations = {
 
 const actions = {
   async initDataList({ commit, state }) {
-    let data = await fetchData();
-    state.dataList = data.data.data;
+    // let data = await fetchData();
+    // state.dataList = data.data.data;
   },
 };
 

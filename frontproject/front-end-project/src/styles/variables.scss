@@ -17,7 +17,7 @@ $mainbottomHeight: calc(100vh - $navbarHeight - $maintopHeight);
 $mainWithSideWidth: calc(100vw - $sidebarFixedWidth - $sidebarActiveWidth);
 $mainWithoutSideWidth: calc(100vw - $sidebarFixedWidth);
 
-// 主页面尺寸
+
 // 「数据展示」高度、
 $dataDisplayHeight: calc($sidebarHeight - $maintopHeight);
 // 「数据展示」高度、-->数据分析页面
@@ -26,7 +26,7 @@ $dataDisplayHeight: calc($sidebarHeight - $maintopHeight);
 $dataDisplayTopHeight: 280px;
 $dataDisplayBottomHeight: calc($dataDisplayHeight - $dataDisplayTopHeight);
 
-$dataDisplayTopLeftWidth: 400px;
+$dataDisplayTopLeftWidth: 20%;
 
 $dataDisplayTopRight: calc($dataDisplayHeight - $dataDisplayTopHeight);
 //
@@ -44,7 +44,7 @@ $datadispalyleftbodypictureWidth: calc($mainWithSideWidth - $datadispalyslectorW
 
 
 // 动画
-$animationTime: 0.1s;
+$animationTime: 0s;
 
 // 颜色
 $iconSelected: #dddfe6;

@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user.js'
+import apiUser from '@/api/user.js'
 export default {
   data() {
     return {
@@ -31,7 +31,7 @@ export default {
     // root+1234
     handleSubmit(valid, { username, password }) {
       if (valid) {
-        login({ userName: username, userPassword: password })
+        apiUser.login({ userName: username, userPassword: password })
           .then((data) => {
             this.$router.push('/datadisplay')
           })
