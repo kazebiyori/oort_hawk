@@ -4,8 +4,7 @@
 
 <script setup>
 import { ref, onMounted, inject, watch, defineProps, computed } from 'vue';
-// import { fetchDataStatistics } from '@/api/DataStatistics'
-import paramApi from '@/api/param'
+import apiParam from '@/api/param'
 import { filterDate } from '@/utils/date'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 
@@ -99,9 +98,9 @@ onMounted(() => {
     chartConfigInit
   )
 
-  paramApi.getDataBySingle({ id: '0', key: 'p1' }).then((res) => {
-    console.log(res);
-  })
+  // api.getDataBySingle({ id: '0', key: 'p1' }).then((res) => {
+  //   console.log(res);
+  // })
 
   // fetchDataStatistics().then((data) => {
   //   chartData.value = data.data.array

@@ -8,7 +8,10 @@ import request from "@/utils/request";
 const getInfoByPage = (data) => {
   return request({
     url: `/dataInfo/page/${data.page}/${data.pageSize}`,
-    method: "get",
+    method: "post",
+    data: {
+      rawFileName: "txt",
+    },
   });
 };
 

@@ -4,7 +4,7 @@
       <div class="top-left">
         <Tabs>
           <TabPane label="飞机">
-            <Carousel v-model="selectListID" scroll>
+            <Carousel v-model="idSelectedList" scroll>
               <CarouselItem>
                 <img src="@/assets/img/像素-街角.png" alt="街角">
               </CarouselItem>
@@ -18,7 +18,7 @@
           </TabPane>
 
           <TabPane label="发动机">
-            <Carousel v-model="selectListID2" scroll>
+            <Carousel v-model="idSelectedList2" scroll>
               <CarouselItem>
                 <img src="@/assets/img/像素-街角.png" alt="街角">
               </CarouselItem>
@@ -36,10 +36,10 @@
             <label sytle="cursor: pointer;">飞机编号：</label>
             <template #content>
               <!-- <p>                                          </p> -->
-              <Table border :columns="columns" :data="data" width="500px"></Table>
+              <Table border :columns="columnsInfo" :data="dataInfo" width="500px"></Table>
             </template>
           </Poptip>
-          <Select v-model="selectItem" style="width: 120px;z-index: 10" default-label="路径">
+          <Select v-model="itemSelectPlane" style="width: 120px;z-index: 10" default-label="路径">
             <Option v-for="item in selectList" :value="item" :key="item">{{ item }}</Option>
           </Select>
 
@@ -76,14 +76,18 @@
 </template>
 
 <script setup>
-
+import { ref, computed, watch, onMounted } from 'vue';
 import Calendar from './components/Calendar.vue';
 import LineChart from './components/LineChart.vue';
 import { getFormatDay } from '@/utils/date';
+import apiParam from '@/api/param';
 
-import { ref, computed, watch } from 'vue';
+onMounted(() => {
+  getInfo();
+})
 
-// 数据统计起止时间
+// ----------------------  日历-右上角  ----------------------------
+// 数据统计 起止时间
 let startDate = ref('')
 let endDate = ref('')
 watch(startDate, (newVal) => {
@@ -94,8 +98,11 @@ function dayChange(payload) {
   endDate.value = getFormatDay(payload[1])
 }
 
+
+
+// ----------------------  轮播图-左上角  ----------------------------
 // 鼠标悬停，显示缩略信息
-const columns = ref([
+const columnsInfo = ref([
   {
     title: '参数',
     key: 'param'
@@ -105,7 +112,7 @@ const columns = ref([
     key: 'value'
   }
 ])
-const data = ref([
+const dataInfo = ref([
   {
     param: '飞机编号',
     value: 1
@@ -116,22 +123,35 @@ const data = ref([
     param: 'xxx',
     value: 'xxx'
   },
-
 ])
 
-// 轮播图信息
-let selectListID = ref(0)
-let selectListID2 = ref(0)
-let selectLists = ref([['路径', '路灯', '草坪'], ['夕阳', '背影'], ['海', '自行车', '红蓝']])
+// 轮播图 标签页（飞机） 列表序号
+let idSelectedList = ref(0)
+// 轮播图 标签页（发动机） 列表序号
+let idSelectedList2 = ref(0)
 
-const selectItem = ref('init')
+// 轮播图 选项列表 全部内容
+let listsPlaneNumber = ref([['路径', '路灯', '草坪'], ['夕阳', '背影'], ['海', '自行车', '红蓝']])
+let listsEngineNumber = ref([]);
 
+// 轮播图 选项列表 选择项
+const itemSelectPlane = ref('init')
+
+// 轮播图 选项列表 显示内容
 let selectList = computed(() => {
-  return selectLists.value[selectListID.value]
+  return listsPlaneNumber.value[idSelectedList.value]
 })
 
-// 统计信息-左下角
+// 初始化 数据请求
+function getInfo() {
+  apiParam.getInfoByPage({ page: "1", pageSize: "10" }).then((res) => {
+    console.log('success', res);
+  }).catch((err) => {
+    console.log('err', err);
+  })
+}
 
+// ----------------------  统计信息-左下角  ----------------------------
 import planeSvg from "@/assets/plane.svg"
 let info = ref([
   { name: '飞机类型', iconPath: planeSvg, info: 1111 },

@@ -82,8 +82,9 @@ watch(currentYear, (newYear) => {
 
 // 监听起止日期
 watch([startDate, endDate], ([newStartDate, newEndDate]) => {
-  selectDays = getDaysBetween(newStartDate, newEndDate, 50)
-  chartConfigSelected.series[1].data = selectDays
+  // selectDays = getDaysBetween(newStartDate, newEndDate, 50)
+  // chartConfigSelected.series[1].data = selectDays
+  chartConfigSelected.series[1].data = [[newStartDate, 50], [newEndDate, 50]]
   myChart.setOption(chartConfigSelected)
   dayChange()
 })
