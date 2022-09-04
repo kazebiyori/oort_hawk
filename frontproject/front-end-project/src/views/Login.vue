@@ -1,30 +1,34 @@
 <template>
-  <div class="wrapper">
-    <h1>飞参数据处理系统登录</h1>
-    <div class="inputBox">
-      <input type="text" required="required">
-      <span>用户名</span>
-      <i></i>
-    </div>
-    <div class="inputBox">
-      <input type="password" required="required">
-      <span>密码</span>
-      <i></i>
-    </div>
-    <div class="functionBox">
-      <div>
-        <input id="checkbox" type="checkbox">
-        <label for="checkbox">自动登录</label>
+  <div class="root">
+    <div class="wrapper">
+      <h1 style="visibility: hidden;">placeholder</h1>
+      <h2 style="visibility: hidden;">placeholder</h2>
+
+      <div class="inputBox">
+        <input type="text" required="required">
+        <span>用户名</span>
+        <i></i>
       </div>
-      <div>
-        <a href="#">注册</a>
+      <div class="inputBox">
+        <input type="password" required="required">
+        <span>密码</span>
+        <i></i>
       </div>
-    </div>
-    <div class="btn">
-      <button>登录</button>
+      <div class="function-box">
+        <div>
+          <input id="checkbox" type="checkbox">
+          <label for="checkbox">自动登录</label>
+        </div>
+        <div><a href="#">注册</a></div>
+      </div>
+      <div class="circle"> </div>
+      <div class="title">系统登陆</div>
     </div>
 
+
   </div>
+
+
 
 </template>
 
@@ -59,81 +63,124 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  color: #E4E1DB;
-  background-color: linear-gradient(90deg, #ff1b69, #ff0, #2196f3, #9c27b0, #ff1b69);
-  animation: animate 2s linear infinite;
+* {
+  user-select: none;
 }
 
-.btn button {
-  cursor: pointer;
-  border: none;
-  width: 250px;
-  height: 35px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.6);
-  font-weight: bolder;
-  font-size: medium;
-  letter-spacing: 0.1em;
+.title {
+  letter-spacing: 1rem;
+  color: transparent;
+  position: relative;
+  bottom: 28rem;
+  font-size: xx-large;
 
+  color: #E4E1DB;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-    outline: 3px solid rgba(255, 255, 255, 0.3);
-    transition: 100ms;
+  background: linear-gradient(90deg, #ff1b69, #ff0, #2196f3, #9c27b0, #ff1b69);
+  animation: animates 2s linear infinite;
+  transition: 0.4s;
+
+  @keyframes animates {
+    0% {
+      background-position-x: 0;
+    }
+
+    100% {
+      background-position-x: 192px;
+    }
   }
 
-  &:active {
-    background-color: rgba(255, 255, 255, 0.9);
-  }
+  -webkit-background-clip: text;
 }
 
-
-.functionBox {
-  color: #E4E1DB;
+.circle {
+  position: relative;
+  top: 2rem;
   display: flex;
-  justify-content: space-between;
-  width: 250px;
+  justify-content: center;
+  align-items: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #fff;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    background: #222;
+    backdrop-filter: blur(15px);
+  }
 }
 
-.functionBox input {
-  position: relative;
-  top: 2px;
-  margin-right: 2px;
+.circle:hover {
   cursor: pointer;
+  background-image: linear-gradient(0deg,
+      #ff1b69, #ff0 25%, #2196f3 50%, #9c27b0 75%, #ff1b69 100%);
+  animation: rotate 1s linear infinite;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-image: linear-gradient(0deg,
+        #ff1b69, #ff0 25%, #2196f3 50%, #9c27b0 75%, #ff1b69 100%);
+    filter: blur(10px);
+  }
+
+  &~.title {
+    color: transparent;
+    // text-shadow: 0 0 5px #2196f3, 0 0 15px #ff1b69, 0 0 10px #ff0, 0 0 20px #9c27b0;
+    // text-shadow: 0 0 10px #2196f3;
+  }
 }
 
-.functionBox label {
-  color: rgba(255, 255, 255, 0.5);
-
-  position: relative;
-  vertical-align: top;
-  transition: color 0.3s;
-  cursor: pointer;
-  font-weight: normal;
+span {
+  position: absolute;
+  color: #fff;
 }
 
-.functionBox a {
-  color: rgba(255, 255, 255, 0.5);
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.functionBox a:hover {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.functionBox a:active {
-  color: rgba(255, 255, 255, 0.9);
+.root {
+  background-color: #222;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/eye.png");
+  background-size: cover;
 }
 
 .wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 30vh;
   flex-direction: column;
-  gap: 30px;
-  background: #222;
+  gap: 50px;
+
+  margin: auto;
+  width: 400px;
+
+  border-radius: 12px;
+  // background-color: rgba(255, 255, 255, .2);
+  backdrop-filter: blur(100px);
+  box-shadow: 0 0 2px #fff;
 }
+
 
 .inputBox {
   position: relative;
@@ -155,16 +202,19 @@ h1 {
 .inputBox span {
   position: absolute;
   left: 0;
+  bottom: 0;
   padding: 6px 0 5px;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   pointer-events: none;
   letter-spacing: 0.1em;
   transition: 0.5s;
-  //font-size: 1rem;
+  // font-size: 1.5rem;
 
 }
 
+.inputBox input:hover~span,
+.inputBox input:hover~span,
 .inputBox input:valid~span,
 .inputBox input:focus~span {
   color: #2196f3;
@@ -206,5 +256,41 @@ h1 {
   100% {
     background-position-x: 250px;
   }
+}
+
+.function-box {
+  color: #E4E1DB;
+  display: flex;
+  justify-content: space-between;
+  width: 250px;
+}
+
+.function-box input {
+  position: relative;
+  top: 2px;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.function-box label {
+  color: rgba(255, 255, 255, 0.5);
+
+  position: relative;
+  vertical-align: top;
+  transition: color 0.3s;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.function-box a {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.function-box a:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.function-box a:active {
+  color: rgba(255, 255, 255, 0.9);
 }
 </style>
