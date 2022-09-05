@@ -219,139 +219,105 @@
           myChart.resize()
         }
         EleResize.on(this.$refs.bar, listener)
-  
         var option;
-  
-        // prettier-ignore
-        let timeData1 = [];
-  
-        let dataP1 = [];
-  
-        let dataP2 =[];
-        let dataP3 = [];
-        let dataP4 = [];
-        let dataP5 = [];
-        let dataP6 = [];
-        // timeData = timeData.map(function (str) {
-        //   return str.replace('2009/', '');
-        // });
+        var axisData= ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+
+var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
+{name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210]},
+{name: '联盟广告', data: [220, 182, 191, 234, 290, 330, 310]},
+{name: '视频广告', data: [150, 212, 201, 154, 190, 330, 410]},
+{ name: '搜索引擎', data: [820, 832, 901, 934, 1290, 1330, 1320] }];
+        var newData = [];
+        var serLineItem = function () {
+    return {
+        name: '',
+        type: 'line',
+        data: []
+    }
+}
+    var legendData = [];
+    for (var i = 0; i < seriesData.length; i++) {
+        var lineItem = new serLineItem();
+        lineItem.name = seriesData[i].name;
+        legendData.push(seriesData[i].name);
+        lineItem.data = seriesData[i].data;
+        newData.push(lineItem);
+    }
         option = {
-          title: {
-            text: '数据复放',
-            left: 'center'
-          },
-          tooltip: {
-            trigger: 'axis',
-            backgroundColor: 'rgba(231, 239, 255, 0.2)',
-            axisPointer: {
-              animation: false
-            }
-          },
-          toolbox: {
-            feature: {
-              dataZoom: {
-                yAxisIndex: 'none'
-              },
-              restore: {},
-              saveAsImage: {}
-            }
-          },
+        title: {
+          text: '数据复放',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(231, 239, 255, 0.2)',
           axisPointer: {
-            link: [
-              {
-                xAxisIndex: 'all'
-              }
-            ]
-          },
-          dataZoom: [
-            {
-              show: true,
-              realtime: true,
-              start: 0,
-              end: 100,
-              xAxisIndex: [0, 1]
+            animation: false
+          }
+        },
+        toolbox: {
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
             },
+            restore: {},
+            saveAsImage: {}
+          }
+        },
+        axisPointer: {
+          link: [
             {
-              type: 'inside',
-              realtime: true,
-              start: 30,
-              end: 70,
-              xAxisIndex: [0, 1]
-            }
-          ],
-          grid: [
-            {
-              left: 60,
-              right: 50,
-              height: '75%'
-            }
-          ],
-          xAxis: [
-            {
-              type: 'category',
-              boundaryGap: false,
-              axisLine: { onZero: true },
-              data: timeData1
-            }
-          ],
-          yAxis: [
-            {
-              name: 'value',
-              type: 'value'
-            }
-          ],
-          legend: {
-            data: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'],
-            top: 50,
-            right: 10,
-            orient: 'vertical',
-            backgroundColor: 'rgba(221, 228, 242, 0.2)'
-          },
-          series: [
-            {
-              name: 'p1',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP1
-            },
-            {
-              name: 'p2',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP2
-            },
-            {
-              name: 'p3',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP3
-            },
-            {
-              name: 'p4',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP4
-            },
-            {
-              name: 'p5',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP5
-            },
-            {
-              name: 'p6',
-              type: 'line',
-              showSymbol: false,
-              // prettier-ignore
-              data: dataP6
+              xAxisIndex: 'all'
             }
           ]
-        };
+        },
+        dataZoom: [
+          {
+            show: true,
+            realtime: true,
+            start: 0,
+            end: 100,
+            xAxisIndex: [0, 1]
+          },
+          {
+            type: 'inside',
+            realtime: true,
+            start: 30,
+            end: 70,
+            xAxisIndex: [0, 1]
+          }
+        ],
+        grid: [
+          {
+            left: 60,
+            right: 50,
+            height: '75%'
+          }
+        ],
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            axisLine: { onZero: true },
+            data: axisData
+          }
+        ],
+        yAxis: [
+          {
+            name: 'value',
+            type: 'value'
+          }
+        ],
+        legend: {
+          data: legendData,
+          top: 50,
+          right: 10,
+          orient: 'vertical',
+          backgroundColor: 'rgba(221, 228, 242, 0.2)'
+        },
+        series: newData
+      };
+
   
         option && myChart.setOption(option);
   
@@ -409,7 +375,7 @@
     float: right;
     width: 20%;
     position: relative;
-    height: 7.5rem;
+    height: 80vh;
     border-left-color: aqua;
     border-left-width: .025rem;
     border-left-style: solid;
@@ -419,7 +385,7 @@
     position: relative;
     float: right;
     width: 0rem;
-    height: 7.5rem;
+    height: 100%;
     border-left-color: aqua;
     border-left-width: .025rem;
     border-left-style: solid;
