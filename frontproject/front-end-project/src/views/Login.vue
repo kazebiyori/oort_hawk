@@ -5,59 +5,80 @@
       <h2 style="visibility: hidden;">placeholder</h2>
 
       <div class="inputBox">
-        <input type="text" required="required">
+        <input type="text" required="required" v-model="loginInfo.userName">
         <span>用户名</span>
         <i></i>
       </div>
       <div class="inputBox">
-        <input type="password" required="required">
+        <input type="password" required="required" v-model="loginInfo.userPassword">
         <span>密码</span>
         <i></i>
       </div>
       <div class="function-box">
         <div>
-          <input id="checkbox" type="checkbox">
+          <input id="checkbox" type="checkbox" v-model="autoLogin">
           <label for="checkbox">自动登录</label>
         </div>
         <div><a href="#">注册</a></div>
       </div>
-      <div class="circle"> </div>
+      <div class="circle" @click="handleLogin"> </div>
       <div class="title">系统登陆</div>
     </div>
-
-
   </div>
-
-
-
 </template>
 
 <script>
-import userAPI from '@/api/user.js'
+import userApi from '@/api/user.js'
 export default {
   data() {
     return {
-      autoLogin: true
+      autoLogin: "false",
+      loginInfo:{
+        userName: "",
+        userPassword: "",
+      }
     }
   },
   methods: {
     // root+1234
-    handleSubmit(valid, { username, password }) {
-      this.$router.push('/datadisplay')
+    handleLogin() {
+      userApi.login(this.loginInfo)
+      // userApi.login({userName:this.loginInfo.userName,userPassword:this.loginInfo.userPassword})
+        .then((res)=>{
+          this.$router.push('/datadisplay')
+        })
+        .catch((err)=>{
+          this.$Message.info(err.msg || err);
+        })
 
-      if (valid) {
-        userAPI.login({ userName: username, userPassword: password })
-          .then((data) => {
-            this.$router.push('/datadisplay')
-          })
-          .catch((err) => {
-            this.$Message.info(err.msg || err);
-            // ElMessage(err.msg || err)
-          })
-      } else {
-        this.$Message.info('请输入格式正确的用户名和密码');
-      }
+      // this.$router.push('/datadisplay')
+
+
+      // if (valid) {
+      //   userAPI.login({ userName: username, userPassword: password })
+      //     .then((data) => {
+      //       this.$router.push('/datadisplay')
+      //     })
+      //     .catch((err) => {
+      //       this.$Message.info(err.msg || err);
+      //       // ElMessage(err.msg || err)
+      //     })
+      // } else {
+      //   this.$Message.info('请输入格式正确的用户名和密码');
+      // }
     }
+  },
+  watch: {
+    autoLogin: {
+      handler(newVal){
+        localStorage.setItem("autoLogin", ""+newVal);
+      },
+    }
+  },
+  mounted(){
+    let tmp = localStorage.getItem("autoLogin");
+    if(!tmp){ localStorage.setItem("autoLogin","false"); tmp="false"}
+    this.autoLogin = eval(tmp.toLowerCase());
   }
 }
 </script>
@@ -113,6 +134,7 @@ export default {
     background: #222;
     backdrop-filter: blur(15px);
   }
+
 }
 
 .circle:hover {
@@ -177,8 +199,8 @@ span {
 
   border-radius: 12px;
   // background-color: rgba(255, 255, 255, .2);
-  backdrop-filter: blur(100px);
-  box-shadow: 0 0 2px #fff;
+  backdrop-filter: blur(70px);
+  box-shadow: 0 0 5px #fff;
 }
 
 

@@ -17,6 +17,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.6",
     "axios": "^0.27.2",
+    "darkreader": "^4.9.57",
     "echarts": "^5.3.3",
     "element-plus": "^2.2.12",
     "form-data": "^4.0.0",

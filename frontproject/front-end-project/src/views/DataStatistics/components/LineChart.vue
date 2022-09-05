@@ -19,10 +19,11 @@ let myChart = null
 
 
 // 从父组件获取时间信息
-const props = defineProps(['startDate', 'endDate'])
+const props = defineProps(['startDate', 'endDate', 'chartData'])
 
 const startDate = computed(() => props.startDate)
 const endDate = computed(() => props.endDate)
+const chartData =computed(() => props.chartData)
 
 // 图表配置信息-初始化
 const chartConfigInit = {
@@ -72,7 +73,7 @@ const chartConfigInit = {
   // ],
 }
 
-let chartData = ref([])
+// let chartData = ref([["2022-07-02",10],["2022-07-10",10],["2022-07-01",10]])
 
 
 let chartConfig = {
@@ -82,13 +83,15 @@ let chartConfig = {
   ]
 }
 
-watch([startDate, endDate], (newVal) => {
-  chartConfig.series = [{ data: filterDate(newVal[0], newVal[1], chartData.value) }]
+watch([startDate, endDate, chartData], (newVal) => {
+  if(!newVal[0] && !newVal[1]) {
+    chartConfig.series = [{ data: props.chartData}];
+    myChart.setOption(chartConfig)
+    return;
+  }
+  chartConfig.series = [{ data: filterDate(newVal[0], newVal[1], props.chartData)}];
   myChart.setOption(chartConfig)
 })
-
-
-
 
 // 初始化操作
 onMounted(() => {
@@ -97,6 +100,10 @@ onMounted(() => {
   myChart.setOption(
     chartConfigInit
   )
+
+  chartConfig.series = [{ data: props.chartData}];
+  myChart.setOption(chartConfig)
+
 
   // api.getDataBySingle({ id: '0', key: 'p1' }).then((res) => {
   //   console.log(res);
@@ -118,7 +125,6 @@ onMounted(() => {
     myChart.resize()
   }
   EleResize.on(chart.value, listener)
-
 })
 
 </script>

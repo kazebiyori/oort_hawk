@@ -742,6 +742,11 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.0.tgz"
   "version" "3.1.0"
 
+"darkreader@^4.9.57":
+  "integrity" "sha512-L9Dr69gTqHOUIPK6acsD6j+YvPR1yMyAryFlvuM+4DvYliney8xU+IsMClQQX0AmK09M+nBRAbsKsV6eoS//Og=="
+  "resolved" "https://mirrors.cloud.tencent.com/npm/darkreader/-/darkreader-4.9.57.tgz"
+  "version" "4.9.57"
+
 "dayjs@^1.11.0", "dayjs@^1.11.3":
   "integrity" "sha512-Zj/lPM5hOvQ1Bf7uAvewDaUcsJoI6JmNqmHhHl3nyumwe0XHwt8sWdOVAPACJzCebL8gQCi+K49w7iKWnGwX9g=="
   "resolved" "https://registry.npmjs.org/dayjs/-/dayjs-1.11.4.tgz"

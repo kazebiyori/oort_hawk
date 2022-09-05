@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <div class="chart-container ivu-carousel">
       <div ref="chart" id="chart">
@@ -7,7 +6,6 @@
       <button type="button" class="ivu-carousel-arrow ivu-carousel-arrow-hover right"
         @click="currentYear = parseInt(currentYear) + 1 + ''"><i
           class="ivu-icon ivu-icon-ios-arrow-forward"></i></button>
-
       <button type="button" class="ivu-carousel-arrow ivu-carousel-arrow-hover left"
         @click="currentYear = parseInt(currentYear) - 1 + ''"><i class="ivu-icon ivu-icon-ios-arrow-back"></i></button>
     </div>
@@ -28,7 +26,7 @@
 <script setup>
 import moment from "moment";
 import { getDaysBetween } from '@/utils/date'
-import { ref, onMounted, inject, watch } from 'vue';
+import { ref, onMounted, inject, watch, computed } from 'vue';
 import { useWindowScroll } from "@vueuse/core";
 import { EleResize } from '@/utils/esresize'
 
@@ -82,10 +80,13 @@ watch(currentYear, (newYear) => {
 
 // 监听起止日期
 watch([startDate, endDate], ([newStartDate, newEndDate]) => {
-  // selectDays = getDaysBetween(newStartDate, newEndDate, 50)
+  // selectDays = getDaysBetween(newStartDate, newEndDate, 30)
   // chartConfigSelected.series[1].data = selectDays
-  chartConfigSelected.series[1].data = [[newStartDate, 50], [newEndDate, 50]]
-  myChart.setOption(chartConfigSelected)
+  // myChart.setOption(chartConfigSelected)
+
+  chartConfigSelectedRange.series[1].data = [[newStartDate, 50], [newEndDate, 50]]
+  myChart.setOption(chartConfigSelectedRange)
+  
   dayChange()
 })
 
@@ -113,7 +114,7 @@ const chartConfigInit = {
   calendar: {
     // top: 'auto',
     splitLine: {
-      show: false,
+      show: true,
     },
 
     range: currentYear.value,
@@ -127,13 +128,15 @@ const chartConfigInit = {
     monthLabel: {
       nameMap: 'ZH',
       margin: 10,
+      color: "#fff"
       // fontWeight: 'lighter'
-
     },
     dayLabel: {
       nameMap: 'ZH',
       firstDay: 1,
-      fontStyle: 'normal',
+      color: "#fff"
+
+      // fontStyle: 'normal',
       // fontWeight: 'lighter'
     },
     itemStyle: {
@@ -159,6 +162,7 @@ const chartConfigInit = {
       seriesKey: 'calendar',
     },
   },
+
 }
 
 // 图表配置信息-高亮变化
@@ -180,19 +184,46 @@ let chartConfigSelected = {
     {
       type: 'scatter',
       itemStyle: {
-        opacity: 0.1,
+        opacity: 0.2,
       },
     },
     {
       type: 'effectScatter',
       coordinateSystem: 'calendar',
-      // symbolSize: Math.min((chart.getWidth() - 70) / 80, 16),
+      // symbolSize: Math.min((myChart.getWidth() - 70) / 80, 16),
       rippleEffect: {
         // brushType: 'stroke',
         scale: 0,
       },
       symbol: 'roundRect',
-      // color: 'red',
+      color: "green",
+
+      data: [],
+    },
+  ],
+}
+
+// 图表配置信息-高亮变化-闪烁
+let chartConfigSelectedRange = {
+  animation: false,
+  series: [
+    {
+      type: 'scatter',
+      itemStyle: {
+        // opacity: 0.2,
+      },
+    },
+    {
+      type: 'effectScatter',
+      coordinateSystem: 'calendar',
+      // symbolSize: Math.min((myChart.getWidth() - 70) / 80, 16),
+      rippleEffect: {
+        // brushType: 'stroke',
+        scale: 3,
+      },
+      // symbol: 'roundRect',
+      symbol: "circle",
+      color: "#6CD064",
 
       data: [],
     },
@@ -202,7 +233,7 @@ let chartConfigSelected = {
 // 初始化操作
 onMounted(() => {
   chart.value.focus()
-  myChart = echarts.init(chart.value)
+  myChart = echarts.init(chart.value,'dark')
   chartConfigInit.series.symbolSize = Math.min((myChart.getWidth() - 70) / 80, 16)
   myChart.setOption(
     chartConfigInit
@@ -241,7 +272,13 @@ onMounted(() => {
     const selectMoment = moment(selectDate)
     const endMoment = moment(endDate.value)
     const startMoment = moment(startDate.value)
-    if (selectMoment > endMoment) {
+    if(selectMoment == startMoment){
+      startDate.value=""
+    }
+    else if(selectMoment == endMoment){
+      endDate.value=""
+    }
+    else if (selectMoment > endMoment) {
       endDate.value = selectDate
     } else if (selectMoment < startMoment) {
       startDate.value = selectDate
@@ -284,7 +321,7 @@ onMounted(() => {
   width: 85%;
   height: 210px;
   margin: 15px auto;
-  border: $borderStyle;
-  border-radius: 5px;
+  // border: $borderStyle;
+  //  border-radius: 15%
 }
 </style>

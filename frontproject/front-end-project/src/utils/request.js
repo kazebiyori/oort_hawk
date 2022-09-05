@@ -2,6 +2,7 @@ import axios from "axios";
 
 const service = axios.create({
   baseURL: "http://43.138.82.31:8081",
+  // baseURL: "http://127.0.0.1:4523/m1/1485342-0-default", //本地mock测试
   timeout: 5000,
   withCredentials: true,
   // headers: {
