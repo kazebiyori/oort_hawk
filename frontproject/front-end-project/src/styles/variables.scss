@@ -1,11 +1,11 @@
 // 导航栏高度
 // $navbarHeight: .7375rem;
-$navbarHeight: 58px;
+$navbarHeight: 40px;
 
 // 侧边栏高度
 $sidebarHeight: calc(100vh - $navbarHeight);
 $sidebarOpContainerHeight: 30px;
-$sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - 30px);
+$sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - 40px);
 // 侧边栏宽度
 // $sidebarFixedWidth: .225rem;
 // $sidebarActiveWidth: 2.5rem;

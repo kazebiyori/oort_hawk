@@ -44,13 +44,18 @@
         </div>
       </div>
 
+      <!-- 日历组件 -->
       <div class="top-right">
         <Calendar @dayChange="dayChange" />
       </div>
-
     </div>
+
+
     <div class="bottom">
+
       <div class="bottom-left">
+        <!-- 卡片显示 -->
+
         <div class="wrapper-itmes">
           <template v-for="item in card">
             <Card class="card">
@@ -73,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, inject } from 'vue';
 import Calendar from './components/Calendar.vue';
 import LineChart from './components/LineChart.vue';
 import { getFormatDay } from '@/utils/date';
@@ -83,6 +88,9 @@ import dataInfoApi from '@/api/dataInfo';
 onMounted(() => {
   // getInfo();
 })
+
+const emitter = inject("$emitter")
+
 
 // ----------------------  线形图-右下角  ----------------------------
 let chartData = ref([])
@@ -168,66 +176,60 @@ let card = ref([
   { name: '试飞类型', iconPath: planeSvg, info: null },])
 
 // ----------------------  执行初始化mounted操作  ----------------------------
-onMounted(async()=>{
+onMounted(async () => {
   // 加载飞机类型
   await dataInfoApi.getPlaneType()
-    .then((res)=>{ 
-       listPlaneType.value =  res.data
-    }).catch((err)=>{
+    .then((res) => {
+      listPlaneType.value = res.data
+    }).catch((err) => {
       this.$Message.info(err.msg || err);
     })
 
   // 获取飞机类型对应编号
-  for(let i =0; i< listPlaneType.value.length; i++){
-    let res = await dataInfoApi.getPlaneNumber({planeModel: listPlaneType.value[i]})
+  for (let i = 0; i < listPlaneType.value.length; i++) {
+    let res = await dataInfoApi.getPlaneNumber({ planeModel: listPlaneType.value[i] })
     listPlaneNumber.value.push(res.data)
 
   }
-  // listPlaneType.value.forEach(async(item)=>{
-  //   await dataInfoApi.getPlaneNumber({planeModel: item})
-  //   .then((res)=>{ 
-  //      listPlaneNumber.value.push(res.data)
-  //   }).catch((err)=>{
-  //     console.log(err);
-  //     // this.$Message.info(err.msg || err);
-  //   })
-  // })
 })
 
-watch(itemSelectPlaneNumber, async(newVal)=>{
-  if(!newVal) return 
+watch(itemSelectPlaneNumber, async (newVal) => {
+
+  if (!newVal) return
+  emitter.emit("getNewStatistics", {})
+
+
   // 通过飞机类型和飞机编号 获取飞参数据信息
-  let {data: listId} = await dataInfoApi.getParamID({planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal})
+  let { data: listId } = await dataInfoApi.getParamID({ planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal })
   console.log(listId);
   let id = listId[0].id
-  
-  let {data} = await dataInfoApi.getParamInfoSingle({id:id})
+
+  let { data } = await dataInfoApi.getParamInfoSingle({ id: id })
 
   // 更新左下数据
-  card.value[0].info=data.planeModel
-  card.value[1].info=data.planeId
-  card.value[2].info=data.engine1Model + " " + data.engine2Model
-  card.value[3].info=data.engine1Id + " " + data.engine2Id
-  card.value[4].info=data.testTimeStart
-  card.value[5].info=data.testType
+  card.value[0].info = data.planeModel
+  card.value[1].info = data.planeId
+  card.value[2].info = data.engine1Model + " " + data.engine2Model
+  card.value[3].info = data.engine1Id + " " + data.engine2Id
+  card.value[4].info = data.testTimeStart
+  card.value[5].info = data.testType
 
   // 更新右下数据
-// let chartData = ref([["2022-07-02",10],["2022-07-10",10]])
 
-  dataInfoApi.getParamInfoList({planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal})
-    .then((res)=>{
+  dataInfoApi.getParamInfoList({ planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal })
+    .then((res) => {
       console.log(res);
-      let {data} = res
+      let { data } = res
       let tmp = [];
       data.forEach((item) => {
         tmp.push([item.testTimeStart.split(" ")[0], item.testDuration])
       })
-      
       chartData.value = tmp;
 
-      console.log(tmp);
+      emitter.emit("finishNewStatistics", {})
+
     })
-    .catch((err)=>{
+    .catch((err) => {
       console.log(err);
     })
 
@@ -238,6 +240,10 @@ watch(itemSelectPlaneNumber, async(newVal)=>{
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+
+:deep(ivu-card-body) {
+  padding: 0px;
+}
 
 .card {
   width: 180px;
@@ -253,7 +259,9 @@ watch(itemSelectPlaneNumber, async(newVal)=>{
   }
 
   & .right {
+
     display: block;
+    line-height: 1px;
     float: right;
     text-align: center;
     line-height: 42px;
@@ -340,7 +348,6 @@ watch(itemSelectPlaneNumber, async(newVal)=>{
 
   width: $dataDisplayTopLeftWidth;
   height: $dataDisplayBottomHeight;
-
 
   overflow: scroll;
 }

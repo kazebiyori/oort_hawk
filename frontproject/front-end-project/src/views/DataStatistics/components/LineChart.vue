@@ -17,13 +17,16 @@ const chart = ref(null)
 // 待初始化的日历对象
 let myChart = null
 
+const emitter = inject("$emitter")
+
+
 
 // 从父组件获取时间信息
 const props = defineProps(['startDate', 'endDate', 'chartData'])
 
 const startDate = computed(() => props.startDate)
 const endDate = computed(() => props.endDate)
-const chartData =computed(() => props.chartData)
+const chartData = computed(() => props.chartData)
 
 // 图表配置信息-初始化
 const chartConfigInit = {
@@ -84,12 +87,12 @@ let chartConfig = {
 }
 
 watch([startDate, endDate, chartData], (newVal) => {
-  if(!newVal[0] && !newVal[1]) {
-    chartConfig.series = [{ data: props.chartData}];
+  if (!newVal[0] && !newVal[1]) {
+    chartConfig.series = [{ data: props.chartData }];
     myChart.setOption(chartConfig)
     return;
   }
-  chartConfig.series = [{ data: filterDate(newVal[0], newVal[1], props.chartData)}];
+  chartConfig.series = [{ data: filterDate(newVal[0], newVal[1], props.chartData) }];
   myChart.setOption(chartConfig)
 })
 
@@ -101,7 +104,7 @@ onMounted(() => {
     chartConfigInit
   )
 
-  chartConfig.series = [{ data: props.chartData}];
+  chartConfig.series = [{ data: props.chartData }];
   myChart.setOption(chartConfig)
 
 
@@ -125,6 +128,12 @@ onMounted(() => {
     myChart.resize()
   }
   EleResize.on(chart.value, listener)
+
+  // 注册总线事件
+  emitter.on("getNewStatistics", () => {
+    myChart.showLoading("default", { text: "加载数据中..." });
+  })
+  emitter.on("finishNewStatistics", () => myChart.hideLoading())
 })
 
 </script>

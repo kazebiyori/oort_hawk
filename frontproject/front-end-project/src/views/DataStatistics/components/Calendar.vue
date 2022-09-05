@@ -36,6 +36,7 @@ const defaultFont = "'Open Sans Condensed', sans-serif";
 
 // 从根组件获取组件
 const echarts = inject('$echarts')
+const emitter = inject("$emitter")
 // 获取图表dom组件
 const chart = ref(null)
 // 待初始化的日历对象
@@ -86,7 +87,7 @@ watch([startDate, endDate], ([newStartDate, newEndDate]) => {
 
   chartConfigSelectedRange.series[1].data = [[newStartDate, 50], [newEndDate, 50]]
   myChart.setOption(chartConfigSelectedRange)
-  
+
   dayChange()
 })
 
@@ -224,7 +225,6 @@ let chartConfigSelectedRange = {
       // symbol: 'roundRect',
       symbol: "circle",
       color: "#6CD064",
-
       data: [],
     },
   ],
@@ -233,7 +233,7 @@ let chartConfigSelectedRange = {
 // 初始化操作
 onMounted(() => {
   chart.value.focus()
-  myChart = echarts.init(chart.value,'dark')
+  myChart = echarts.init(chart.value, 'dark')
   chartConfigInit.series.symbolSize = Math.min((myChart.getWidth() - 70) / 80, 16)
   myChart.setOption(
     chartConfigInit
@@ -272,11 +272,11 @@ onMounted(() => {
     const selectMoment = moment(selectDate)
     const endMoment = moment(endDate.value)
     const startMoment = moment(startDate.value)
-    if(selectMoment == startMoment){
-      startDate.value=""
+    if (selectMoment == startMoment) {
+      startDate.value = ""
     }
-    else if(selectMoment == endMoment){
-      endDate.value=""
+    else if (selectMoment == endMoment) {
+      endDate.value = ""
     }
     else if (selectMoment > endMoment) {
       endDate.value = selectDate
@@ -294,6 +294,15 @@ onMounted(() => {
     myChart.resize()
   }
   EleResize.on(chart.value, listener)
+
+  // 清除起止日期
+  emitter.on("getNewStatistics", () => {
+    startDate.value = ""
+    endDate.value = ""
+    currentYear.value = moment().format('YYYY')
+  })
+
+
 })
 
 </script>

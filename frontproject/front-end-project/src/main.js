@@ -24,6 +24,8 @@ import "@/styles/template/element-variables.scss";
 // 导入element图标资源
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
+import { emitter } from "@/utils/eventBus";
+
 // 创建vue app
 const app = createApp(App);
 
@@ -34,6 +36,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 // 注入echarts
 app.provide("$echarts", echarts);
+app.provide("$emitter", emitter);
 
 // 挂载路由
 app.use(router);
