@@ -1,17 +1,17 @@
 // 导航栏高度
-$navbarHeight: 59px;
+$navbarHeight: .7375rem;
 
 // 侧边栏高度
 $sidebarHeight: calc(100vh - $navbarHeight);
 $sidebarOpContainerHeight: 30px;
-$sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - 30px);
+$sidebarDatalistHeight: calc($sidebarHeight - $sidebarOpContainerHeight - .375rem);
 // 侧边栏宽度
-$sidebarFixedWidth: 18px;
-$sidebarActiveWidth: 200px;
-$sidebarFilterPanelWidth: 200px;
+$sidebarFixedWidth: .225rem;
+$sidebarActiveWidth: 2.5rem;
+$sidebarFilterPanelWidth: 2.5rem;
 
 // 主视图高度
-$maintopHeight: 39px;
+$maintopHeight: .4875rem;
 $mainbottomHeight: calc(100vh - $navbarHeight - $maintopHeight);
 // 主视区宽度
 $mainWithSideWidth: calc(100vw - $sidebarFixedWidth - $sidebarActiveWidth);
@@ -23,7 +23,7 @@ $dataDisplayHeight: calc($sidebarHeight - $maintopHeight);
 // 「数据展示」高度、-->数据分析页面
 // $dataDisplayHeight: calc(100vh - $maintopHeight - $navbarHeight);
 
-$dataDisplayTopHeight: 280px;
+$dataDisplayTopHeight: 3.5rem;
 $dataDisplayBottomHeight: calc($dataDisplayHeight - $dataDisplayTopHeight);
 
 $dataDisplayTopLeftWidth: 25%;
@@ -37,7 +37,7 @@ $datadispalyslectorWith: 20vw;
 //数据展示页绘图主体区高度
 $datadispalyleftbodyHeihgt: 70vh;
 //数据展示页绘图主体区曲线宽度
-$datadispalyleftbodypictureWidth: calc($mainWithSideWidth - $datadispalyslectorWith - 60px);
+$datadispalyleftbodypictureWidth: calc($mainWithSideWidth - $datadispalyslectorWith - .75rem);
 //----数据展示页面尺寸----------------------
 
 

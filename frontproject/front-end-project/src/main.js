@@ -8,6 +8,8 @@ import router from "@/router/index.js";
 
 // 使用echarts
 import * as echarts from "echarts";
+// 使用flexible
+import "lib-flexible/flexible.js";
 
 // 使用viewUIPlus
 import ViewUIPlus from "view-ui-plus";

@@ -160,7 +160,7 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("/eye.png");
+  background-image: url("/1.jpg");
   background-size: cover;
 }
 
@@ -176,7 +176,7 @@ span {
   width: 400px;
 
   border-radius: 12px;
-  // background-color: rgba(255, 255, 255, .2);
+  background-color: rgba(255, 255, 255, .2);
   backdrop-filter: blur(100px);
   box-shadow: 0 0 2px #fff;
 }
