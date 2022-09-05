@@ -182,7 +182,7 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("/eye.png");
+  background-image: url("/1.jpg");
   background-size: cover;
 }
 
@@ -198,9 +198,13 @@ span {
   width: 400px;
 
   border-radius: 12px;
-  // background-color: rgba(255, 255, 255, .2);
+  <<<<<<< HEAD // background-color: rgba(255, 255, 255, .2);
   backdrop-filter: blur(70px);
   box-shadow: 0 0 5px #fff;
+  =======background-color: rgba(255, 255, 255, .2);
+  backdrop-filter: blur(100px);
+  box-shadow: 0 0 2px #fff;
+  >>>>>>>8c1c626895af7d6982bb334a8c01ed2110345c02
 }
 
 
