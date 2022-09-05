@@ -12,13 +12,13 @@
 import { Navbar, Sidebar, Tagbar, Mainview } from '@/layout/index.js'
 // import socket from "@/utils/websocket.js"
 // import { NavbarLayout, MainviewLayout } from '@/layout/index.js'
-import {
-    enable as enableDarkMode,
-    disable as disableDarkMode,
-    auto as followSystemColorScheme,
-    exportGeneratedCSS as collectCSS,
-    setFetchMethod
-} from 'darkreader';
+// import {
+//     enable as enableDarkMode,
+//     disable as disableDarkMode,
+//     auto as followSystemColorScheme,
+//     exportGeneratedCSS as collectCSS,
+//     setFetchMethod
+// } from 'darkreader';
 
 
 export default {
@@ -32,12 +32,13 @@ export default {
     this.$router.push('/')
   },
   mounted() {
-    setFetchMethod(window.fetch);
-    enableDarkMode({
-      brightness: 100,
-      contrast: 90,
-      sepia: 10,
-    });
+    // setFetchMethod(window.fetch);
+    // enableDarkMode({
+    //   brightness: 100,
+    //   contrast: 90,
+    //   sepia: 10,
+    // });
+    
     // socket.send("onMounted");
     // console.log("sendMseeageSucess");
   }

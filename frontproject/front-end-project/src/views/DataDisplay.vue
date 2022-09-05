@@ -1,61 +1,61 @@
 <template>
-    <div class="div">
-      <div class="foldicon">
-        <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
-        <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
+  <div class="div">
+    <div class="foldicon">
+      <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
+      <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
+    </div>
+    <!-- 左边折线图 -->
+    <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
+      <div class="title">折线图展示
       </div>
-      <!-- 左边折线图 -->
-      <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
-        <div class="title">折线图展示
-        </div>
-  
-        <div class="picture" id="datadisplaypicture" ref="bar" :style="{ width: '100%', height: '100%' }">
-  
-        </div>
+
+      <div class="picture" id="datadisplaypicture" ref="bar" :style="{ width: '100%', height: '100%' }">
+
       </div>
-      <!-- 右边选择框 -->
-      <div class="selector">
-  
-  
-        <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
-          <div class="tips">
-            已选择7项，展示3项
-            <hr>
-          </div>
-          <div class="functionicon">
-            <img src="../assets/加.svg" alt="#">
-            <img src="../assets/多选框.svg" alt="#">
-            <img src="../assets/重做.svg" alt="#">
-            <img src="../assets/删除.svg" alt="#">
-          </div>
-          <div class="selectboard">
-            <div class="selectedlist">
-              <div class="demo-color-block">
-                <el-color-picker v-model="color1" />
-              </div>
-              <div class="dataselect">
-                <Select v-model="model" style="{width:1rem;height:0.5rem;font-size:0.2rem}" placeholder="数据A">
-                  <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-  
-              </div>
-              <div class="parameterselect">
-                <Cascader :data="data" v-model="value" placeholder="参数A" />
-              </div>
-  
-              <div class="eye">
-                <img src="../assets/看.svg" alt="#">
-              </div>
-              <div class="deleteself">
-                <img src="../assets/删除.svg" alt="#">
-              </div>
+    </div>
+    <!-- 右边选择框 -->
+    <div class="selector">
+
+
+      <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
+        <div class="tips">
+          已选择7项，展示3项
+          <hr>
+        </div>
+        <div class="functionicon">
+          <img src="../assets/加.svg" alt="#">
+          <img src="../assets/多选框.svg" alt="#">
+          <img src="../assets/重做.svg" alt="#">
+          <img src="../assets/删除.svg" alt="#">
+        </div>
+        <div class="selectboard">
+          <div class="selectedlist">
+            <div class="demo-color-block">
+              <el-color-picker v-model="color1" />
+            </div>
+            <div class="dataselect">
+              <Select v-model="model" style="{width:1rem;height:0.5rem;font-size:0.2rem}" placeholder="数据A">
+                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              </Select>
+
+            </div>
+            <div class="parameterselect">
+              <Cascader :data="data" v-model="value" placeholder="参数A" />
+            </div>
+
+            <div class="eye">
+              <img src="../assets/看.svg" alt="#">
+            </div>
+            <div class="deleteself">
+              <img src="../assets/删除.svg" alt="#">
             </div>
           </div>
         </div>
       </div>
-  
     </div>
-  </template>
+
+  </div>
+</template>
   
   <script>
   import { Datadisplay } from '.'
@@ -83,6 +83,14 @@
   // 用于监听父元素变化
   // import elementResizeDetectorMaker from "element-resize-detector"
   import { EleResize } from '@/utils/esresize'// 图表自适应
+
+  import {
+    enable as enableDarkMode,
+    disable as disableDarkMode,
+    auto as followSystemColorScheme,
+    exportGeneratedCSS as collectCSS,
+    setFetchMethod
+} from 'darkreader';
   
   // 注册必须的组件
   echarts.use([
@@ -190,6 +198,13 @@
       // 在通过mounted调用即可
       this.echartsInit(),
         document.getElementById('datadisplaypicture').setAttribute('_echarts_instance_', '');
+
+      setFetchMethod(window.fetch);
+        enableDarkMode({
+      brightness: 100,
+      contrast: 90,
+      sepia: 10,
+    });
     },
     methods: {
       ...mapMutations([
@@ -353,121 +368,125 @@
   
   <style lang="scss" scoped>
   @import '@/styles/variables.scss';
-  :deep(.ivu-cascader-rel){
+  
+  :deep(.ivu-cascader-rel) {
     width: 1rem;
     height: .375rem;
     font-size: .3rem;
   }
-  :deep(.ivu-select){
+  
+  :deep(.ivu-select) {
     width: 1rem;
     height: .375rem;
     font-size: .3rem;
   }
+  
   .leftboardWithselector {
-  float: left;
-  width: 80%;
-  height: 75vh;
-  position: relative;
-}
-
-.leftboardWithoutselector {
-  float: left;
-  width: 100%;
-  height: 75vh;
-  position: relative;
-}
-
-.title {
-  height: .25rem;
-  border-bottom-color: gray;
-  border-bottom-width: .025rem;
-  border-bottom-style: solid;
-  font-size: .25rem;
-  color: #000;
-  line-height: .0625rem;
-}
-
-.selector-open {
-  float: right;
-  width: 20%;
-  position: relative;
-  height: 7.5rem;
-  border-left-color: aqua;
-  border-left-width: .025rem;
-  border-left-style: solid;
-}
-
-.selector-close {
-  position: relative;
-  float: right;
-  width: 0rem;
-  height: 7.5rem;
-  border-left-color: aqua;
-  border-left-width: .025rem;
-  border-left-style: solid;
-  opacity: 0;
-}
-
-.selector .functionicon {
-  margin-left: calc($datadispalyslectorWith - 2rem);
-  margin-top: .125rem;
-}
-
-img {
-  width: .375rem;
-  height: .3125rem;
-}
-
-.foldicon {
-  margin-left: 95%;
-  margin-top: .125rem;
-  z-index: 1.25rem;
-
-  .left {
-    display: inline-block;
-
-    cursor: pointer;
-
-    &:hover {
-      background-color: $iconSelected;
-      border-radius: .0375rem;
-
-    }
-
-    .right {
+    float: left;
+    width: 80%;
+    height: 75vh;
+    position: relative;
+  }
+  
+  .leftboardWithoutselector {
+    float: left;
+    width: 100%;
+    height: 75vh;
+    position: relative;
+  }
+  
+  .title {
+    height: .25rem;
+    border-bottom-color: gray;
+    border-bottom-width: .025rem;
+    border-bottom-style: solid;
+    font-size: .25rem;
+    color: #000;
+    line-height: .0625rem;
+  }
+  
+  .selector-open {
+    float: right;
+    width: 20%;
+    position: relative;
+    height: 7.5rem;
+    border-left-color: aqua;
+    border-left-width: .025rem;
+    border-left-style: solid;
+  }
+  
+  .selector-close {
+    position: relative;
+    float: right;
+    width: 0rem;
+    height: 7.5rem;
+    border-left-color: aqua;
+    border-left-width: .025rem;
+    border-left-style: solid;
+    opacity: 0;
+  }
+  
+  .selector .functionicon {
+    margin-left: calc($datadispalyslectorWith - 2rem);
+    margin-top: .125rem;
+  }
+  
+  img {
+    width: .375rem;
+    height: .3125rem;
+  }
+  
+  .foldicon {
+    margin-left: 95%;
+    margin-top: .125rem;
+    z-index: 1.25rem;
+  
+    .left {
       display: inline-block;
+  
       cursor: pointer;
-
+  
       &:hover {
         background-color: $iconSelected;
         border-radius: .0375rem;
-
+  
+      }
+  
+      .right {
+        display: inline-block;
+        cursor: pointer;
+  
+        &:hover {
+          background-color: $iconSelected;
+          border-radius: .0375rem;
+  
+        }
       }
     }
   }
-}
-.tips{
-  font-size: .25rem;
-}
-.demo-color-block {
-  display: flex;
-  align-items: center;
-  margin-bottom: .2rem;
-}
-
-.selectboard {
-  margin-top: .25rem;
-}
-
-.selectboard .selectedlist {
-  margin-top: .125rem;
-}
-
-.selectboard .selectedlist div {
-  display: inline-block;
-  vertical-align: top;
-  margin-left: .05rem;
-}
   
+  .tips {
+    font-size: .25rem;
+  }
+  
+  .demo-color-block {
+    display: flex;
+    align-items: center;
+    margin-bottom: .2rem;
+  }
+  
+  .selectboard {
+    margin-top: .25rem;
+  }
+  
+  .selectboard .selectedlist {
+    margin-top: .125rem;
+  }
+  
+  .selectboard .selectedlist div {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: .05rem;
+  }
   </style>
   
