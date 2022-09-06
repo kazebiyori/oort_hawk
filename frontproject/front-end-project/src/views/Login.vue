@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       autoLogin: "false",
-      loginInfo:{
+      loginInfo: {
         userName: "",
         userPassword: "",
       }
@@ -43,11 +43,11 @@ export default {
     // root+1234
     handleLogin() {
       userApi.login(this.loginInfo)
-      // userApi.login({userName:this.loginInfo.userName,userPassword:this.loginInfo.userPassword})
-        .then((res)=>{
+        // userApi.login({userName:this.loginInfo.userName,userPassword:this.loginInfo.userPassword})
+        .then((res) => {
           this.$router.push('/datadisplay')
         })
-        .catch((err)=>{
+        .catch((err) => {
           this.$Message.info(err.msg || err);
         })
 
@@ -70,14 +70,14 @@ export default {
   },
   watch: {
     autoLogin: {
-      handler(newVal){
-        localStorage.setItem("autoLogin", ""+newVal);
+      handler(newVal) {
+        localStorage.setItem("autoLogin", "" + newVal);
       },
     }
   },
-  mounted(){
+  mounted() {
     let tmp = localStorage.getItem("autoLogin");
-    if(!tmp){ localStorage.setItem("autoLogin","false"); tmp="false"}
+    if (!tmp) { localStorage.setItem("autoLogin", "false"); tmp = "false" }
     this.autoLogin = eval(tmp.toLowerCase());
   }
 }
@@ -151,13 +151,13 @@ export default {
     border-radius: 50%;
     background-image: linear-gradient(0deg,
         #ff1b69, #ff0 25%, #2196f3 50%, #9c27b0 75%, #ff1b69 100%);
-    filter: blur(10px);
+    filter: blur(20px);
   }
 
   &~.title {
-    color: transparent;
-    // text-shadow: 0 0 5px #2196f3, 0 0 15px #ff1b69, 0 0 10px #ff0, 0 0 20px #9c27b0;
-    // text-shadow: 0 0 10px #2196f3;
+    // color: transparent;
+    text-shadow: 0 0 5px #2196f3, 0 0 15px #ff1b69, 0 0 10px #ff0, 0 0 20px #9c27b0;
+    // text-shadow: 0 0 20px purple;
   }
 }
 
@@ -182,7 +182,7 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
-  // background-image: url("/1.jpg");
+  background-image: url("/engine.jpg");
   background-size: cover;
 }
 
@@ -199,8 +199,8 @@ span {
 
   border-radius: 12px;
 
-  backdrop-filter: blur(70px);
-  box-shadow: 0 0 5px #fff;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px #fff;
 }
 
 

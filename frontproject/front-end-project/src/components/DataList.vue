@@ -89,7 +89,6 @@ onMounted(() => {
     data.value.sort((a, b) => {
       return moment(a.testTimeStart) - moment(b.testTimeStart)
     })
-
     emitter.emit("initFilterPane", getItemList(data.value))
   }).catch(err => {
     console.log(err);

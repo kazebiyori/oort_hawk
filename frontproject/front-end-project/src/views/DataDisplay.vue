@@ -1,287 +1,248 @@
 <template>
-  <div class="div">
+  <div>
+    <!-- 收缩栏 -->
     <div class="foldicon">
-      <img src="../assets/left.svg" alt="#" class="left" @click="OPEN_DATADISPLAYSELECTOR">
-      <img src="../assets/right.svg" alt="#" class="right" @click="CLOSE_DATADISPLAYSELECTOR">
+      <svg t="1660553094186" width="25" height="25" class="left" viewBox="0 0 1024 1024" version="1.1"
+        @click="OPEN_DATADISPLAYSELECTOR" xmlns="http://www.w3.org/2000/svg" p-id="10314"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <path
+          d="M173 137c-19.882 0-36 16.118-36 36v680c0 19.882 16.118 36 36 36h678c19.882 0 36-16.118 36-36V173c0-19.882-16.118-36-36-36H173z m0-72h678c59.647 0 108 48.353 108 108v680c0 59.647-48.353 108-108 108H173c-59.647 0-108-48.353-108-108V173c0-59.647 48.353-108 108-108z m460.456 677.544c14.059 14.059 14.059 36.853 0 50.912-14.059 14.059-36.853 14.059-50.912 0l-256-256c-14.059-14.059-14.059-36.853 0-50.912l256-256c14.059-14.059 36.853-14.059 50.912 0 14.059 14.059 14.059 36.853 0 50.912L402.912 512l230.544 230.544z"
+          p-id="10315" fill="#8a8a8a"></path>
+      </svg>
+      <svg t="1660553065871" class="right" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        @click="CLOSE_DATADISPLAYSELECTOR" p-id="10041" xmlns:xlink="http://www.w3.org/1999/xlink" width="25"
+        height="25">
+        <path
+          d="M173 137c-19.882 0-36 16.118-36 36v680c0 19.882 16.118 36 36 36h678c19.882 0 36-16.118 36-36V173c0-19.882-16.118-36-36-36H173z m0-72h678c59.647 0 108 48.353 108 108v680c0 59.647-48.353 108-108 108H173c-59.647 0-108-48.353-108-108V173c0-59.647 48.353-108 108-108z m435.088 447L377.544 281.456c-14.059-14.059-14.059-36.853 0-50.912 14.059-14.059 36.853-14.059 50.912 0l256 256c14.059 14.059 14.059 36.853 0 50.912l-256 256c-14.059 14.059-36.853 14.059-50.912 0-14.059-14.059-14.059-36.853 0-50.912L608.088 512z"
+          p-id="10042" fill="#8a8a8a"></path>
+      </svg>
     </div>
+
     <!-- 左边折线图 -->
     <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
-      <div class="title">折线图展示
-      </div>
-
-      <div class="picture" id="datadisplaypicture" ref="bar" :style="{ width: '100%', height: '100%' }">
-
+      <!-- <div class="title">折线图展示
+      </div> -->
+      <div id="chart" ref="chart" :style="{ width: '100%', height: '100%' }">
       </div>
     </div>
+
     <!-- 右边选择框 -->
     <div class="selector">
-
-
       <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
-        <div class="tips">
+        <span class="tips">
           已选择7项，展示3项
-          <hr>
-        </div>
-        <div class="functionicon">
-          <img src="../assets/加.svg" alt="#">
-          <img src="../assets/多选框.svg" alt="#">
-          <img src="../assets/重做.svg" alt="#">
+        </span>
+        <div class="function-icon">
+          <img src="../assets/看.svg" alt="#">
           <img src="../assets/删除.svg" alt="#">
+          <img src="../assets/加.svg" alt="#">
         </div>
+
         <div class="selectboard">
-          <div class="selectedlist">
-            <div class="demo-color-block">
-              <el-color-picker v-model="color1" />
-            </div>
-            <div class="dataselect">
-              <Select v-model="model" style="{width:1rem;height:0.5rem;font-size:0.2rem}" placeholder="数据A">
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-
-            </div>
-            <div class="parameterselect">
-              <Cascader :data="data" v-model="value" placeholder="参数A" v-width="80"/>
-            </div>
-
-            <div class="eye">
-              <img src="../assets/看.svg" alt="#">
-            </div>
-            <div class="deleteself">
-              <img src="../assets/删除.svg" alt="#">
-            </div>
-          </div>
+          <el-color-picker v-model="color1" />
+          <Select v-model="model" placeholder="数据A" class="data">
+            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+          <Cascader :data="data" v-model="value" placeholder="参数A" class="param" />
+          <img src="../assets/删除.svg" alt="#">
+          <img src="../assets/看.svg" alt="#">
         </div>
       </div>
     </div>
-
   </div>
 </template>
   
-  <script>
-  import { Datadisplay } from '.'
-  import { mapActions, mapMutations, mapState } from 'vuex';
-  import { nextTick } from 'vue';
-  // import { Datadisplayselector } from '@/components/index.js'
-  // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口。
-  import * as echarts from 'echarts/core';
-  // 引入柱状图图表，图表后缀都为 Chart
-  import { BarChart, LineChart } from 'echarts/charts';
-  // 引入提示框，标题，直角坐标系，数据集，内置数据转换器组件，组件后缀都为 Component
-  import {
-    TitleComponent,
-    ToolboxComponent,
-    TooltipComponent,
-    GridComponent,
-    LegendComponent
-  } from 'echarts/components';
-  // 标签自动布局，全局过渡动画等特性
-  import { LabelLayout, UniversalTransition } from 'echarts/features';
-  // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
-  import { CanvasRenderer } from 'echarts/renderers';
-  //dataZoom
-  import 'echarts/lib/component/dataZoom';
-  // 用于监听父元素变化
-  // import elementResizeDetectorMaker from "element-resize-detector"
-  import { EleResize } from '@/utils/esresize'// 图表自适应
+<script setup>
+import { ref, computed, onMounted, inject } from "vue"
+import { useStore } from 'vuex'
+import { EleResize } from '@/utils/esresize'// 图表自适应
 
-  import {
-    enable as enableDarkMode,
-    disable as disableDarkMode,
-    auto as followSystemColorScheme,
-    exportGeneratedCSS as collectCSS,
-    setFetchMethod
+import {
+  enable as enableDarkMode,
+  disable as disableDarkMode,
+  auto as followSystemColorScheme,
+  exportGeneratedCSS as collectCSS,
+  setFetchMethod
 } from 'darkreader';
-  
-  // 注册必须的组件
-  echarts.use([
-    TitleComponent,
-    ToolboxComponent,
-    TooltipComponent,
-    GridComponent,
-    LegendComponent,
-    LineChart,
-    BarChart,
-    CanvasRenderer,
-    UniversalTransition
-  ]);
-  
-  
-  export default {
-    name: 'Datadisplay',
-    data() {
-      return {
-        color1: '#19be6b',
-        value: [],
-        data: [{
-          value: 'beijing',
-          label: '北京',
-          children: [
-            {
-              value: 'gugong',
-              label: '故宫'
-            }
-          ]
-        }],
-        cityList: [
-          {
-            value: 'Canberra',
-            label: 'Canberra'
-          }
-        ],
-        model: '',
-  
-      }
-    },
-    computed: {
-      ...mapState({
-        showSelector: state => state.app.datadisplayselector.showSelector,
-      }),
-    },
-    mounted() {
-      // 在通过mounted调用即可
-      this.echartsInit(),
-        document.getElementById('datadisplaypicture').setAttribute('_echarts_instance_', '');
 
-      setFetchMethod(window.fetch);
-        enableDarkMode({
-      brightness: 100,
-      contrast: 90,
-      sepia: 10,
-    });
-    },
-    methods: {
-      ...mapMutations([
-        'OPEN_DATADISPLAYSELECTOR',
-        'CLOSE_DATADISPLAYSELECTOR'
-      ]),
-      //初始化echarts
-      echartsInit() {
-        let myChart = echarts.init(document.getElementById('datadisplaypicture'));
-        // 自适应
-        var listener = function () {
-          myChart.resize()
-        }
-        EleResize.on(this.$refs.bar, listener)
-        var option;
-        var axisData= ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+// 从根组件获取组件
+const echarts = inject('$echarts')
+// 获取图表dom组件
+const chart = ref(null)
+// 待初始化的日历对象
+let myChart = null
 
-var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
-{name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210]}];
-        var newData = [];
-        var serLineItem = function () {
-    return {
-        name: '',
-        type: 'line',
-        data: []
+// 获取事件总线
+const emitter = inject("$emitter")
+
+// vuex全局对象
+const store = useStore();
+let showSelector = computed(() => store.state.app.datadisplayselector.showSelector,)
+const OPEN_DATADISPLAYSELECTOR = () => store.commit("OPEN_DATADISPLAYSELECTOR")
+const CLOSE_DATADISPLAYSELECTOR = () => store.commit("CLOSE_DATADISPLAYSELECTOR")
+
+// 数据选择列表
+let color1 = ref('#19be6b')
+let value = ref([])
+let data = ref([{
+  value: 'beijing',
+  label: '北京',
+  children: [
+    {
+      value: 'gugong',
+      label: '故宫'
     }
-}
-    var legendData = [];
-    for (var i = 0; i < seriesData.length; i++) {
-        var lineItem = new serLineItem();
-        lineItem.name = seriesData[i].name;
-        legendData.push(seriesData[i].name);
-        lineItem.data = seriesData[i].data;
-        newData.push(lineItem);
-    }
-        option = {
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(231, 239, 255, 0.2)',
-          axisPointer: {
-            animation: false
-          }
-        },
-        toolbox: {
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            restore: {},
-            saveAsImage: {}
-          }
-        },
-        axisPointer: {
-          link: [
-            {
-              xAxisIndex: 'all'
-            }
-          ]
-        },
-        dataZoom: [
-          {
-            show: true,
-            realtime: true,
-            start: 0,
-            end: 100,
-            xAxisIndex: [0, 1]
-          },
-          {
-            type: 'inside',
-            realtime: true,
-            start: 30,
-            end: 70,
-            xAxisIndex: [0, 1]
-          }
-        ],
-        grid: [
-          {
-            left: 60,
-            right: 50,
-            height: '75%'
-          }
-        ],
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            axisLine: { onZero: true },
-            data: axisData
-          }
-        ],
-        yAxis: [
-          {
-            name: 'value',
-            type: 'value'
-          }
-        ],
-        legend: {
-          data: legendData,
-          orient: 'horizontal',
-        },
-        series: newData
-      };
+  ]
+}])
+let cityList = ref([
+  {
+    value: 'Canberra',
+    label: 'Canberra'
+  }
+])
+let model = ref('')
 
-  
-        option && myChart.setOption(option);
-  
+// 数据图配置信息
+
+let axisData = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+let seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
+{ name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210] }];
+let newData = [];
+let legendData = [];
+let option = {
+  tooltip: {
+    trigger: 'axis',
+    backgroundColor: 'rgba(231, 239, 255, 0.2)',
+    axisPointer: {
+      animation: false
+    }
+  },
+  toolbox: {
+    feature: {
+      dataZoom: {
+        yAxisIndex: 'none'
       },
-  
+      restore: {},
+      saveAsImage: {}
     }
+  },
+  axisPointer: {
+    link: [
+      {
+        xAxisIndex: 'all'
+      }
+    ]
+  },
+  dataZoom: [
+    {
+      show: true,
+      realtime: true,
+      start: 0,
+      end: 100,
+      xAxisIndex: [0, 1]
+    },
+    {
+      type: 'inside',
+      realtime: true,
+      start: 30,
+      end: 70,
+      xAxisIndex: [0, 1]
+    }
+  ],
+  grid: [
+    {
+      left: 60,
+      right: 50,
+      height: '75%'
+    }
+  ],
+  xAxis: [
+    {
+      type: 'category',
+      boundaryGap: false,
+      axisLine: { onZero: true },
+      data: axisData
+    }
+  ],
+  yAxis: [
+    {
+      name: 'value',
+      type: 'value'
+    }
+  ],
+  legend: {
+    data: legendData,
+    orient: 'horizontal',
+  },
+  series: newData
+};
+
+
+function serLineItem() {
+  return {
+    name: '',
+    type: 'line',
+    data: []
   }
-  
-  
-  
-  
-  
-  </script>
-  
-  <style lang="scss" scoped>
-  @import '@/styles/variables.scss';
-  :deep(.ivu-cascader-menu){
-    min-width: 40px;
+}
+
+// 图表初始化
+function echartsInit() {
+  {
+    // 获取图表对象
+    chart.value.focus()
+    myChart = echarts.init(chart.value);
+    // 图表自适应
+    var listener = function () {
+      myChart.resize()
+    }
+    EleResize.on(chart.value, listener)
+
+    // 根据序列数据获取图例等信息
+    for (let i = 0; i < seriesData.length; i++) {
+      var lineItem = new serLineItem();
+      lineItem.name = seriesData[i].name;
+      legendData.push(seriesData[i].name);
+      lineItem.data = seriesData[i].data;
+      newData.push(lineItem);
+    }
+
+    // 设置图表数据
+    option && myChart.setOption(option);
+
   }
+}
+
+onMounted(() => {
+  echartsInit()
+})
+
+</script>
+  
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
+:deep(.ivu-cascader-menu) {
+  min-width: 40px;
+}
+
 .leftboardWithselector {
+  padding: 40px;
+  padding-top: 0px;
   float: left;
-  width: 80%;
-  height: 75vh;
-  position: relative;
+  width: calc(100% - 350px);
+  height: $dataDisplayHeight;
+  // transition: 500ms;
 }
 
 .leftboardWithoutselector {
+  padding: 40px;
+  padding-top: 0px;
+
   float: left;
   width: 100%;
-  height: 75vh;
-  position: relative;
+  height: $dataDisplayHeight;
+  // transition: 500ms;
 }
 
 .title {
@@ -295,83 +256,87 @@ var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 3
 }
 
 .selector-open {
-  float: right;
-  width: 20%;
   position: relative;
-  height: 600px;
-  border-left-color: aqua;
-  border-left-width: 2px;
-  border-left-style: solid;
+  float: right;
+  width: 350px;
+  height: $dataDisplayHeight;
+  border: $borderStyle;
+  padding: 10px;
 }
 
 .selector-close {
-  position: relative;
   float: right;
   width: 0px;
-  height: 600px;
-  border-left-color: aqua;
-  border-left-width: 2px;
-  border-left-style: solid;
-  opacity: 0;
-}
+  height: $dataDisplayHeight;
 
-.selector .functionicon {
-  margin-left: calc($datadispalyslectorWith - 160px);
-  margin-top: 10px;
 }
 
 img {
-  width: 30px;
+  width: 25px;
   height: 25px;
 }
 
+.function-icon {
+  display: flex;
+  justify-content: end;
+  height: 30px;
+  margin-bottom: 20px;
+  margin-right: 0px;
+  gap: 5px;
+
+  & img:hover {
+    background-color: $iconSelected;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+}
+
+
+
 .foldicon {
-  margin-left: 95%;
-  margin-top: 10px;
-  z-index: 100px;
+  margin: 10px;
+  display: flex;
+  justify-content: end;
+  gap: 5px;
 
   .left {
-    display: inline-block;
-
     cursor: pointer;
 
     &:hover {
       background-color: $iconSelected;
       border-radius: 3px;
-
     }
+  }
 
-    .right {
-      display: inline-block;
-      cursor: pointer;
+  .right {
+    cursor: pointer;
 
-      &:hover {
-        background-color: $iconSelected;
-        border-radius: 3px;
-
-      }
+    &:hover {
+      background-color: $iconSelected;
+      border-radius: 3px;
     }
   }
 }
 
-.demo-color-block {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
 .selectboard {
-  margin-top: 20px;
+  margin-top: 5px;
+  display: flex;
+  gap: 5px;
+
+  .data {
+    flex: 1;
+  }
+
+  .param {
+    flex: 1;
+  }
 }
 
-.selectboard .selectedlist {
-  margin-top: 10px;
+.tips {
+  float: left;
+  position: relative;
+  top: 4px;
+  left: 3px;
 }
-
-.selectboard .selectedlist div {
-  display: inline-block;
-  vertical-align: top;
-  margin-left: 4px;
-}
-  </style>
+</style>
   
