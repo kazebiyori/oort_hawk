@@ -3,6 +3,7 @@ import {
   getFormatDay,
   sortDate,
   filterDate,
+  trasformStrToComparable,
 } from "@/utils/date";
 
 import { assert, expect, test, it, describe } from "vitest";
@@ -42,4 +43,12 @@ test("filterDate()", () => {
       ["2020-10-20", 350],
     ])
   ).toStrictEqual([["2020-10-20", 350]]);
+});
+
+test("trasformStrToComparable", () => {
+  expect(
+    trasformStrToComparable("2022-01-01 00:00:00", "2022-01-02 00:00:00").toBe(
+      {}
+    )
+  );
 });

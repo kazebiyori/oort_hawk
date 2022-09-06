@@ -61,3 +61,8 @@ export const filterDate = (beginDate, endDate, data) => {
   });
   return result;
 };
+
+export const trasformStrToComparable = (dataStr, dataStr2) => {
+  console.log(moment(dataStr) - moment(dataStr2));
+  return moment(dataStr);
+};

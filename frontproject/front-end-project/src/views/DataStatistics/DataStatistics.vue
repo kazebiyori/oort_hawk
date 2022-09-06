@@ -58,13 +58,17 @@
 
         <div class="wrapper-itmes">
           <template v-for="item in card">
-            <Card class="card">
+            <div class="card">
               <div class="left">
                 <div>{{ item.name }}</div>
                 <img :src="item.iconPath" alt="#" class="icon-list">
               </div>
-              <div class="right">{{ item.info }}</div>
-            </Card>
+              <div class="right">
+                <div>
+                  {{ item.info }}
+                </div>
+              </div>
+            </div>
           </template>
         </div>
       </div>
@@ -246,32 +250,35 @@ watch(itemSelectPlaneNumber, async (newVal) => {
 }
 
 .card {
+  user-select: none;
   width: 180px;
   height: 80px;
+  padding: 10px;
 
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
   border: $borderStyle;
   border-style: dashed;
+  border-radius: 5px;
   overflow: hidden;
 
   & .left {
-    display: inline-block;
+    flex: 1.1;
+    word-break: keep-all;
   }
 
   & .right {
+    flex: 1;
 
-    display: block;
-    line-height: 1px;
-    float: right;
-    text-align: center;
-    line-height: 42px;
-    width: 70px;
-    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
     color: blue;
-    font-weight: bolder;
-    font-size: smaller;
-    position: relative;
-    bottom: 15px;
+    font-size: small;
+    font-weight: bold;
   }
 
   & .icon-list {
@@ -279,11 +286,8 @@ watch(itemSelectPlaneNumber, async (newVal) => {
     height: 20px;
     margin-left: 20px;
     margin-top: 5px;
-    float: left;
 
-    &:hover {
-      background-color: none;
-    }
+    cursor: auto;
   }
 }
 
@@ -354,11 +358,13 @@ watch(itemSelectPlaneNumber, async (newVal) => {
 
 .wrapper-itmes {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  padding: 25px;
-  gap: 2rem;
+  gap: 1rem;
+
+  padding: 20px;
+
 }
 
 .bottom-right {

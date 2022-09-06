@@ -8,15 +8,18 @@
     <!-- 侧边栏-数据 -->
     <div :class="{ 'sidebar-active': showDataList, 'sidebar-close': !showDataList }">
       <div class="op-container">
-        <el-icon @click="TOGGLE_FILTER" class="icon-right" :size="20" :class="{ 'icon-active': showFilter }">
+        <el-icon @click="TOGGLE_FILTER" class="icon-right" :size="20" :class="{ 'icon-active': showFilter }"
+          title="显示过滤面板">
           <Filter />
         </el-icon>
-        <el-icon class="icon-right" :size="20">
+        <el-icon class="icon-right" :size="20" title="清除分组" @click="clearGroup">
           <CloseBold />
         </el-icon>
-        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left">
-        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" style="transform:rotate(90deg)">
-        <el-icon class="icon-left" :size="20">
+
+        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" title="根据飞机类型分组" @click="groupByPlaneType">
+        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" style="transform:rotate(90deg)"
+          @click="groupByEngineType" title="根据引擎类型分组">
+        <el-icon class="icon-left" :size="20" title="排序" @click="sortByPlaneTime">
           <Sort />
         </el-icon>
       </div>
@@ -31,33 +34,38 @@
     </div>
 
   </div>
-
-
-
 </template>
 
-<script>
+<script setup>
 import { mapActions, mapMutations, mapState } from 'vuex'
+import { useStore } from 'vuex'
+import { inject, computed } from "vue"
 import { DataList, DataFilter } from '@/components/index.js'
 
-export default {
-  computed: {
-    ...mapState({
-      showDataList: state => state.app.sidebar.showDataList,
-      showFilter: state => state.app.sidebar.showFilter,
-    }),
-  },
-  methods: {
-    ...mapMutations([
-      'TOGGLE_SIDEBAR',
-      'TOGGLE_FILTER'
-    ]),
-  },
-  components: {
-    DataList,
-    DataFilter
-  }
+const emitter = inject("$emitter")
+const store = useStore();
+
+let showDataList = computed(() => store.state.app.sidebar.showDataList)
+let showFilter = computed(() => store.state.app.sidebar.showFilter)
+
+const TOGGLE_SIDEBAR = () => store.commit('TOGGLE_SIDEBAR')
+const TOGGLE_FILTER = () => store.commit('TOGGLE_FILTER')
+
+function groupByPlaneType() {
+  emitter.emit("groupByPlaneType", {})
 }
+
+function groupByEngineType() {
+  emitter.emit("groupByEngineType", {})
+}
+function sortByPlaneTime() {
+  emitter.emit("sortByPlaneTime", {})
+}
+function clearGroup() {
+  emitter.emit("clearGroup", {})
+}
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -66,7 +74,7 @@ export default {
 
 .sidebar-wrapper {
   //background-color: $sidebarFixColor;
-
+  user-select: none;
 }
 
 

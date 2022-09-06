@@ -1,5 +1,4 @@
 <template>
-
   <Sidebar class="sidebar"></Sidebar>
 
   <div :class="{ 'mainWithSide': showDataList, 'mainWithoutSide': !showDataList }">
@@ -10,9 +9,6 @@
       </keep-alive>
     </router-view>
   </div>
-
-
-
 </template>
 
 <script>

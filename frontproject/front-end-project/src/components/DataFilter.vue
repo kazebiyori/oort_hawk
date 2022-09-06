@@ -1,93 +1,90 @@
 <template>
     <div class="datafilter">
         <div class="button">
-            <Button>重置</Button>
+            <Button @click="clearFilter">重置</Button>
         </div>
         <div class="choosegroup">
             <!-- 复选框 -->
-            <Checkbox v-model="single1"></Checkbox>
+            <Checkbox v-model="checkBoxs.planeModel"></Checkbox>
             <span class="selecttips">飞机型号</span>
             <!-- 下拉选择 -->
             <div class="select">
-                <Select v-model="model" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="selected.planeModel" style="width:$sidebarFilterPanelWidth">
+                    <Option v-for="item in option.planeModel" :value="item" :key="item">{{ item }}
+                    </Option>
                 </Select>
             </div>
         </div>
         <div class="choosegroup">
             <!-- 复选框 -->
-            <Checkbox v-model="single"></Checkbox>
+            <Checkbox v-model="checkBoxs.engine1Model"></Checkbox>
             <span class="selecttips">发动机型号</span>
             <!-- 下拉选择 -->
             <div class="select">
-                <Select v-model="model" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="selected.engine1Model" style="width:$sidebarFilterPanelWidth">
+                    <Option v-for="item in option.engine1Model" :value="item" :key="item">{{ item }}
+                    </Option>
                 </Select>
             </div>
         </div>
         <div class="choosegroup">
             <!-- 复选框 -->
-            <Checkbox v-model="single"></Checkbox>
+            <Checkbox v-model="checkBoxs.testType"></Checkbox>
             <span class="selecttips">试车类型</span>
             <!-- 下拉选择 -->
             <div class="select">
-                <Select v-model="model" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="selected.testType" style="width:$sidebarFilterPanelWidth">
+                    <Option v-for="item in option.testType" :value="item" :key="item">{{ item }}
+                    </Option>
                 </Select>
             </div>
         </div>
         <div class="choosegroup">
             <!-- 复选框 -->
-            <Checkbox v-model="single"></Checkbox>
+            <Checkbox v-model="checkBoxs.timeRange"></Checkbox>
             <span class="selecttips">日期</span>
             <!-- 下拉选择 -->
             <div class="select">
-                <DatePicker type="daterange" :options="options2" placement="bottom-end" placeholder="Select date"
-                    style="width: $sidebarFilterPanelWidth" />
+                <DatePicker type="daterange" v-model="selected.timeRange" placement="bottom-end"
+                    placeholder="Select date" style="width: 200px" />
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            //   复选框
-            single: false,
-            // 前三个选项的数据
-            value: '',
-            cityList: [
-                {
-                    value: 'Option1',
-                    label: 'Option1',
-                },
-                {
-                    value: 'Option2',
-                    label: 'Option2',
-                },
-                {
-                    value: 'Option3',
-                    label: 'Option3',
-                },
-                {
-                    value: 'Option4',
-                    label: 'Option4',
-                },
-                {
-                    value: 'Option5',
-                    label: 'Option5',
-                },
-            ],
-            // 时间选择
-            value1: '',
-        }
-    }
+<script setup>
+import { ref, computed, onMounted, inject, watch } from "vue"
+const emitter = inject("$emitter")
+
+let checkBoxs = ref({ planeModel: false, engine1Model: false, testType: false, timeRange: false })
+let option = ref({ planeModel: [], engine1Model: [], testType: [] })
+let selected = ref({ planeModel: "", engine1Model: "", testType: "", timeRange: "" })
+
+let check = computed(() => {
+    return "" + checkBoxs.value.planeModel + checkBoxs.value.engine1Model + checkBoxs.value.testType + checkBoxs.value.timeRange
+})
+
+watch(check, () => {
+    emitter.emit("filterData", { check: checkBoxs.value, select: selected.value })
+})
+
+function clearFilter() {
+    checkBoxs.value = { planeModel: false, engine1Model: false, testType: false, timeRange: false }
 }
+
+emitter.on("initFilterPane", (payload) => {
+    option.value = payload
+})
+
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
+
+.selecttips {
+    position: relative;
+    bottom: 2px;
+}
 
 .datafilter {
     height: $sidebarHeight;

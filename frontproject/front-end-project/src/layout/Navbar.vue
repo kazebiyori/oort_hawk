@@ -206,16 +206,18 @@ export default {
 @import '@/styles/variables.scss';
 @import '@/styles/navbar.scss';
 
-
-
-
-
 .nav-bar {
   display: flex;
   justify-content: start;
   align-items: center;
-  font-size: medium;
+
+  font-size: 18px;
   user-select: none;
+
+  background-color: #333333;
+  color: #D1D2D2;
+
+  border-bottom: 1px solid #000000;
 
   & .item-info {
     width: $sidebarActiveWidth;
@@ -224,11 +226,22 @@ export default {
 
   & .item {
     height: $navbarHeight;
-    width: 120px;
+
+    word-break: keep-all;
+
+    width: 8rem;
+
+    overflow: visible;
+
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    &:hover {
+      color: red;
+      font-size: 19px;
+    }
   }
 
 }
@@ -259,29 +272,4 @@ export default {
     line-height: $navbarHeight;
   }
 }
-
-:deep(.avatar) {
-  position: relative;
-  top: 10px;
-}
-
-:deep(.el-menu-item) {
-  font-size: 20px;
-}
-
-.nav-container {
-  width: 100vw;
-  height: $navbarHeight;
-}
-
-:deep(.el-menu-demo) {
-  // background-color: $navbarColor;
-}
-
-:deep(.el-menu-demo) {
-  width: 100vw;
-
-}
-
-// 清除element-ui navbar默认样式
 </style>

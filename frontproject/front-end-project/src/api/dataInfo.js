@@ -101,6 +101,5 @@ export default {
   getPlaneNumber,
   getParamID,
   getParamInfoSingle,
-
   getParamInfoList,
 };
