@@ -40,7 +40,7 @@
 
             </div>
             <div class="parameterselect">
-              <Cascader :data="data" v-model="value" placeholder="参数A" />
+              <Cascader :data="data" v-model="value" placeholder="参数A" v-width="80"/>
             </div>
 
             <div class="eye">
@@ -119,67 +119,10 @@
             {
               value: 'gugong',
               label: '故宫'
-            },
-            {
-              value: 'tiantan',
-              label: '天坛'
-            },
-            {
-              value: 'wangfujing',
-              label: '王府井'
             }
           ]
-        }, {
-          value: 'jiangsu',
-          label: '江苏',
-          children: [
-            {
-              value: 'nanjing',
-              label: '南京',
-              children: [
-                {
-                  value: 'fuzimiao',
-                  label: '夫子庙',
-                }
-              ]
-            },
-            {
-              value: 'suzhou',
-              label: '苏州',
-              children: [
-                {
-                  value: 'zhuozhengyuan',
-                  label: '拙政园',
-                },
-                {
-                  value: 'shizilin',
-                  label: '狮子林',
-                }
-              ]
-            }
-          ],
         }],
         cityList: [
-          {
-            value: 'New York',
-            label: 'New York'
-          },
-          {
-            value: 'London',
-            label: 'London'
-          },
-          {
-            value: 'Sydney',
-            label: 'Sydney'
-          },
-          {
-            value: 'Ottawa',
-            label: 'Ottawa'
-          },
-          {
-            value: 'Paris',
-            label: 'Paris'
-          },
           {
             value: 'Canberra',
             label: 'Canberra'
@@ -223,10 +166,7 @@
         var axisData= ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
 var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
-{name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210]},
-{name: '联盟广告', data: [220, 182, 191, 234, 290, 330, 310]},
-{name: '视频广告', data: [150, 212, 201, 154, 190, 330, 410]},
-{ name: '搜索引擎', data: [820, 832, 901, 934, 1290, 1330, 1320] }];
+{name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210]}];
         var newData = [];
         var serLineItem = function () {
     return {
@@ -244,10 +184,6 @@ var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 3
         newData.push(lineItem);
     }
         option = {
-        title: {
-          text: '数据复放',
-          left: 'center'
-        },
         tooltip: {
           trigger: 'axis',
           backgroundColor: 'rgba(231, 239, 255, 0.2)',
@@ -310,10 +246,7 @@ var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 3
         ],
         legend: {
           data: legendData,
-          top: 50,
-          right: 10,
-          orient: 'vertical',
-          backgroundColor: 'rgba(221, 228, 242, 0.2)'
+          orient: 'horizontal',
         },
         series: newData
       };
@@ -334,125 +267,111 @@ var seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 3
   
   <style lang="scss" scoped>
   @import '@/styles/variables.scss';
-  
-  :deep(.ivu-cascader-rel) {
-    width: 1rem;
-    height: .375rem;
-    font-size: .3rem;
+  :deep(.ivu-cascader-menu){
+    min-width: 40px;
   }
-  
-  :deep(.ivu-select) {
-    width: 1rem;
-    height: .375rem;
-    font-size: .3rem;
-  }
-  
-  .leftboardWithselector {
-    float: left;
-    width: 80%;
-    height: 75vh;
-    position: relative;
-  }
-  
-  .leftboardWithoutselector {
-    float: left;
-    width: 100%;
-    height: 75vh;
-    position: relative;
-  }
-  
-  .title {
-    height: .25rem;
-    border-bottom-color: gray;
-    border-bottom-width: .025rem;
-    border-bottom-style: solid;
-    font-size: .25rem;
-    color: #000;
-    line-height: .0625rem;
-  }
-  
-  .selector-open {
-    float: right;
-    width: 20%;
-    position: relative;
-    height: 80vh;
-    border-left-color: aqua;
-    border-left-width: .025rem;
-    border-left-style: solid;
-  }
-  
-  .selector-close {
-    position: relative;
-    float: right;
-    width: 0rem;
-    height: 100%;
-    border-left-color: aqua;
-    border-left-width: .025rem;
-    border-left-style: solid;
-    opacity: 0;
-  }
-  
-  .selector .functionicon {
-    margin-left: calc($datadispalyslectorWith - 2rem);
-    margin-top: .125rem;
-  }
-  
-  img {
-    width: .375rem;
-    height: .3125rem;
-  }
-  
-  .foldicon {
-    margin-left: 95%;
-    margin-top: .125rem;
-    z-index: 1.25rem;
-  
-    .left {
+.leftboardWithselector {
+  float: left;
+  width: 80%;
+  height: 75vh;
+  position: relative;
+}
+
+.leftboardWithoutselector {
+  float: left;
+  width: 100%;
+  height: 75vh;
+  position: relative;
+}
+
+.title {
+  height: 20px;
+  border-bottom-color: gray;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  font-size: 20px;
+  color: #000;
+  line-height: 5px;
+}
+
+.selector-open {
+  float: right;
+  width: 20%;
+  position: relative;
+  height: 600px;
+  border-left-color: aqua;
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+.selector-close {
+  position: relative;
+  float: right;
+  width: 0px;
+  height: 600px;
+  border-left-color: aqua;
+  border-left-width: 2px;
+  border-left-style: solid;
+  opacity: 0;
+}
+
+.selector .functionicon {
+  margin-left: calc($datadispalyslectorWith - 160px);
+  margin-top: 10px;
+}
+
+img {
+  width: 30px;
+  height: 25px;
+}
+
+.foldicon {
+  margin-left: 95%;
+  margin-top: 10px;
+  z-index: 100px;
+
+  .left {
+    display: inline-block;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: $iconSelected;
+      border-radius: 3px;
+
+    }
+
+    .right {
       display: inline-block;
-  
       cursor: pointer;
-  
+
       &:hover {
         background-color: $iconSelected;
-        border-radius: .0375rem;
-  
-      }
-  
-      .right {
-        display: inline-block;
-        cursor: pointer;
-  
-        &:hover {
-          background-color: $iconSelected;
-          border-radius: .0375rem;
-  
-        }
+        border-radius: 3px;
+
       }
     }
   }
-  
-  .tips {
-    font-size: .25rem;
-  }
-  
-  .demo-color-block {
-    display: flex;
-    align-items: center;
-    margin-bottom: .2rem;
-  }
-  
-  .selectboard {
-    margin-top: .25rem;
-  }
-  
-  .selectboard .selectedlist {
-    margin-top: .125rem;
-  }
-  
-  .selectboard .selectedlist div {
-    display: inline-block;
-    vertical-align: top;
-    margin-left: .05rem;
-  }
+}
+
+.demo-color-block {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.selectboard {
+  margin-top: 20px;
+}
+
+.selectboard .selectedlist {
+  margin-top: 10px;
+}
+
+.selectboard .selectedlist div {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 4px;
+}
   </style>
   
