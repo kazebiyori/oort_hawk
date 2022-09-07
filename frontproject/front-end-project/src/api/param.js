@@ -40,7 +40,6 @@ const getDataBySingle = (data) => {
 };
 
 // 参数请求
-
 const getAnalogList = (data) => {
   return request({
     url: `/dataInfo/listAnalogList/${data.id}`,
@@ -49,7 +48,22 @@ const getAnalogList = (data) => {
 };
 const getSwitchList = (data) => {
   return request({
-    url: `dataInfo/listSwitchList/${data.id}`,
+    url: `/dataInfo/listSwitchList/${data.id}`,
+    method: "get",
+  });
+};
+
+// 请求参数数据
+const preQuery = (data) => {
+  return request({
+    url: `/dataInfo/preQuery/${data.id}}`,
+    method: "get",
+  });
+};
+
+const getParamDataSingle = (data) => {
+  return request({
+    url: `/dataInfo/queryDataOne/${data.id}/${data.key}`,
     method: "get",
   });
 };
@@ -60,4 +74,6 @@ export default {
   getDataBySingle,
   getAnalogList,
   getSwitchList,
+  preQuery,
+  getParamDataSingle,
 };

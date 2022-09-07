@@ -28,9 +28,9 @@
 
       <!-- 右边选择框 -->
       <div class="selector" :class="{'selector-close': !showSelector }">
-        <span class="tips">
+        <!-- <span class="tips">
           已选择7项，展示3项
-        </span>
+        </span> -->
         <div class="function-icon">
           <!-- <img src="../assets/看.svg" alt="#"> -->
           <img src="../assets/加.svg" alt="#" @click="addSelectList">
@@ -41,22 +41,27 @@
 
           <el-color-picker v-model="select.color" />
 
-          <el-cascader v-model="select.param" :options="paramSource[select.data]" @change="handleChange" class="param"
-            placeholder="参数选择" />
+          <el-cascader v-model="select.param" :options="paramSource[select.data]" :no-data-text=" '无匹配数据' "
+            @change="val => { handleParamChange(val,index) }" class="param" placeholder="参数选择" />
 
-          <Select v-model="select.data" placeholder="数据选择" class="data" transfer>
-            <Option v-for="item in dataSource" :value="item.id" :key="item.id">{{ item.label }}</Option>
+          <!-- <el-select v-model="select.data" class="data" placeholder="数据选择" size="large">
+            <el-option v-for="item in dataSource" :key="item.id" :label="item.label" :value="item.id" />
+          </el-select> -->
+
+          <Select v-model="select.data" placeholder="数据选择" class="data" transfer
+            @on-change="val => { handleDataChange(val,index) }">
+            <Option v-for="item in dataSource" :value="item.id" :key="item.id">{{
+            item.label
+            }}
+            </Option>
           </Select>
 
           <!-- <Cascader :data="param" v-model="value" v-width="200" class="param" transfer /> -->
-
           <img src="../assets/删除.svg" alt="#" @click="deleteItemFromList(index)">
           <!-- <img src="../assets/看.svg" alt="#"> -->
-
         </div>
       </div>
     </div>
-
   </div>
 </template>
   
@@ -100,12 +105,6 @@ function clearSelectList() {
 function deleteItemFromList(index) {
   selectList.value = selectList.value.filter((item, i) => i != index)
 }
-watch(selectList, () => {
-  console.log("list change");
-},
-  {
-    deep: true,
-  })
 
 // 选择所有数据信息
 let dataSource = ref([
@@ -114,88 +113,259 @@ let dataSource = ref([
 // 数据信息对应的参数信息
 let paramSource = ref({})
 
+// 参数信息缓存
+let paramDataSource = ref({})
+
+watch(selectList, () => {
+  // console.log("list change");
+},
+  {
+    deep: true,
+  })
+
+// 选项修改
+function handleDataChange(val, index) {
+  selectList.value[index].param = ""
+}
+
+let legendData = {
+  orient: 'horizontal',
+  data: [],
+}
+
+let offset = 0;
+
+// 参数修改
+function handleParamChange(val, index) {
+  let id = selectList.value[index].data
+  let type = val[0]
+  let key = val[1]
+
+  // let name = selectList.value[index];
+  let name = "" + type + " " + key;
+
+  legendData.data.push(name)
+  myChart.setOption({ legend: chartOption })
+
+  if (type == "模拟量") {
+    // let { data } = await paramApi.getParamDataSingle({ id, key })
+    paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
+      chartOption.series.push({
+        type: 'line', data, smooth: true, name, symbol: "circle",
+        symbolSize: 0,
+      })
+      myChart.setOption(chartOption)
+      // myChart.setOption({ series: { type: 'line', data, smooth: true } }, true)
+    })
+  } else if (type == "数字量") {
+    paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
+      chartOption.series.push({
+        type: 'line', step: 'middle', data: data.map(i => i + offset), name,
+        xAxisIndex: 1, yAxisIndex: 1, symbol: "circle",
+        symbolSize: 0,
+      })
+      offset += 2
+      myChart.setOption(chartOption)
+      // myChart.setOption({ series: { type: 'bar', data, smooth: true } }, true)
+    })
+  }
+}
 
 // 数据图配置信息 -------------------------------------------------------------------------------------
-let axisData = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-let seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
-{ name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210] }];
-let newData = [];
-let legendData = [];
-let option = {
+
+let initOption = {
+  // 关闭动画
+  animation: false,
+
+  // 图例配置
+  // legend: {
+  //   orient: 'horizontal',
+  //   // top: 10,
+
+  //   data: ["a", "b"]
+  // },
+
+  // 鼠标悬停提示
   tooltip: {
     trigger: 'axis',
     backgroundColor: 'rgba(231, 239, 255, 0.2)',
-    axisPointer: {
-      animation: false
+    // position: function (pos, params, el, elRect, size) {
+    //   var obj = { top: 10 };
+    //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+    //   return obj;
+    // },
+    extraCssText: 'width: 170px'
+    // axisPointer: {
+    //   animation: false
+    // }
+  },
+
+  // 鼠标悬停与坐标轴提示
+  axisPointer: {
+    link: { xAxisIndex: 'all' },
+    label: {
+      backgroundColor: '#777'
     }
   },
+
+  // 右上角工具栏
   toolbox: {
     feature: {
       dataZoom: {
-        yAxisIndex: 'none'
+        // yAxisIndex: 'none'
+        yAxisIndex: false,
       },
       restore: {},
-      saveAsImage: {}
-    }
-  },
-  axisPointer: {
-    link: [
-      {
-        xAxisIndex: 'all'
+      saveAsImage: {},
+      brush: {
+        type: ['lineX', 'clear']
       }
-    ]
-  },
-  dataZoom: [
-    {
-      show: true,
-      realtime: true,
-      start: 0,
-      end: 100,
-      xAxisIndex: [0, 1]
-    },
-    {
-      type: 'inside',
-      realtime: true,
-      start: 30,
-      end: 70,
-      xAxisIndex: [0, 1]
     }
-  ],
+  },
+
+  // 未知配置项
+  brush: {
+    xAxisIndex: 'all',
+    brushLink: 'all',
+    outOfBrush: {
+      colorAlpha: 0.1
+    }
+  },
+
+  // 图表整体位置
   grid: [
     {
-      left: 60,
-      right: 50,
-      height: '75%'
-    }
-  ],
-  xAxis: [
+      left: '5%',
+      right: '5%',
+      height: '50%'
+    },
     {
-      type: 'category',
-      boundaryGap: false,
-      axisLine: { onZero: true },
-      data: axisData
+      left: '5%',
+      right: '5%',
+      bottom: '20%',
+      height: '15%'
     }
   ],
-  yAxis: [
-    {
-      name: 'value',
-      type: 'value'
-    }
-  ],
-  legend: {
-    data: legendData,
-    orient: 'horizontal',
-  },
-  series: newData
-};
 
-function serLineItem() {
-  return {
-    name: '',
-    type: 'line',
-    data: []
-  }
+  // 未知配置
+  dataZoom: [
+    {
+      type: 'inside',
+      xAxisIndex: [0, 1],
+      start: 0,
+      end: 100,
+      // realtime: true,
+    },
+    {
+      show: true,
+      xAxisIndex: [0, 1],
+      type: 'slider',
+      top: '85%',
+      start: 0,
+      end: 100,
+      // realtime: true,
+    },
+  ],
+
+  // 横坐标配置 可以配置多条横坐标
+  // xAxis: [{
+  //   type: 'category',
+  //   boundaryGap: false,
+  //   // scale: true,
+  //   boundaryGap: false,
+  //   axisLine: { onZero: false },
+  //   splitLine: { show: false },
+  //   splitNumber: 20,
+  //   min: 'dataMin',
+  //   max: 'dataMax',
+  //   axisPointer: {
+  //     z: 100
+  //   },
+  // },
+  // // 未知配置
+  // {
+  //   type: 'category',
+  //   gridIndex: 1,
+  //   // data: data.categoryData,
+  //   // scale: true,
+  //   boundaryGap: false,
+  //   axisLine: { onZero: false },
+  //   axisTick: { show: false },
+  //   splitLine: { show: false },
+  //   axisLabel: { show: false },
+  //   splitNumber: 20,
+  //   min: 'dataMin',
+  //   max: 'dataMax',
+  //   axisPointer: {
+  //     label: {
+  //       formatter: function (params) {
+  //         var seriesValue = (params.seriesData[0] || {}).value;
+  //         return (
+  //           params.value +
+  //           (seriesValue != null
+  //             ? '\n' + echarts.format.addCommas(seriesValue)
+  //             : '')
+  //         );
+  //       }
+  //     }
+  //   }
+  // }],
+
+
+  // xAxis: [{
+  //   name: "横坐标",
+  //   type: "category"
+  // }, {
+  //   name: "横坐标",
+  //   gridIndex: 1,
+  //   type: "category"
+  // },
+  // ],
+
+  xAxis: [{
+    name: "时间",
+    type: "category"
+  },
+  {
+    gridIndex: 1,
+    name: "时间",
+    type: "category"
+  },
+  ],
+  // 纵坐标配置
+  yAxis: [{
+    name: "数值",
+    type: "value",
+  }, {
+    name: "开关",
+    type: "value",
+    gridIndex: 1,
+    splitNumber: 2,
+    axisLabel: { show: false },
+    axisLine: { show: false },
+    axisTick: { show: false },
+    splitLine: { show: false }
+  }],
 }
+
+
+let chartOption = {
+  series: [
+  ]
+}
+
+
+
+// function helpFunc() {
+//   // 根据序列数据获取图例等信息
+//   for (let i = 0; i < seriesData.length; i++) {
+//     var lineItem = new serLineItem();
+//     lineItem.name = seriesData[i].name;
+//     legendData.push(seriesData[i].name);
+//     lineItem.data = seriesData[i].data;
+//     newData.push(lineItem);
+//   }
+// }
 
 // 图表初始化
 function echartsInit() {
@@ -209,27 +379,29 @@ function echartsInit() {
     }
     EleResize.on(chart.value, listener)
 
-    // 根据序列数据获取图例等信息
-    for (let i = 0; i < seriesData.length; i++) {
-      var lineItem = new serLineItem();
-      lineItem.name = seriesData[i].name;
-      legendData.push(seriesData[i].name);
-      lineItem.data = seriesData[i].data;
-      newData.push(lineItem);
-    }
-
     // 设置图表数据
-    option && myChart.setOption(option);
+    initOption && myChart.setOption(initOption);
 
   }
 }
 
 onMounted(() => {
   echartsInit()
+  // chartOption.series.push({ name: "a", type: 'line', data: [2, 3, 4], smooth: true, })
+  // myChart.setOption(chartOption)
+
+  // chartOption.series.push({
+  //   name: "a",
+  //   type: 'bar', data: [1, 2, 3], smooth: true,
+  //   xAxisIndex: 1,
+  //   yAxisIndex: 1,
+  // })
+  // myChart.setOption(chartOption)
+
+  // chartOption.series.push({ name: "b", type: 'line', data: [2, 3, 4, 6, 7], smooth: true, })
+  // myChart.setOption(chartOption)
+
 })
-
-
-
 
 // {checked:bollean, data:{id:string, dataId:string, testTimeStart: string}}  data
 // 选择新数据源事件
@@ -285,7 +457,7 @@ emitter.on("chooseNewData", async (data, check) => {
 <style lang="scss">
 @import '@/styles/variables.scss';
 
-$selectboardWitdh: 450px;
+$selectboardWitdh: 400px;
 
 :deep(.ivu-select-dropdown span) {
   float: none;
@@ -297,6 +469,7 @@ $selectboardWitdh: 450px;
 
 .leftboardWithselector {
   padding: 40px;
+  padding-bottom: 80px;
   padding-top: 0px;
   width: calc(100% - $selectboardWitdh);
   height: $dataDisplayHeight;
@@ -304,6 +477,7 @@ $selectboardWitdh: 450px;
 
 .leftboardWithoutselector {
   padding: 40px;
+  padding-bottom: 80px;
   padding-top: 0px;
   width: 100%;
   height: $dataDisplayHeight;
@@ -353,8 +527,6 @@ img:hover {
   gap: 5px;
 }
 
-
-
 .foldicon {
   margin: 10px;
   display: flex;
@@ -387,7 +559,7 @@ img:hover {
   gap: 5px;
 
   .data {
-    flex: 1;
+    flex: 1.5;
   }
 
   .param {
