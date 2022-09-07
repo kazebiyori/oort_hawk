@@ -100,9 +100,32 @@ function addSelectList() {
   selectList.value.push({ color: "#123456", data: "", param: "" })
 }
 function clearSelectList() {
+  // 重新初始化myChart组件
+  myChart.clear()
+  myChart.setOption(initOption)
   selectList.value = []
 }
 function deleteItemFromList(index) {
+  // let type = val[0]
+  // let key = val[1]
+
+  // let name = selectList.value[index];
+
+  let pre = selectList.value[index].param
+  let type = pre[0]
+  let key = pre[1]
+  let name = "" + type + " " + key;
+
+  // echarts 通过dispatch控制图例点击事件
+  myChart.dispatchAction({
+    type: 'legendUnSelect',
+    name
+  })
+
+  legendData.data = legendData.data.filter(item => item != name)
+  myChart.setOption({ legend: legendData })
+
+
   selectList.value = selectList.value.filter((item, i) => i != index)
 }
 
@@ -145,22 +168,22 @@ function handleParamChange(val, index) {
   let name = "" + type + " " + key;
 
   legendData.data.push(name)
-  myChart.setOption({ legend: chartOption })
+  myChart.setOption({ legend: legendData })
 
   if (type == "模拟量") {
     // let { data } = await paramApi.getParamDataSingle({ id, key })
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
-        type: 'line', data, smooth: true, name, symbol: "circle",
+        type: 'line', data, name, symbol: "circle", //smooth:true,
         symbolSize: 0,
       })
       myChart.setOption(chartOption)
       // myChart.setOption({ series: { type: 'line', data, smooth: true } }, true)
     })
-  } else if (type == "数字量") {
+  } else if (type == "开关量") {
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
-        type: 'line', step: 'middle', data: data.map(i => i + offset), name,
+        type: 'line', data: data.map(i => i + offset), name, //step:'middle'
         xAxisIndex: 1, yAxisIndex: 1, symbol: "circle",
         symbolSize: 0,
       })
@@ -187,16 +210,31 @@ let initOption = {
 
   // 鼠标悬停提示
   tooltip: {
+    show: true,
     trigger: 'axis',
-    backgroundColor: 'rgba(231, 239, 255, 0.2)',
-    // position: function (pos, params, el, elRect, size) {
-    //   var obj = { top: 10 };
-    //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-    //   return obj;
-    // },
-    extraCssText: 'width: 170px'
+    transitionDuration: 0.6,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+
+
+    // 通过格式化，将开关量转换为0-1数值
+    valueFormatter: (val) => {
+      if (Number.isInteger(val)) {
+        return val % 2
+      } else { return val }
+    }
+
+    // showContent: true,
+
+    // // triggerOn: 'click',    
+    // // enterable: true,
+
+    // // formatter: '{b0}: {c0}<br />{b1}: {c1}',
+
+    // extraCssText: 'width: 170px',
+
     // axisPointer: {
-    //   animation: false
+    //   animation: false,
+    //   type: 'cross'
     // }
   },
 
@@ -205,66 +243,72 @@ let initOption = {
     link: { xAxisIndex: 'all' },
     label: {
       backgroundColor: '#777'
-    }
+    },
+    type: "cross"
   },
 
-  // 右上角工具栏
+  // 工具栏
   toolbox: {
+    show: true,
+    showTitle: false,
+    itemSize: 0,
     feature: {
+      dataView: { show: true, readOnly: true },
       dataZoom: {
-        // yAxisIndex: 'none'
         yAxisIndex: false,
       },
       restore: {},
       saveAsImage: {},
-      brush: {
-        type: ['lineX', 'clear']
-      }
+      // brush: {
+      //   type: ['lineX', 'clear']
+      // }
     }
   },
 
   // 未知配置项
-  brush: {
-    xAxisIndex: 'all',
-    brushLink: 'all',
-    outOfBrush: {
-      colorAlpha: 0.1
-    }
-  },
+  // brush: {
+  //   xAxisIndex: 'all',
+  //   brushLink: 'all',
+  //   outOfBrush: {
+  //     colorAlpha: 0.1
+  //   }
+  // },
 
   // 图表整体位置
   grid: [
     {
       left: '5%',
       right: '5%',
-      height: '50%'
+      height: '50%',
     },
     {
       left: '5%',
       right: '5%',
-      bottom: '20%',
-      height: '15%'
+      bottom: '10%',
+      height: '25%',
     }
   ],
 
   // 未知配置
   dataZoom: [
     {
-      type: 'inside',
-      xAxisIndex: [0, 1],
-      start: 0,
-      end: 100,
-      // realtime: true,
-    },
-    {
       show: true,
-      xAxisIndex: [0, 1],
       type: 'slider',
-      top: '85%',
+      xAxisIndex: [0, 1],
       start: 0,
       end: 100,
-      // realtime: true,
+      // 数据量大后，realtime出现卡顿
+      realtime: false,
     },
+    // {
+    //   show: true,
+    //   xAxisIndex: [0, 1],
+    //   type: 'slider',
+    //   top: '85%',
+    //   start: 0,
+    //   end: 100,
+    //   // realtime: true,
+    // },
   ],
 
   // 横坐标配置 可以配置多条横坐标
@@ -367,6 +411,7 @@ let chartOption = {
 //   }
 // }
 
+let mouseX = 0;
 // 图表初始化
 function echartsInit() {
   {
@@ -382,24 +427,68 @@ function echartsInit() {
     // 设置图表数据
     initOption && myChart.setOption(initOption);
 
+    myChart.dispatchAction({
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+
+    myChart.on('click', function (params) {
+      console.log(params);
+    });
+
+
+    // 为图表添加鼠标监听事件 鼠标左移动时恢复图像范围
+    chart.value.addEventListener("mousedown", function (val) {
+      // console.log(val);
+
+      console.log(this);
+      mouseX = val.zrX
+
+    })
+
+    chart.value.addEventListener("mouseup", function (val) {
+      // console.log(val);
+      // console.log(this);
+
+      if (val.zrX < mouseX) {
+        myChart.dispatchAction({
+          type: 'dataZoom',
+          // 可选，dataZoom 组件的 index，多个 dataZoom 组件时有用，默认为 0
+          // dataZoomIndex: number,
+          // 开始位置的百分比，0 - 100
+          start: 0,
+          // 结束位置的百分比，0 - 100
+          end: 100,
+          // // 开始位置的数值
+          // startValue: number,
+          // // 结束位置的数值
+          // endValue: number
+        })
+      }
+    })
   }
 }
 
 onMounted(() => {
   echartsInit()
-  // chartOption.series.push({ name: "a", type: 'line', data: [2, 3, 4], smooth: true, })
-  // myChart.setOption(chartOption)
 
-  // chartOption.series.push({
-  //   name: "a",
-  //   type: 'bar', data: [1, 2, 3], smooth: true,
-  //   xAxisIndex: 1,
-  //   yAxisIndex: 1,
-  // })
-  // myChart.setOption(chartOption)
+  // 测试代码
+  chartOption.series.push({ name: "a", type: 'line', data: [10, 0, 4], smooth: true, })
+  myChart.setOption(chartOption)
 
-  // chartOption.series.push({ name: "b", type: 'line', data: [2, 3, 4, 6, 7], smooth: true, })
-  // myChart.setOption(chartOption)
+  chartOption.series.push({
+    name: "data1",
+    type: 'bar', data: [1, 2, 3, 0, -10], smooth: true,
+    xAxisIndex: 1,
+    yAxisIndex: 1,
+  })
+  myChart.setOption(chartOption)
+
+  chartOption.series.push({
+    name: "data2", type: 'line', data: [2, 3, 4, 6, 7], smooth: true,
+  })
+  myChart.setOption(chartOption)
 
 })
 
@@ -446,7 +535,7 @@ emitter.on("chooseNewData", async (data, check) => {
     })
 
     // 在参数数据源中添加对应参数列表
-    paramSource.value[id] = [{ value: '模拟量', label: "模拟量" }, { value: '数字量', label: "数字量" }]
+    paramSource.value[id] = [{ value: '模拟量', label: "模拟量" }, { value: '开关量', label: "开关量" }]
     paramSource.value[id][0]["children"] = analogDisplay
     paramSource.value[id][1]["children"] = switchDisplay
   }
@@ -559,7 +648,7 @@ img:hover {
   gap: 5px;
 
   .data {
-    flex: 1.5;
+    flex: 1.3;
   }
 
   .param {
