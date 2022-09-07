@@ -16,46 +16,55 @@
           d="M173 137c-19.882 0-36 16.118-36 36v680c0 19.882 16.118 36 36 36h678c19.882 0 36-16.118 36-36V173c0-19.882-16.118-36-36-36H173z m0-72h678c59.647 0 108 48.353 108 108v680c0 59.647-48.353 108-108 108H173c-59.647 0-108-48.353-108-108V173c0-59.647 48.353-108 108-108z m435.088 447L377.544 281.456c-14.059-14.059-14.059-36.853 0-50.912 14.059-14.059 36.853-14.059 50.912 0l256 256c14.059 14.059 14.059 36.853 0 50.912l-256 256c-14.059 14.059-36.853 14.059-50.912 0-14.059-14.059-14.059-36.853 0-50.912L608.088 512z"
           p-id="10042" fill="#8a8a8a"></path>
       </svg>
+
     </div>
 
-    <!-- 左边折线图 -->
-    <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
-      <!-- <div class="title">折线图展示
-      </div> -->
-      <div id="chart" ref="chart" :style="{ width: '100%', height: '100%' }">
+    <div class="data-area">
+      <!-- 左边折线图 -->
+      <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
+        <div id="chart" ref="chart" :style="{ width: '100%', height: '100%' }">
+        </div>
       </div>
-    </div>
 
-    <!-- 右边选择框 -->
-    <div class="selector">
-      <div :class="{ 'selector-open': showSelector, 'selector-close': !showSelector }">
+      <!-- 右边选择框 -->
+      <div class="selector" :class="{'selector-close': !showSelector }">
         <span class="tips">
           已选择7项，展示3项
         </span>
         <div class="function-icon">
-          <img src="../assets/看.svg" alt="#">
-          <img src="../assets/删除.svg" alt="#">
-          <img src="../assets/加.svg" alt="#">
+          <!-- <img src="../assets/看.svg" alt="#"> -->
+          <img src="../assets/加.svg" alt="#" @click="addSelectList">
+          <img src="../assets/删除.svg" alt="#" @click="clearSelectList">
         </div>
 
-        <div class="selectboard">
-          <el-color-picker v-model="color1" />
-          <Select v-model="model" placeholder="数据A" class="data">
-            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <div class="select-list" v-for="(select,index) in selectList" :key="index">
+
+          <el-color-picker v-model="select.color" />
+
+          <el-cascader v-model="select.param" :options="paramSource[select.data]" @change="handleChange" class="param"
+            placeholder="参数选择" />
+
+          <Select v-model="select.data" placeholder="数据选择" class="data" transfer>
+            <Option v-for="item in dataSource" :value="item.id" :key="item.id">{{ item.label }}</Option>
           </Select>
-          <Cascader :data="data" v-model="value" placeholder="参数A" class="param" />
-          <img src="../assets/删除.svg" alt="#">
-          <img src="../assets/看.svg" alt="#">
+
+          <!-- <Cascader :data="param" v-model="value" v-width="200" class="param" transfer /> -->
+
+          <img src="../assets/删除.svg" alt="#" @click="deleteItemFromList(index)">
+          <!-- <img src="../assets/看.svg" alt="#"> -->
+
         </div>
       </div>
     </div>
+
   </div>
 </template>
   
 <script setup>
-import { ref, computed, onMounted, inject } from "vue"
+import { ref, computed, onMounted, inject, watch } from "vue"
 import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
+import paramApi from "@/api/param"
 
 import {
   enable as enableDarkMode,
@@ -65,45 +74,48 @@ import {
   setFetchMethod
 } from 'darkreader';
 
-// 从根组件获取组件
-const echarts = inject('$echarts')
-// 获取图表dom组件
-const chart = ref(null)
-// 待初始化的日历对象
-let myChart = null
-
-// 获取事件总线
-const emitter = inject("$emitter")
-
 // vuex全局对象
 const store = useStore();
 let showSelector = computed(() => store.state.app.datadisplayselector.showSelector,)
 const OPEN_DATADISPLAYSELECTOR = () => store.commit("OPEN_DATADISPLAYSELECTOR")
 const CLOSE_DATADISPLAYSELECTOR = () => store.commit("CLOSE_DATADISPLAYSELECTOR")
 
-// 数据选择列表
-let color1 = ref('#19be6b')
-let value = ref([])
-let data = ref([{
-  value: 'beijing',
-  label: '北京',
-  children: [
-    {
-      value: 'gugong',
-      label: '故宫'
-    }
-  ]
-}])
-let cityList = ref([
+// 获取图表
+const echarts = inject('$echarts')
+const chart = ref(null) //dom对象
+let myChart = null  //操作对象
+
+// 获取事件总线
+const emitter = inject("$emitter")
+
+// 侧边栏 数据信息 data为数据唯一指定id
+const selectList = ref([{ color: "#123456", data: 0, param: "" }, { color: "#123456", data: "", param: "" }])
+// 侧边栏操作方法
+function addSelectList() {
+  selectList.value.push({ color: "#123456", data: "", param: "" })
+}
+function clearSelectList() {
+  selectList.value = []
+}
+function deleteItemFromList(index) {
+  selectList.value = selectList.value.filter((item, i) => i != index)
+}
+watch(selectList, () => {
+  console.log("list change");
+},
   {
-    value: 'Canberra',
-    label: 'Canberra'
-  }
+    deep: true,
+  })
+
+// 选择所有数据信息
+let dataSource = ref([
 ])
-let model = ref('')
 
-// 数据图配置信息
+// 数据信息对应的参数信息
+let paramSource = ref({})
 
+
+// 数据图配置信息 -------------------------------------------------------------------------------------
 let axisData = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 let seriesData = [{ name: '直接访问', data: [320, 302, 301, 334, 390, 330, 320] },
 { name: '邮件营销', data: [120, 132, 101, 134, 120, 230, 210] }];
@@ -177,7 +189,6 @@ let option = {
   series: newData
 };
 
-
 function serLineItem() {
   return {
     name: '',
@@ -217,63 +228,120 @@ onMounted(() => {
   echartsInit()
 })
 
+
+
+
+// {checked:bollean, data:{id:string, dataId:string, testTimeStart: string}}  data
+// 选择新数据源事件
+emitter.on("chooseNewData", async (data, check) => {
+  // 如果是取消勾选 或 父组件选择 则不添加到dataSource
+  if (!data.checked) return
+  if (data.data.children) return
+  // 飞参信息id
+  let id = data.data.id
+  // 飞参数据id
+  let value = data.data.dataId
+  // 飞惨测试时间
+  let label = data.data.testTimeStart
+  let inList = false
+
+  dataSource.value.forEach(item => {
+    if (item.value == value || item.id == id) {
+      inList = true;
+      return
+    }
+  })
+
+  // 如果新数据不在列表中
+  if (!inList) {
+    let json = { label, value, id }
+
+    // 更新获取dataSource
+    dataSource.value.push(json)
+
+    // 通过data id获取参数列表
+    let { data: analogList } = await paramApi.getAnalogList({ id: id })
+    let { data: switchList } = await paramApi.getSwitchList({ id: id })
+
+    let analogDisplay = []
+    let switchDisplay = []
+
+    analogList.forEach(item => {
+      analogDisplay.push({ label: item, value: item })
+    })
+    switchList.forEach(item => {
+      switchDisplay.push({ label: item, value: item })
+    })
+
+    // 在参数数据源中添加对应参数列表
+    paramSource.value[id] = [{ value: '模拟量', label: "模拟量" }, { value: '数字量', label: "数字量" }]
+    paramSource.value[id][0]["children"] = analogDisplay
+    paramSource.value[id][1]["children"] = switchDisplay
+  }
+})
+
 </script>
   
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/styles/variables.scss';
 
-:deep(.ivu-cascader-menu) {
-  min-width: 40px;
+$selectboardWitdh: 450px;
+
+:deep(.ivu-select-dropdown span) {
+  float: none;
+}
+
+.data-area {
+  display: flex;
 }
 
 .leftboardWithselector {
   padding: 40px;
   padding-top: 0px;
-  float: left;
-  width: calc(100% - 350px);
+  width: calc(100% - $selectboardWitdh);
   height: $dataDisplayHeight;
-  // transition: 500ms;
 }
 
 .leftboardWithoutselector {
   padding: 40px;
   padding-top: 0px;
-
-  float: left;
   width: 100%;
   height: $dataDisplayHeight;
-  // transition: 500ms;
 }
 
-.title {
-  height: 20px;
-  border-bottom-color: gray;
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  font-size: 20px;
-  color: #000;
-  line-height: 5px;
-}
-
-.selector-open {
+.selector {
   position: relative;
-  float: right;
-  width: 350px;
+  width: $selectboardWitdh;
   height: $dataDisplayHeight;
   border: $borderStyle;
   padding: 10px;
+
 }
 
 .selector-close {
-  float: right;
   width: 0px;
-  height: $dataDisplayHeight;
+  height: 0px;
 
+  transform: translate($selectboardWitdh);
 }
 
 img {
   width: 25px;
   height: 25px;
+
+}
+
+img:hover {
+  background-color: $iconSelected;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.tips {
+  float: left;
+  position: relative;
+  top: 4px;
+  left: 3px;
 }
 
 .function-icon {
@@ -281,14 +349,8 @@ img {
   justify-content: end;
   height: 30px;
   margin-bottom: 20px;
-  margin-right: 0px;
+  margin-right: 5px;
   gap: 5px;
-
-  & img:hover {
-    background-color: $iconSelected;
-    border-radius: 3px;
-    cursor: pointer;
-  }
 }
 
 
@@ -318,8 +380,9 @@ img {
   }
 }
 
-.selectboard {
-  margin-top: 5px;
+.select-list {
+  margin: 5px;
+  margin-top: 10px;
   display: flex;
   gap: 5px;
 
@@ -330,13 +393,6 @@ img {
   .param {
     flex: 1;
   }
-}
-
-.tips {
-  float: left;
-  position: relative;
-  top: 4px;
-  left: 3px;
 }
 </style>
   

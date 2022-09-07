@@ -70,7 +70,8 @@ let filterData = computed(() => {
 
 // 相应变化节点
 function handleCheckChange(data, checked, indeterminate) {
-  // console.log(data, checked, indeterminate);
+  // 选择新数据
+  emitter.emit("chooseNewData", { data, checked })
 }
 function handleCheck(data, item) {
 }
@@ -136,4 +137,5 @@ emitter.on("filterData", (payload) => {
 </script>
 
 <style lang="scss" scoped>
+
 </style>

@@ -60,17 +60,13 @@ let checkBoxs = ref({ planeModel: false, engine1Model: false, testType: false, t
 let option = ref({ planeModel: [], engine1Model: [], testType: [] })
 let selected = ref({ planeModel: "", engine1Model: "", testType: "", timeRange: "" })
 
-let check = computed(() => {
-    return "" + checkBoxs.value.planeModel + checkBoxs.value.engine1Model + checkBoxs.value.testType + checkBoxs.value.timeRange
-})
-
-watch(check, () => {
-    emitter.emit("filterData", { check: checkBoxs.value, select: selected.value })
-})
-
 function clearFilter() {
     checkBoxs.value = { planeModel: false, engine1Model: false, testType: false, timeRange: false }
 }
+
+onMounted(() => {
+    emitter.emit("filterData", { check: checkBoxs.value, select: selected.value })
+})
 
 emitter.on("initFilterPane", (payload) => {
     option.value = payload

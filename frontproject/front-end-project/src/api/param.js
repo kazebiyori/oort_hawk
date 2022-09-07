@@ -39,8 +39,25 @@ const getDataBySingle = (data) => {
   });
 };
 
+// 参数请求
+
+const getAnalogList = (data) => {
+  return request({
+    url: `/dataInfo/listAnalogList/${data.id}`,
+    method: "get",
+  });
+};
+const getSwitchList = (data) => {
+  return request({
+    url: `dataInfo/listSwitchList/${data.id}`,
+    method: "get",
+  });
+};
+
 export default {
   getInfoByPage,
   getInfo,
   getDataBySingle,
+  getAnalogList,
+  getSwitchList,
 };
