@@ -113,9 +113,9 @@ const chartConfigInit = {
     }
   },
   calendar: {
-    // top: 'auto',
+    top: 'auto',
     splitLine: {
-      show: true,
+      show: false,
     },
 
     range: currentYear.value,
@@ -234,6 +234,7 @@ let chartConfigSelectedRange = {
 onMounted(() => {
   chart.value.focus()
   myChart = echarts.init(chart.value, 'dark')
+  // myChart = echarts.init(chart.value)
   chartConfigInit.series.symbolSize = Math.min((myChart.getWidth() - 70) / 80, 16)
   myChart.setOption(
     chartConfigInit
@@ -330,7 +331,7 @@ onMounted(() => {
   width: 85%;
   height: 210px;
   margin: 15px auto;
-  // border: $borderStyle;
-  //  border-radius: 15%
+  border: $borderStyle;
+  border-radius: 3px;
 }
 </style>

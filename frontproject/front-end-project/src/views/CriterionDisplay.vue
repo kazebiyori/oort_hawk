@@ -58,7 +58,7 @@
       </div>
 
       <div class="tips">
-        <Alert show-icon style="height: 32px;">
+        <Alert show-icon style="height: 32px;width:inherit;">
           <span class="text">
             已选择3项
           </span>
@@ -106,21 +106,21 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: 120,
+          // width: 120,
           align: 'center',
           resizable: true,
         },
         {
           title: 'criterionorder',
           key: 'criterionorder',
-          width: 200,
+          // width: 200,
           align: 'center',
           resizable: true,
         },
         {
           title: 'type',
           key: 'type',
-          width: 120,
+          // width: 120,
           align: 'center',
           resizable: true,
           filters: [
@@ -140,14 +140,14 @@ export default {
         {
           title: 'description',
           key: 'description',
-          width: 170,
+          // width: 170,
           align: 'center',
           resizable: true,
         },
         {
           title: 'status',
           key: 'status',
-          width: 120,
+          // width: 120,
           align: 'center',
           resizable: true,
           filters: [
@@ -168,14 +168,14 @@ export default {
           title: 'date',
           key: 'date',
           sortable: true,
-          width: 200,
+          // width: 200,
           align: 'center',
           resizable: true,
         },
         {
           title: 'people',
           key: 'people',
-          width: 120,
+          // width: 120,
           align: 'center',
           resizable: true,
           filters: [
@@ -204,7 +204,7 @@ export default {
           criterionorder: 'RuleConde22',
           type: '专家',
           date: '2022-07-22  16:14:28',
-          description: '这是一段判据描述',
+          description: '一段判据描述',
           status: '禁用中',
           people: '小王',
         },
@@ -212,7 +212,7 @@ export default {
           criterionorder: 'RuleConde22',
           type: 'AI',
           date: '2022-07-22  16:10:29',
-          description: '这是一段判据描述',
+          description: '一段判据描述',
           status: '启用中',
           people: '小李',
         },
@@ -221,7 +221,7 @@ export default {
           criterionorder: 'RuleConde22',
           type: 'AI',
           date: '2022-07-22  16:10:29',
-          description: '这是一段判据描述',
+          description: '一段判据描述',
           status: '启用中',
           people: '小李',
         }
@@ -284,6 +284,7 @@ export default {
 
 .tips {
   margin: 20px auto;
+  float: none;
 }
 
 .tips .clear {

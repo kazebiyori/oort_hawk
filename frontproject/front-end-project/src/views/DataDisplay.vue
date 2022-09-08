@@ -111,6 +111,7 @@ function deleteItemFromList(index) {
 
   // let name = selectList.value[index];
 
+  offset = 0;
   let pre = selectList.value[index].param
   let type = pre[0]
   let key = pre[1]
@@ -237,11 +238,11 @@ let initOption = {
     order: 'valueDesc',
 
     // 通过格式化，将开关量转换为0-1数值
-    // valueFormatter: (val) => {
-    //   if (Number.isInteger(val)) {
-    //     return val % 2
-    //   } else { return val }
-    // }
+    valueFormatter: (val) => {
+      if (Number.isInteger(val)) {
+        return val % 2
+      } else { return val }
+    }
 
     // showContent: true,
 
@@ -454,7 +455,7 @@ function echartsInit() {
   {
     // 获取图表对象
     chart.value.focus()
-    myChart = echarts.init(chart.value);
+    myChart = echarts.init(chart.value, 'dark');
     // 图表自适应
     var listener = function () {
       myChart.resize()
@@ -537,26 +538,32 @@ function echartsInit() {
 }
 
 onMounted(() => {
+  // setFetchMethod(window.fetch)
+  // enableDarkMode({
+  //   brightness: 100,
+  //   contrast: 90,
+  //   sepia: 10,
+  // });
   echartsInit()
 
   // 测试代码
-  chartOption.series.push({ name: "data3", type: 'line', data: [10, 0, 4, 10, 0, 410, 0, 410, 0, 4], smooth: true, })
-  myChart.setOption(chartOption)
+  // chartOption.series.push({ name: "data3", type: 'line', data: [10, 0, 4, 10, 0, 410, 0, 410, 0, 4], smooth: true, })
+  // myChart.setOption(chartOption)
 
-  chartOption.series.push({
-    name: "data1",
-    type: 'bar', data: [1, 2, 3, 0, -10], smooth: true,
-    xAxisIndex: 1,
-    yAxisIndex: 1,
-  })
-  myChart.setOption(chartOption)
+  // chartOption.series.push({
+  //   name: "data1",
+  //   type: 'bar', data: [1, 2, 3, 0, -10], smooth: true,
+  //   xAxisIndex: 1,
+  //   yAxisIndex: 1,
+  // })
+  // myChart.setOption(chartOption)
 
-  chartOption.series.push({
-    name: "data2", type: 'line', data: [2, 3, 4, 6, 7], smooth: true,
-  })
-  myChart.setOption(chartOption)
+  // chartOption.series.push({
+  //   name: "data2", type: 'line', data: [2, 3, 4, 6, 7], smooth: true,
+  // })
+  // myChart.setOption(chartOption)
 
-  myChart.setOption({ legend: { data: ['data1', '', 'data2', 'data3'] } })
+  // myChart.setOption({ legend: { data: ['data1', '', 'data2', 'data3'] } })
 
 })
 

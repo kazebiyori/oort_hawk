@@ -8,7 +8,7 @@
           <TabPane label="飞机">
             <Carousel v-model="idSelectedList" scroll>
               <CarouselItem v-for="item in listPlaneType" :key="item">
-                <img src="@/assets/img/像素-草坪.jpeg" :alt="item">
+                <img :src="item + '.jpeg'" :alt="item">
               </CarouselItem>
               <!-- <CarouselItem>
                 <img src="@/assets/img/像素-夕阳.jpeg" alt="夕阳">
@@ -384,7 +384,8 @@ watch(itemSelectPlaneNumber, async (newVal) => {
 img {
   display: block;
   margin: auto;
-  width: 250px;
+  height: 150px;
+  width: 270px;
   cursor: pointer;
 }
 
