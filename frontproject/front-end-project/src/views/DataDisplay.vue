@@ -39,7 +39,7 @@
 
         <div class="select-list" v-for="(select,index) in selectList" :key="index">
 
-          <el-color-picker v-model="select.color" />
+          <!-- <el-color-picker v-model="select.color" /> -->
 
           <el-cascader v-model="select.param" :options="paramSource[select.data]" :no-data-text=" '无匹配数据' "
             @change="val => { handleParamChange(val,index) }" class="param" placeholder="参数选择" />
@@ -152,6 +152,7 @@ function handleDataChange(val, index) {
 }
 
 let legendData = {
+  top: 0,
   orient: 'horizontal',
   data: [],
 }
@@ -167,15 +168,27 @@ function handleParamChange(val, index) {
   // let name = selectList.value[index];
   let name = "" + type + " " + key;
 
+  legendData.data = legendData.data.filter(item => item != "")
   legendData.data.push(name)
+  legendData.data.sort()
+  let pos = legendData.data.findIndex(item => { if (item.match("开关量")) return true })
+  if (pos != -1) {
+    legendData.data.splice(pos + 1, 0, '')
+  }
   myChart.setOption({ legend: legendData })
 
   if (type == "模拟量") {
     // let { data } = await paramApi.getParamDataSingle({ id, key })
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
-        type: 'line', data, name, symbol: "circle", //smooth:true,
-        symbolSize: 0,
+        type: 'line', data, name,
+
+        // symbol: "none",
+        // symbolSize: 0,
+        // smooth: true,
+        // sampling: 'average',
+        large: true,
+        largeThreshold: 3000,
       })
       myChart.setOption(chartOption)
       // myChart.setOption({ series: { type: 'line', data, smooth: true } }, true)
@@ -184,8 +197,14 @@ function handleParamChange(val, index) {
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
         type: 'line', data: data.map(i => i + offset), name, //step:'middle'
-        xAxisIndex: 1, yAxisIndex: 1, symbol: "circle",
-        symbolSize: 0,
+        xAxisIndex: 1, yAxisIndex: 1,
+
+        // symbol: "none",
+        // symbolSize: 0,
+        // smooth: true,
+        // sampling: 'average',
+        large: true,
+        largeThreshold: 3000,
       })
       offset += 2
       myChart.setOption(chartOption)
@@ -210,18 +229,19 @@ let initOption = {
 
   // 鼠标悬停提示
   tooltip: {
+
     show: true,
     trigger: 'axis',
     transitionDuration: 0.6,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-
+    order: 'valueDesc',
 
     // 通过格式化，将开关量转换为0-1数值
-    valueFormatter: (val) => {
-      if (Number.isInteger(val)) {
-        return val % 2
-      } else { return val }
-    }
+    // valueFormatter: (val) => {
+    //   if (Number.isInteger(val)) {
+    //     return val % 2
+    //   } else { return val }
+    // }
 
     // showContent: true,
 
@@ -259,9 +279,6 @@ let initOption = {
       },
       restore: {},
       saveAsImage: {},
-      // brush: {
-      //   type: ['lineX', 'clear']
-      // }
     }
   },
 
@@ -367,13 +384,29 @@ let initOption = {
   // ],
 
   xAxis: [{
-    name: "时间",
-    type: "category"
+    name: "时间/s",
+    type: "category",
+    axisTick: {
+      alignWithLabel: true,
+    },
+    axisLabel: {
+      formatter: (value) => {
+        return value / 5;
+      }
+    }
   },
   {
     gridIndex: 1,
-    name: "时间",
-    type: "category"
+    name: "时间/s",
+    type: "category",
+    axisTick: {
+      alignWithLabel: true,
+    },
+    axisLabel: {
+      formatter: (value) => {
+        return value / 5;
+      }
+    }
   },
   ],
   // 纵坐标配置
@@ -411,6 +444,10 @@ let chartOption = {
 //   }
 // }
 
+// 记录缩放信息
+let zoomStack = []
+let dataZoomEvent = false
+let tmpZoom = []
 let mouseX = 0;
 // 图表初始化
 function echartsInit() {
@@ -433,39 +470,68 @@ function echartsInit() {
       dataZoomSelectActive: true
     })
 
-    myChart.on('click', function (params) {
-      console.log(params);
-    });
-
-
     // 为图表添加鼠标监听事件 鼠标左移动时恢复图像范围
     chart.value.addEventListener("mousedown", function (val) {
-      // console.log(val);
+      // 判断鼠标在canvas中垂直方向位置
+      let targetHeight = this.clientHeight
+      let height = val.zrY
+      let threshold = height / targetHeight
+      if (threshold > 0.9) { mouseX = 0 }
+      else {
+        mouseX = val.zrX
+      }
+    })
 
-      console.log(this);
-      mouseX = val.zrX
-
+    // 监听数据缩放事件
+    myChart.on('datazoom', (val) => {
+      if (!val.batch) {
+        zoomStack = []
+        return
+      } else {
+        dataZoomEvent = true;
+        let tmp = [val.batch[0].startValue, val.batch[0].endValue]
+        // 若缩放区域与上次不等，则push进stack
+        if (zoomStack.length == 0 || tmp.toString() != zoomStack[zoomStack.length - 1].toString()) {
+          zoomStack.push(tmp)
+        }
+      }
     })
 
     chart.value.addEventListener("mouseup", function (val) {
-      // console.log(val);
-      // console.log(this);
+      if (dataZoomEvent == false) return;
 
       if (val.zrX < mouseX) {
-        myChart.dispatchAction({
-          type: 'dataZoom',
-          // 可选，dataZoom 组件的 index，多个 dataZoom 组件时有用，默认为 0
-          // dataZoomIndex: number,
-          // 开始位置的百分比，0 - 100
-          start: 0,
-          // 结束位置的百分比，0 - 100
-          end: 100,
-          // // 开始位置的数值
-          // startValue: number,
-          // // 结束位置的数值
-          // endValue: number
-        })
+        let show1 = [...zoomStack]
+        console.log("show1", show1);
+        zoomStack.pop();
+        zoomStack.pop();
+        let show2 = [...zoomStack]
+        console.log("show2", show2);
+
+        let tmp = zoomStack.pop()
+        console.log("tmp", tmp);
+        let show3 = [...zoomStack]
+        console.log("show3", show3);
+        if (!tmp) {
+          myChart.dispatchAction({
+            type: 'dataZoom',
+            start: 0,
+            end: 100,
+          })
+        }
+        else {
+          let start = tmp[0]
+          let end = tmp[1]
+          console.log(start, end);
+          myChart.dispatchAction({
+            type: 'dataZoom',
+            startValue: start,
+            endValue: end
+          })
+        }
       }
+
+      dataZoomEvent = false;
     })
   }
 }
@@ -474,7 +540,7 @@ onMounted(() => {
   echartsInit()
 
   // 测试代码
-  chartOption.series.push({ name: "a", type: 'line', data: [10, 0, 4], smooth: true, })
+  chartOption.series.push({ name: "data3", type: 'line', data: [10, 0, 4, 10, 0, 410, 0, 410, 0, 4], smooth: true, })
   myChart.setOption(chartOption)
 
   chartOption.series.push({
@@ -489,6 +555,8 @@ onMounted(() => {
     name: "data2", type: 'line', data: [2, 3, 4, 6, 7], smooth: true,
   })
   myChart.setOption(chartOption)
+
+  myChart.setOption({ legend: { data: ['data1', '', 'data2', 'data3'] } })
 
 })
 
