@@ -816,14 +816,6 @@ img:hover {
     flex: 1;
   }
 }
-
-.mycascaderstyle {
-  :deep(.el-scrollbar .el-cascader-menu) {
-    min-width: 100px;
-    // width: 100px;
-    max-width: 100px;
-  }
-}
 </style >
 <style>
 /* 级联选择器下拉列表宽度修改 */

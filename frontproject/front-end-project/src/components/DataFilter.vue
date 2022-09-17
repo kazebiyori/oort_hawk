@@ -1,54 +1,67 @@
 <template>
     <div class="datafilter">
-        <div class="button">
-            <Button @click="clearFilter">重置</Button>
-        </div>
-        <div class="choosegroup">
-            <!-- 复选框 -->
-            <Checkbox v-model="checkBoxs.planeModel"></Checkbox>
-            <span class="selecttips">飞机型号</span>
-            <!-- 下拉选择 -->
-            <div class="select">
-                <Select v-model="selected.planeModel" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in option.planeModel" :value="item" :key="item">{{ item }}
-                    </Option>
-                </Select>
+        <Form ref="formRef" :model="datafilter">
+            <div class="button">
+                <FormItem>
+                    <Button @click="clearFilter">重置</Button>
+                </FormItem>
             </div>
-        </div>
-        <div class="choosegroup">
-            <!-- 复选框 -->
-            <Checkbox v-model="checkBoxs.engine1Model"></Checkbox>
-            <span class="selecttips">发动机型号</span>
-            <!-- 下拉选择 -->
-            <div class="select">
-                <Select v-model="selected.engine1Model" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in option.engine1Model" :value="item" :key="item">{{ item }}
-                    </Option>
-                </Select>
+            <div class="choosegroup">
+                <!-- 复选框 -->
+                <FormItem prop="planeModel">
+                    <Checkbox v-model="datafilter.checkBoxs.planeModel"></Checkbox>
+
+                    <span class="selecttips">飞机型号</span>
+                    <!-- 下拉选择 -->
+                    <div class="select">
+                        <Select v-model="datafilter.selected.planeModel" style="width:$sidebarFilterPanelWidth">
+                            <Option v-for="item in option.planeModel" :value="item" :key="item">{{ item }}
+                            </Option>
+                        </Select>
+                    </div>
+                </FormItem>
             </div>
-        </div>
-        <div class="choosegroup">
-            <!-- 复选框 -->
-            <Checkbox v-model="checkBoxs.testType"></Checkbox>
-            <span class="selecttips">试车类型</span>
-            <!-- 下拉选择 -->
-            <div class="select">
-                <Select v-model="selected.testType" style="width:$sidebarFilterPanelWidth">
-                    <Option v-for="item in option.testType" :value="item" :key="item">{{ item }}
-                    </Option>
-                </Select>
+            <div class="choosegroup">
+                <!-- 复选框 -->
+                <FormItem prop="engine1Model">
+                    <Checkbox v-model="datafilter.checkBoxs.engine1Model"></Checkbox>
+                    <span class="selecttips">发动机型号</span>
+                    <!-- 下拉选择 -->
+                    <div class="select">
+                        <Select v-model="datafilter.selected.engine1Model" style="width:$sidebarFilterPanelWidth">
+                            <Option v-for="item in option.engine1Model" :value="item" :key="item">{{ item }}
+                            </Option>
+                        </Select>
+                    </div>
+                </FormItem>
             </div>
-        </div>
-        <div class="choosegroup">
-            <!-- 复选框 -->
-            <Checkbox v-model="checkBoxs.timeRange"></Checkbox>
-            <span class="selecttips">日期</span>
-            <!-- 下拉选择 -->
-            <div class="select">
-                <DatePicker type="daterange" v-model="selected.timeRange" placement="bottom-end"
-                    placeholder="Select date" style="width: 200px" />
+            <div class="choosegroup">
+                <!-- 复选框 -->
+                <FormItem prop="testType">
+                    <Checkbox v-model="datafilter.checkBoxs.testType"></Checkbox>
+                    <span class="selecttips">试车类型</span>
+                    <!-- 下拉选择 -->
+                    <div class="select">
+                        <Select v-model="datafilter.selected.testType" style="width:$sidebarFilterPanelWidth">
+                            <Option v-for="item in option.testType" :value="item" :key="item">{{ item }}
+                            </Option>
+                        </Select>
+                    </div>
+                </FormItem>
             </div>
-        </div>
+            <div class="choosegroup">
+                <!-- 复选框 -->
+                <FormItem prop="timeRange">
+                    <Checkbox v-model="datafilter.checkBoxs.timeRange"></Checkbox>
+                    <span class="selecttips">日期</span>
+                    <!-- 下拉选择 -->
+                    <div class="select">
+                        <DatePicker type="daterange" v-model="datafilter.selected.timeRange" placement="bottom-end"
+                            placeholder="Select date" style="width: 200px" />
+                    </div>
+                </FormItem>
+            </div>
+        </Form>
     </div>
 </template>
 
@@ -59,9 +72,12 @@ const emitter = inject("$emitter")
 let checkBoxs = ref({ planeModel: false, engine1Model: false, testType: false, timeRange: false })
 let option = ref({ planeModel: [], engine1Model: [], testType: [] })
 let selected = ref({ planeModel: "", engine1Model: "", testType: "", timeRange: "" })
-
+let datafilter = ref({ checkBoxs, selected })
+let formRef = ref(null)
 function clearFilter() {
     checkBoxs.value = { planeModel: false, engine1Model: false, testType: false, timeRange: false }
+    selected.value = { planeModel: "", engine1Model: "", testType: "", timeRange: "" }
+    emitter.emit("filterData", { check: checkBoxs.value, select: selected.value })
 }
 
 onMounted(() => {
