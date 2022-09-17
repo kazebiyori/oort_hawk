@@ -242,53 +242,66 @@ onMounted(() => {
   myChart.setOption(
     chartConfigSelected
   )
-
+  // 单双击标志，单数次true
+  let clickflag = false
   // 为图表添加点击事件
   myChart.on('click', ({ value }) => {
     const selectDate = value[0]
-
-    // 第一次点击图表，初始化起止日期
-    let quit = false
-    if (startDate.value == '' && endDate.value == '') {
+    clickflag = !clickflag
+    if (clickflag) {
       startDate.value = selectDate
+      endDate.value = ''
+    } else {
       endDate.value = selectDate
-      quit = true
-    } else if (startDate.value == '') {
-      startDate.value = selectDate
-      quit = true
-    } else if (endDate.value == '') {
-      endDate.value = selectDate
-      quit = true
-    }
-    if (quit) {
       const endMoment = moment(endDate.value)
       const startMoment = moment(startDate.value)
       if (startMoment > endMoment) {
         [startDate.value, endDate.value] = [endDate.value, startDate.value]
       }
-      return
     }
 
-    // 修改图表起止日期
-    const selectMoment = moment(selectDate)
-    const endMoment = moment(endDate.value)
-    const startMoment = moment(startDate.value)
-    if (selectMoment == startMoment) {
-      startDate.value = ""
-    }
-    else if (selectMoment == endMoment) {
-      endDate.value = ""
-    }
-    else if (selectMoment > endMoment) {
-      endDate.value = selectDate
-    } else if (selectMoment < startMoment) {
-      startDate.value = selectDate
-    }
-    else if ((endMoment - selectMoment) > (selectMoment - startMoment)) {
-      startDate.value = selectDate
-    } else {
-      endDate.value = selectDate
-    }
+    // const selectDate = value[0]
+    // // 第一次点击图表，初始化起止日期
+    // let quit = false
+    // if (startDate.value == '' && endDate.value == '') {
+    //   startDate.value = selectDate
+    //   endDate.value = selectDate
+    //   quit = true
+    // } else if (startDate.value == '') {
+    //   startDate.value = selectDate
+    //   quit = true
+    // } else if (endDate.value == '') {
+    //   endDate.value = selectDate
+    //   quit = true
+    // }
+    // if (quit) {
+    //   const endMoment = moment(endDate.value)
+    //   const startMoment = moment(startDate.value)
+    //   if (startMoment > endMoment) {
+    //     [startDate.value, endDate.value] = [endDate.value, startDate.value]
+    //   }
+    //   return
+    // }
+    // // 修改图表起止日期
+    // const selectMoment = moment(selectDate)
+    // const endMoment = moment(endDate.value)
+    // const startMoment = moment(startDate.value)
+    // if (selectMoment == startMoment) {
+    //   startDate.value = ""
+    // }
+    // else if (selectMoment == endMoment) {
+    //   endDate.value = ""
+    // }
+    // else if (selectMoment > endMoment) {
+    //   endDate.value = selectDate
+    // } else if (selectMoment < startMoment) {
+    //   startDate.value = selectDate
+    // }
+    // else if ((endMoment - selectMoment) > (selectMoment - startMoment)) {
+    //   startDate.value = selectDate
+    // } else {
+    //   endDate.value = selectDate
+    // }
   })
 
   var listener = function () {

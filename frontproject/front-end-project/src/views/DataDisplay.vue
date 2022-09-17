@@ -793,7 +793,7 @@ img:hover {
   }
 
   .param {
-    flex: 1 !important;
+    flex: 1;
   }
 }
 </style >
