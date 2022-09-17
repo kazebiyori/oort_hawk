@@ -104,7 +104,7 @@ onMounted(() => {
 
 .avatar-wrapper:hover {
   .avatar {
-    transform: translateY(25px) scale(3);
+    transform: translateY(25px) translateX(-60px) scale(3);
     transition: 0.3s;
     transition-delay: 0.1s;
   }
@@ -127,7 +127,7 @@ onMounted(() => {
 
   position: absolute;
 
-  transform: translateX(-45%);
+  transform: translateX(-66%);
   top: 60px;
   overflow: hidden;
 

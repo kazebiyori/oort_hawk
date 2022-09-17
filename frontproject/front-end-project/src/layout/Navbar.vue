@@ -170,7 +170,7 @@ export default {
 
   .item-user {
     margin-left: auto;
-    margin-right: 100px;
+    margin-right: 60px;
     width: $navbarHeight;
     height: $navbarHeight;
   }
