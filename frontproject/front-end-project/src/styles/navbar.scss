@@ -1,7 +1,7 @@
 @import '@/styles/variables.scss';
 
-.nav-bar div::before,
-.nav-bar div::after {
+.nav-bar .item::before,
+.nav-bar .item::after {
   display: inline-block;
   opacity: 0;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.2s;
@@ -9,7 +9,7 @@
   transition: transform 0.3s, opacity 0.2s;
 }
 
-.nav-bar div::before {
+.nav-bar .item::before {
   margin-right: 8px;
   margin-bottom: 2px;
   content: '[';
@@ -18,7 +18,7 @@
   transform: translateX(20px);
 }
 
-.nav-bar div::after {
+.nav-bar .item::after {
   margin-left: 10px;
   margin-bottom: 2px;
   content: ']';
@@ -27,10 +27,10 @@
   transform: translateX(-20px);
 }
 
-.nav-bar div:hover::before,
-.nav-bar div:hover::after,
-.nav-bar div:focus::before,
-.nav-bar div:focus::after {
+.nav-bar .item:hover::before,
+.nav-bar .item:hover::after,
+.nav-bar .item:focus::before,
+.nav-bar .item:focus::after {
   opacity: 1;
   -webkit-transform: translateX(0px);
   -moz-transform: translateX(0px);
@@ -39,13 +39,13 @@
 
 
 // 下拉显示
-// .nav-bar div {
+// .nav-bar .item {
 // 	margin: 0 20px;
 // 	padding: 18px 20px;
 // }
 
-// .nav-bar div::before,
-// .nav-bar div::after {
+// .nav-bar .item::before,
+// .nav-bar .item::after {
 // 	position: absolute;
 // 	top: 0;
 // 	left: 0;
@@ -59,7 +59,7 @@
 // 	transition: opacity 0.3s, height 0.3s;
 // }
 
-// .nav-bar div::after {
+// .nav-bar .item::after {
 // 	top: 100%;
 // 	opacity: 0;
 // 	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
@@ -70,13 +70,13 @@
 // 	transform: translateY(-10px);
 // }
 
-// .nav-bar div span:first-child {
+// .nav-bar .item span:first-child {
 // 	z-index: 2;
 // 	display: block;
 // 	font-weight: 300;
 // }
 
-// .nav-bar div span:last-child {
+// .nav-bar .item span:last-child {
 // 	z-index: 1;
 // 	display: block;
 // 	padding: 8px 0 0 0;
@@ -95,23 +95,23 @@
 // 	transform: translateY(-100%);
 // }
 
-// .nav-bar div:hover::before,
-// .nav-bar div:focus::before {
+// .nav-bar .item:hover::before,
+// .nav-bar .item:focus::before {
 // 	height: 6px;
 // }
 
-// .nav-bar div:hover::before,
-// .nav-bar div:hover::after,
-// .nav-bar div:focus::before,
-// .nav-bar div:focus::after {
+// .nav-bar .item:hover::before,
+// .nav-bar .item:hover::after,
+// .nav-bar .item:focus::before,
+// .nav-bar .item:focus::after {
 // 	opacity: 1;
 // 	-webkit-transform: translateY(0px);
 // 	-moz-transform: translateY(0px);
 // 	transform: translateY(0px);
 // }
 
-// .nav-bar div:hover span:last-child,
-// .nav-bar div:focus span:last-child {
+// .nav-bar .item:hover span:last-child,
+// .nav-bar .item:focus span:last-child {
 // 	opacity: 1;
 // 	-webkit-transform: translateY(0%);
 // 	-moz-transform: translateY(0%);

@@ -17,8 +17,10 @@
         </el-icon>
 
         <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" title="根据飞机类型分组" @click="groupByPlaneType">
+        <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" style="transform:rotate(-90deg)"
+          @click="groupByEngineType" title="根据左引擎类型分组">
         <img src="@/assets/plane.svg" alt="#" class="plane-icon icon-left" style="transform:rotate(90deg)"
-          @click="groupByEngineType" title="根据引擎类型分组">
+          @click="groupByEngineType2" title="根据右引擎类型分组">
         <el-icon class="icon-left" :size="20" title="排序" @click="sortByPlaneTime">
           <Sort />
         </el-icon>
@@ -58,6 +60,11 @@ function groupByPlaneType() {
 function groupByEngineType() {
   emitter.emit("groupByEngineType", {})
 }
+
+function groupByEngineType2() {
+  emitter.emit("groupByEngineType2", {})
+}
+
 function sortByPlaneTime() {
   emitter.emit("sortByPlaneTime", {})
 }

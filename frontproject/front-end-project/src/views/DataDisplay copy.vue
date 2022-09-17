@@ -79,7 +79,7 @@
   </div>
 </template>
   
-<script ts setup>
+<script  setup>
 import { ref, computed, onMounted, inject, watch, unref, nextTick, reactive } from "vue"
 import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
@@ -782,18 +782,25 @@ img:hover {
 }
 
 .select-list {
-  margin: 1px;
+  margin: 5px;
   margin-top: 10px;
   display: flex;
   gap: 5px;
-  user-select: none !important;
 
   .data {
-    flex: 2 !important;
+    flex: 1.3;
   }
 
   .param {
-    flex: 1 !important;
+    flex: 1;
+  }
+}
+
+.mycascaderstyle {
+  :deep(.el-scrollbar .el-cascader-menu) {
+    min-width: 100px;
+    // width: 100px;
+    max-width: 100px;
   }
 }
 </style >

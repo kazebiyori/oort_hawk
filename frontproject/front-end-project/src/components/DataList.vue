@@ -34,7 +34,10 @@ let dataDisplay = computed(() => {
     return getGroupForm(filterData.value, "planeId", props.value.label)
   } else if (groupType.value == 2) {
     return getGroupForm(filterData.value, "engine1Model", props.value.label)
-  } else {
+  } else if (groupType.value == 3) {
+    return getGroupForm(filterData.value, "engine2Model", props.value.label)
+  }
+  else {
     return filterData.value
   }
 })
@@ -86,6 +89,7 @@ onMounted(() => {
     planeModel: "",
     planeId: ""
   }).then(res => {
+    console.log(res.data);
     data.value = res.data;
     data.value.sort((a, b) => {
       return moment(a.testTimeStart) - moment(b.testTimeStart)
@@ -104,6 +108,9 @@ emitter.on("groupByPlaneType", () => {
 })
 emitter.on("groupByEngineType", () => {
   groupType.value = 2;
+})
+emitter.on("groupByEngineType2", () => {
+  groupType.value = 3;
 })
 
 let direction = true;
