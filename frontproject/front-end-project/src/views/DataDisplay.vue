@@ -31,7 +31,22 @@
         <!-- <span class="tips">
           已选择7项，展示3项
         </span> -->
+
         <div class="function-icon">
+          <!-- 曲线数据展示范围选择 -->
+
+          <Form ref="formRef" :model="selectdatadisplay" inline>
+            <FormItem>
+              <img src="../assets/撤销.svg" alt="#" @click="reSetDataRegion()">
+            </FormItem>
+            <FormItem prop="start">
+              <Input v-model="selectdatadisplay.start" placeholder="起始点" @on-change='reSetDataRegiondisplay()' />
+            </FormItem>
+
+            <FormItem prop="end">
+              <Input v-model="selectdatadisplay.end" placeholder="结束点" @on-change='reSetDataRegiondisplay()' />
+            </FormItem>
+          </Form>
           <!-- <img src="../assets/看.svg" alt="#"> -->
           <img src="../assets/加.svg" alt="#" @click="addSelectList">
           <img src="../assets/删除.svg" alt="#" @click="clearSelectList">
@@ -40,14 +55,6 @@
         <div class="select-list" v-for="(select,index) in selectList" :key="index">
 
           <!-- <el-color-picker v-model="select.color" /> -->
-
-          <el-cascader v-model="select.param" :options="paramSource[select.data]" :no-data-text=" '无匹配数据' "
-            @change="val => { handleParamChange(val,index) }" class="param" placeholder="参数选择" />
-
-          <!-- <el-select v-model="select.data" class="data" placeholder="数据选择" size="large">
-            <el-option v-for="item in dataSource" :key="item.id" :label="item.label" :value="item.id" />
-          </el-select> -->
-
           <Select v-model="select.data" placeholder="数据选择" class="data" transfer
             @on-change="val => { handleDataChange(val,index) }">
             <Option v-for="item in dataSource" :value="item.id" :key="item.id">{{
@@ -55,6 +62,13 @@
             }}
             </Option>
           </Select>
+          <el-cascader v-model="select.param" :options="paramSource[select.data]" :no-data-text=" '无匹配数据' "
+            @change="val => { handleParamChange(val,index) }" class="param" placeholder="参数选择"
+            popper-class='mycascaderstyle' />
+
+          <!-- <el-select v-model="select.data" class="data" placeholder="数据选择" size="large">
+            <el-option v-for="item in dataSource" :key="item.id" :label="item.label" :value="item.id" />
+          </el-select> -->
 
           <!-- <Cascader :data="param" v-model="value" v-width="200" class="param" transfer /> -->
           <img src="../assets/删除.svg" alt="#" @click="deleteItemFromList(index)">
@@ -65,8 +79,8 @@
   </div>
 </template>
   
-<script setup>
-import { ref, computed, onMounted, inject, watch } from "vue"
+<script  setup>
+import { ref, computed, onMounted, inject, watch, unref, nextTick, reactive } from "vue"
 import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 import paramApi from "@/api/param"
@@ -78,6 +92,8 @@ import {
   exportGeneratedCSS as collectCSS,
   setFetchMethod
 } from 'darkreader';
+import { set } from "lodash";
+import { ensureScaleRawExtentInfo } from "echarts/lib/coord/scaleRawExtentInfo";
 
 // vuex全局对象
 const store = useStore();
@@ -94,7 +110,7 @@ let myChart = null  //操作对象
 const emitter = inject("$emitter")
 
 // 侧边栏 数据信息 data为数据唯一指定id
-const selectList = ref([{ color: "#123456", data: 0, param: "" }, { color: "#123456", data: "", param: "" }])
+const selectList = ref([{ color: "#123456", data: 0, param: "" }])
 // 侧边栏操作方法
 function addSelectList() {
   selectList.value.push({ color: "#123456", data: "", param: "" })
@@ -160,6 +176,19 @@ let legendData = {
 
 let offset = 0;
 
+// //根据数组的下标，删除该下标的元素
+var arrRemoveJson = function (arr, attr, value) {
+  if (!arr || arr.length == 0) {
+    return ""
+  }
+  let newArr = arr.filter(function (item, index) {
+    return item[attr] != value
+  })
+  return newArr
+}
+
+// 已绘制的参数列表
+let paramdrawedarray = []
 // 参数修改
 function handleParamChange(val, index) {
   let id = selectList.value[index].data
@@ -169,6 +198,20 @@ function handleParamChange(val, index) {
   // let name = selectList.value[index];
   let name = "" + type + " " + key;
 
+  // 新选择器选择的数据标志
+  let indexdrawedflag = paramdrawedarray[index] == null
+  // 选择器重新选择新数据标志
+  // let paramdrawedflag = paramdrawedarray.includes(name)
+  // 选择器重新选择了新数据则删除原来的曲线，再绘制新曲线
+  if (!indexdrawedflag) {
+    let paramdrawedname = paramdrawedarray[index]
+    console.log(paramdrawedname)
+    // chartOption.series.remove(paramdrawedname)
+    chartOption.series = arrRemoveJson(chartOption.series, 'name', paramdrawedname)
+  }
+  // if (!paramdrawedflag) {
+  // 是新增的选择器选择的数据则直接新增绘制曲线
+  paramdrawedarray[index] = name
   legendData.data = legendData.data.filter(item => item != "")
   legendData.data.push(name)
   legendData.data.sort()
@@ -212,6 +255,7 @@ function handleParamChange(val, index) {
       // myChart.setOption({ series: { type: 'bar', data, smooth: true } }, true)
     })
   }
+  // }
 }
 
 // 数据图配置信息 -------------------------------------------------------------------------------------
@@ -455,7 +499,9 @@ function echartsInit() {
   {
     // 获取图表对象
     chart.value.focus()
-    myChart = echarts.init(chart.value, 'dark');
+    // myChart = echarts.init(chart.value, 'dark');
+    myChart = echarts.init(chart.value);
+
     // 图表自适应
     var listener = function () {
       myChart.resize()
@@ -616,6 +662,36 @@ emitter.on("chooseNewData", async (data, check) => {
   }
 })
 
+// 图表数据显示范围选择初始化 响应式
+const selectdatadisplay = reactive({
+  start: '0',
+  end: '100',
+})
+// 图表数据显示范围选择重置
+let formRef = ref(null)
+const reSetDataRegion = () => {
+  nextTick(() => {
+    // const form = unref(formRef)
+    // form.resetFields()
+    formRef.value.resetFields()
+    // set(selectdatadisplay, 'start', 0)
+    // set(selectdatadisplay, 'end', 100)
+  })
+  myChart.dispatchAction({
+    type: 'dataZoom',
+    start: 0,
+    end: 100,
+  })
+}
+// 图表数据范围选择后图标显示更新
+const reSetDataRegiondisplay = () => {
+  myChart.dispatchAction({
+    type: 'dataZoom',
+    start: selectdatadisplay.start,
+    end: selectdatadisplay.end
+  })
+}
+
 </script>
   
 <style lang="scss" scoped>
@@ -691,6 +767,16 @@ img:hover {
   gap: 5px;
 }
 
+:deep(.ivu-form-inline) {
+  display: flex;
+}
+
+:deep(.ivu-form-inline .ivu-form-item) {
+  display: inline-flex;
+}
+
+
+
 .foldicon {
   margin: 10px;
   display: flex;
@@ -730,5 +816,19 @@ img:hover {
     flex: 1;
   }
 }
+
+.mycascaderstyle {
+  :deep(.el-scrollbar .el-cascader-menu) {
+    min-width: 100px;
+    // width: 100px;
+    max-width: 100px;
+  }
+}
+</style >
+<style>
+/* 级联选择器下拉列表宽度修改 */
+.el-cascader-menu {
+  min-width: 120px;
+  max-width: 120px;
+}
 </style>
-  
