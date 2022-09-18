@@ -105,7 +105,8 @@ const CLOSE_DATADISPLAYSELECTOR = () => store.commit("CLOSE_DATADISPLAYSELECTOR"
 const echarts = inject('$echarts')
 const chart = ref(null) //dom对象
 let myChart = null  //操作对象
-
+// 已绘制的参数列表
+let paramdrawedarray = []
 // 获取事件总线
 const emitter = inject("$emitter")
 
@@ -120,6 +121,8 @@ function clearSelectList() {
   myChart.clear()
   myChart.setOption(initOption)
   selectList.value = []
+  paramdrawedarray = []
+  chartOption.series = []
 }
 function deleteItemFromList(index) {
   // let type = val[0]
@@ -131,7 +134,9 @@ function deleteItemFromList(index) {
   let pre = selectList.value[index].param
   let type = pre[0]
   let key = pre[1]
-  let name = "" + type + " " + key;
+  let name = "" + type + key + ':' + selectList.value[index].data; ""
+  chartOption.series = arrRemoveIndex(index, chartOption.series)
+  paramdrawedarray = arrRemoveIndex(index, paramdrawedarray)
 
   // echarts 通过dispatch控制图例点击事件
   myChart.dispatchAction({
@@ -172,6 +177,10 @@ let legendData = {
   top: 0,
   orient: 'horizontal',
   data: [],
+  // 使用回调函数
+  formatter: function (name) {
+    return name.match(/(\S*):/)[1];
+  }
 }
 
 let offset = 0;
@@ -187,8 +196,16 @@ var arrRemoveJson = function (arr, attr, value) {
   return newArr
 }
 
-// 已绘制的参数列表
-let paramdrawedarray = []
+//index为删除项的下标值  arr为源数组
+var arrRemoveIndex = function (index, arr) {
+  if (!arr || arr.length == 0) {
+    return ""
+  }
+  arr.splice(index, 1)
+  return arr
+}
+
+
 // 参数修改
 function handleParamChange(val, index) {
   let id = selectList.value[index].data
@@ -196,37 +213,40 @@ function handleParamChange(val, index) {
   let key = val[1]
 
   // let name = selectList.value[index];
-  let name = "" + type + " " + key;
+  let name = "" + type + key + ":" + id;
 
   // 新选择器选择的数据标志
   let indexdrawedflag = paramdrawedarray[index] == null
-  // 选择器重新选择新数据标志
-  // let paramdrawedflag = paramdrawedarray.includes(name)
+
   // 选择器重新选择了新数据则删除原来的曲线，再绘制新曲线
   if (!indexdrawedflag) {
     let paramdrawedname = paramdrawedarray[index]
-    console.log(paramdrawedname)
-    // chartOption.series.remove(paramdrawedname)
     chartOption.series = arrRemoveJson(chartOption.series, 'name', paramdrawedname)
   }
-  // if (!paramdrawedflag) {
   // 是新增的选择器选择的数据则直接新增绘制曲线
   paramdrawedarray[index] = name
   legendData.data = legendData.data.filter(item => item != "")
   legendData.data.push(name)
   legendData.data.sort()
-  let pos = legendData.data.findIndex(item => { if (item.match("开关量")) return true })
+  let pos = legendData.data.findIndex(item => { if (item.match("模拟量")) return true })
   if (pos != -1) {
-    legendData.data.splice(pos + 1, 0, '')
-  }
-  myChart.setOption({ legend: legendData })
+    legendData.data.splice(pos, 0, '\n')
 
+    console.log(pos)
+  }
+  console.log(legendData.data)
+  myChart.setOption({ legend: legendData })
+  if (pos != -1) {
+    legendData.data.splice(pos, 1)
+  }
+  console.log(legendData.data)
+  console.log(type)
   if (type == "模拟量") {
     // let { data } = await paramApi.getParamDataSingle({ id, key })
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
         type: 'line', data, name,
-
+        xAxisIndex: 0, yAxisIndex: 0,
         // symbol: "none",
         // symbolSize: 0,
         // smooth: true,
@@ -242,6 +262,7 @@ function handleParamChange(val, index) {
       chartOption.series.push({
         type: 'line', data: data.map(i => i + offset), name, //step:'middle'
         xAxisIndex: 1, yAxisIndex: 1,
+
 
         // symbol: "none",
         // symbolSize: 0,
