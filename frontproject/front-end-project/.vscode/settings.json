@@ -1,6 +1,6 @@
 {
   // 文件保存自动格式化
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   // 格式化插件设置为 prettier
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

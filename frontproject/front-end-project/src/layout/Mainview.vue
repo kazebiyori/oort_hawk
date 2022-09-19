@@ -1,22 +1,17 @@
 <template>
-  <Sidebar class="sidebar"></Sidebar>
+  <div class="wrapper">
+    <Sidebar class="sidebar"></Sidebar>
 
-  <div :class="{ 'mainWithSide': showDataList, 'mainWithoutSide': !showDataList }">
-    <Tagbar class="tagbar"></Tagbar>
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
-
-    <div class="thememanu">
-      <!-- <button @click="theme('iview')">默认</button>
-    <button @click="theme('light')">浅色</button>
-    <button @click="theme('dark')">深色</button> -->
+    <div :class="{ 'mainWithSide': showDataList, 'mainWithoutSide': !showDataList }">
+      <Tagbar class="tagbar"></Tagbar>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </div>
-
-
   </div>
+
 </template>
 
 <script>
@@ -25,10 +20,6 @@ import { Sidebar, Tagbar } from './index.js'
 
 export default {
   methods: {
-    theme(type) {
-      this.$store.commit('upDate', { themeType: type });
-      window.document.documentElement.setAttribute("data-theme", type);
-    }
   },
   components: {
     Sidebar, Tagbar
@@ -56,36 +47,25 @@ div {
   @include border_color("border_color1");
 }
 
-.thememanu {
-  z-index: 200px;
-  position: absolute;
-  top: 10px;
-  right: 300px;
+.wrapper {
+  display: flex;
 }
 
-.sidebar {
-  display: inline-block;
-}
+.sidebar {}
 
 .tagbar {
   height: $maintopHeight
 }
 
 .mainWithSide {
-  display: inline-block;
-  transition: width $animationTime;
-
+  // transition: width $animationTime;
   width: $mainWithSideWidth;
   height: $sidebarHeight;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 .mainWithoutSide {
-  display: inline-block;
-  transition: width $animationTime;
-
   width: $mainWithoutSideWidth;
   height: $sidebarHeight;
-  overflow: hidden;
 }
 </style>

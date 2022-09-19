@@ -1,43 +1,29 @@
 <template>
   <div>
     <!-- 收缩栏 -->
-    <div class="foldicon">
-      <svg t="1660553094186" width="25" height="25" class="left" viewBox="0 0 1024 1024" version="1.1"
-        @click="OPEN_DATADISPLAYSELECTOR" xmlns="http://www.w3.org/2000/svg" p-id="10314"
-        xmlns:xlink="http://www.w3.org/1999/xlink">
-        <path
-          d="M173 137c-19.882 0-36 16.118-36 36v680c0 19.882 16.118 36 36 36h678c19.882 0 36-16.118 36-36V173c0-19.882-16.118-36-36-36H173z m0-72h678c59.647 0 108 48.353 108 108v680c0 59.647-48.353 108-108 108H173c-59.647 0-108-48.353-108-108V173c0-59.647 48.353-108 108-108z m460.456 677.544c14.059 14.059 14.059 36.853 0 50.912-14.059 14.059-36.853 14.059-50.912 0l-256-256c-14.059-14.059-14.059-36.853 0-50.912l256-256c14.059-14.059 36.853-14.059 50.912 0 14.059 14.059 14.059 36.853 0 50.912L402.912 512l230.544 230.544z"
-          p-id="10315" fill="#8a8a8a"></path>
-      </svg>
-      <svg t="1660553065871" class="right" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-        @click="CLOSE_DATADISPLAYSELECTOR" p-id="10041" xmlns:xlink="http://www.w3.org/1999/xlink" width="25"
-        height="25">
-        <path
-          d="M173 137c-19.882 0-36 16.118-36 36v680c0 19.882 16.118 36 36 36h678c19.882 0 36-16.118 36-36V173c0-19.882-16.118-36-36-36H173z m0-72h678c59.647 0 108 48.353 108 108v680c0 59.647-48.353 108-108 108H173c-59.647 0-108-48.353-108-108V173c0-59.647 48.353-108 108-108z m435.088 447L377.544 281.456c-14.059-14.059-14.059-36.853 0-50.912 14.059-14.059 36.853-14.059 50.912 0l256 256c14.059 14.059 14.059 36.853 0 50.912l-256 256c-14.059 14.059-36.853 14.059-50.912 0-14.059-14.059-14.059-36.853 0-50.912L608.088 512z"
-          p-id="10042" fill="#8a8a8a"></path>
-      </svg>
-
+    <div class="list-control">
+      <MyButton class="control-btn"
+        @click="showSelector==true ? CLOSE_DATADISPLAYSELECTOR() : OPEN_DATADISPLAYSELECTOR() ">
+        <Operation width='15' />
+      </MyButton>
     </div>
 
     <div class="data-area">
       <!-- 左边折线图 -->
       <div :class="{ 'leftboardWithselector': showSelector, 'leftboardWithoutselector': !showSelector }">
-        <div id="chart" ref="chart" :style="{ width: '100%', height: '100%' }">
+        <div ref="chartDom" :style="{ width: '100%', height: '100%' }">
         </div>
       </div>
 
       <!-- 右边选择框 -->
-      <div class="selector" :class="{'selector-close': !showSelector }">
-        <!-- <span class="tips">
-          已选择7项，展示3项
-        </span> -->
-
+      <div class="select-container" :class="{'selector-close': !showSelector }">
         <div class="function-icon">
           <!-- 曲线数据展示范围选择 -->
-
           <Form ref="formRef" :model="selectdatadisplay" inline>
             <FormItem>
-              <img src="../assets/撤销.svg" alt="#" @click="reSetDataRegion()">
+              <MyButton style="position:relative;top: 4px">
+                <img src="../assets/撤销.svg" alt="#" @click="reSetDataRegion()" width="15">
+              </MyButton>
             </FormItem>
             <FormItem prop="start">
               <Input v-model="selectdatadisplay.start" placeholder="起始点" @on-change='reSetDataRegiondisplay()' />
@@ -47,255 +33,313 @@
               <Input v-model="selectdatadisplay.end" placeholder="结束点" @on-change='reSetDataRegiondisplay()' />
             </FormItem>
           </Form>
-          <!-- <img src="../assets/看.svg" alt="#"> -->
-          <img src="../assets/加.svg" alt="#" @click="addSelectList">
-          <img src="../assets/删除.svg" alt="#" @click="clearSelectList">
+          <MyButton style="position:relative;top: 4px">
+            <img src="../assets/删除.svg" alt="#" @click="clearChart" width="15">
+          </MyButton>
         </div>
 
-        <div class="select-list" v-for="(select,index) in selectList" :key="index">
+        <div class="list-container">
+          <div v-if=" dataSource.length==0" class="empty-message">未选择飞参数据</div>
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item v-for="(data, pos) in dataSource" :name="data.id" class="data-item">
+              <!-- 标题内容 -->
+              <template #title>
+                <h2 :style="{color: getColor(data.label)}" class="tab-title">
+                  {{data.label}}
+                </h2>
+                <div class="tab-subtitle" :title="data.id">{{ `id: ${data.id.slice(0,5)}${data.id.length>5 ? '...' :
+                ''}` }}</div>
+              </template>
+              <!-- 框内内容 -->
+              <div class="panel-select">
+                <el-cascader v-model="data.select" :options="paramSource[data.id]" @change="" class="list-tab"
+                  :no-data-text=" '无匹配数据'" placeholder="参数选择" />
+                <MyButton @click="addParam(data.id, pos)">+</MyButton>
+              </div>
+              <div style="display:flex; justify-content: space-around;">
+                <div class="left-panel">
+                  <div class="panel-title">模拟量</div>
+                  <div class="panel-item" v-for="(param, posParam) in data.selectList['模拟量']">
+                    {{param}}
+                    <MyButton class="remove-btn" @click="removeParam('模拟量', data.id, pos, posParam)">
+                      <CloseBold width="10" />
+                    </MyButton>
+                  </div>
+                </div>
+                <div class="right-panel">
+                  <div class="panel-title">开关量</div>
+                  <div class="panel-item" v-for="(param, posParam) in data.selectList['开关量']">
+                    {{param}}
+                    <MyButton class="remove-btn" @click="removeParam('开关量', data.id, pos, posParam)">
+                      <CloseBold width="10" />
+                    </MyButton>
+                  </div>
+                </div>
+              </div>
+              <div class="empty-message" v-if="data.selectList['开关量'].length==0 && data.selectList['开关量'].length==0">
+                未选择参数
+              </div>
 
-          <!-- <el-color-picker v-model="select.color" /> -->
-          <Select v-model="select.data" placeholder="数据选择" class="data" transfer
-            @on-change="val => { handleDataChange(val,index) }">
-            <Option v-for="item in dataSource" :value="item.id" :key="item.id">{{
-            item.label
-            }}
-            </Option>
-          </Select>
-          <el-cascader v-model="select.param" :options="paramSource[select.data]" :no-data-text=" '无匹配数据' "
-            @change="val => { handleParamChange(val,index) }" class="param" placeholder="参数选择"
-            popper-class='mycascaderstyle' />
-
-          <!-- <el-select v-model="select.data" class="data" placeholder="数据选择" size="large">
-            <el-option v-for="item in dataSource" :key="item.id" :label="item.label" :value="item.id" />
-          </el-select> -->
-
-          <!-- <Cascader :data="param" v-model="value" v-width="200" class="param" transfer /> -->
-          <img src="../assets/删除.svg" alt="#" @click="deleteItemFromList(index)">
-          <!-- <img src="../assets/看.svg" alt="#"> -->
+            </el-collapse-item>
+          </el-collapse>
         </div>
+
       </div>
     </div>
   </div>
 </template>
   
-<script ts setup>
+<script setup>
 import { ref, computed, onMounted, inject, watch, unref, nextTick, reactive } from "vue"
 import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 import paramApi from "@/api/param"
+import MyButton from '@/components/MyButton.vue'
 
-import {
-  enable as enableDarkMode,
-  disable as disableDarkMode,
-  auto as followSystemColorScheme,
-  exportGeneratedCSS as collectCSS,
-  setFetchMethod
-} from 'darkreader';
-import { set } from "lodash";
-import { ensureScaleRawExtentInfo } from "echarts/lib/coord/scaleRawExtentInfo";
+// { label, value, id, select:"", selectList:[]}[]
 
-// vuex全局对象
+
+let activeNames = ref([])
+
+function addParam(id, pos) {
+  let param = dataSource.value[pos].select
+  let [type, key] = param
+
+  if (dataSource.value[pos].selectList[type].includes(key)) return;
+
+  dataSource.value[pos].selectList[type].push(key)
+  addLine({ type, key, id })
+}
+
+function removeParam(type, id, pos, posParam) {
+  // 注意获取key数值的位置
+  let key = dataSource.value[pos].selectList[type][posParam]
+  dataSource.value[pos].selectList[type].splice(posParam, 1)
+  removeLine({ type, key, id })
+}
+
+function clearChart() {
+  dataSource.value.splice(0)
+  myChart.clear();
+  echartsInit()
+}
+
+function getLineName({ type, key, id }) {
+  return '' + type + '-' + key + '-' + id
+}
+
+// echarts操作函数
+function addLine({ type, key, id }) {
+  paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
+    let series = null
+    let name = getLineName({ type, key, id })
+    console.log(name)
+    if (type === '模拟量') {
+      series = {
+        type: 'line', data, name,
+        xAxisIndex: 0, yAxisIndex: 0,
+        large: true,
+        largeThreshold: 3000
+      }
+    } else {
+      series = {
+        type: 'line', data: data.map(i => i + offset), name, //step:'middle'
+        xAxisIndex: 1, yAxisIndex: 1,
+        large: true,
+        largeThreshold: 3000,
+      }
+      offset += 2
+    }
+
+    initOption.series.push(series)
+    initOption.legend.data.push(name)
+    initOption.legend.data.sort()
+    myChart.setOption(initOption)
+  })
+}
+
+function getColor(str) {
+  return ''
+  let finger = Array.from(str.slice(11))
+  let num = finger.reduce((p, c) => { p += c.charCodeAt(); return p }, 0)
+  // return finger.charCodeAt()
+  // let num = arr.reduce((p, c) => { p += c.codePointAt(); return p }, 0)
+  console.log(num)
+  return `hsl(${num % 360},50%,80%)`
+  // return 'red'
+}
+
+function removeLine({ type, key, id }) {
+  let name = getLineName({ type, key, id })
+
+  initOption.series = initOption.series.filter(i => i.name != name)
+  initOption.legend.data.filter(i => i != name)
+
+  myChart.setOption(initOption, {
+    notMerge: true,
+  })
+
+  dispatchZoom()
+}
+
+// vuex全局对象P
 const store = useStore();
 let showSelector = computed(() => store.state.app.datadisplayselector.showSelector,)
 const OPEN_DATADISPLAYSELECTOR = () => store.commit("OPEN_DATADISPLAYSELECTOR")
 const CLOSE_DATADISPLAYSELECTOR = () => store.commit("CLOSE_DATADISPLAYSELECTOR")
 
-// 获取图表
-const echarts = inject('$echarts')
-const chart = ref(null) //dom对象
-let myChart = null  //操作对象
-// 已绘制的参数列表
-let paramdrawedarray = []
-// 获取事件总线
+
+// 事件总线
 const emitter = inject("$emitter")
 
-// 侧边栏 数据信息 data为数据唯一指定id
-const selectList = ref([{ color: "#123456", data: 0, param: "" }])
+/**
+ * 侧边栏
+ */
+const selectList = ref([{ data: null, param: [] }]) // 侧边栏 数据信息 data为数据唯一指定id
+let dataSource = ref([]) // 选择所有数据信息
+let paramSource = ref({}) // 数据信息对应的参数信息
+
 // 侧边栏操作方法
 function addSelectList() {
-  selectList.value.push({ color: "#123456", data: "", param: "" })
+  selectList.value.push({ data: null, param: [] })
 }
+// 重新初始化myChart组件
 function clearSelectList() {
-  // 重新初始化myChart组件
-  myChart.clear()
-  myChart.setOption(initOption)
+  offset = 0;
   selectList.value = []
   paramdrawedarray = []
   chartOption.series = []
+  myChart.clear()
+  echartsInit()
 }
+// 从列表删除item
 function deleteItemFromList(index) {
-  // let type = val[0]
-  // let key = val[1]
+  let item = selectList.value[index]
+  let id = item.data
+  let param = item.param
+  let type = param[0]
+  let key = param[1]
+  let name = type + key + ':' + id;
 
-  // let name = selectList.value[index];
-
-  offset = 0;
-  let pre = selectList.value[index].param
-  let type = pre[0]
-  let key = pre[1]
-  let name = "" + type + key + ':' + selectList.value[index].data; ""
-  chartOption.series = arrRemoveIndex(index, chartOption.series)
-  paramdrawedarray = arrRemoveIndex(index, paramdrawedarray)
-
-  // echarts 通过dispatch控制图例点击事件
-  myChart.dispatchAction({
-    type: 'legendUnSelect',
-    name
-  })
-
+  selectList.value = selectList.value.filter((_, i) => i != index)
+  chartOption.series = chartOption.series.filter(item => item.name != name)
   legendData.data = legendData.data.filter(item => item != name)
+
+  myChart.setOption(chartOption)
   myChart.setOption({ legend: legendData })
 
 
-  selectList.value = selectList.value.filter((item, i) => i != index)
+  // chartOption.series = arrRemoveIndex(index, chartOption.series)
+  // paramdrawedarray = arrRemoveIndex(index, paramdrawedarray)
+
+  // // echarts 通过dispatch控制图例点击事件
+  // myChart.dispatchAction({
+  //   type: 'legendUnSelect',
+  //   name
+  // })
 }
+function handleDataChange(_, index) { // 数据源修改
+  selectList.value[index].param = []
 
-// 选择所有数据信息
-let dataSource = ref([
-])
+  // let names = selectList.value.map(item => {
+  //   let id = item.data
+  //   let param = item.param
+  //   let type = param[0]
+  //   let key = param[1]
+  //   let name = type + key + ':' + id;
+  //   return name
+  // })
 
-// 数据信息对应的参数信息
-let paramSource = ref({})
-
-// 参数信息缓存
-let paramDataSource = ref({})
-
-watch(selectList, () => {
-  // console.log("list change");
-},
-  {
-    deep: true,
-  })
-
-// 选项修改
-function handleDataChange(val, index) {
-  selectList.value[index].param = ""
+  // // chartOption.series = chartOption.series.filter(item => names.includes(item.name))
+  // chartOption.series = chartOption.series.filter(item => false)
+  // legendData.data = legendData.data.filter(item => names.includes(item))
+  // myChart.setOption(chartOption)
+  // myChart.setOption({ legend: legendData })
 }
-
-let legendData = {
-  top: 0,
-  orient: 'horizontal',
-  data: [],
-  // 使用回调函数
-  formatter: function (name) {
-    return name.match(/(\S*):/)[1];
-  }
-}
-
-let offset = 0;
-
-// //根据数组的下标，删除该下标的元素
-var arrRemoveJson = function (arr, attr, value) {
-  if (!arr || arr.length == 0) {
-    return ""
-  }
-  let newArr = arr.filter(function (item, index) {
-    return item[attr] != value
-  })
-  return newArr
-}
-
-//index为删除项的下标值  arr为源数组
-var arrRemoveIndex = function (index, arr) {
-  if (!arr || arr.length == 0) {
-    return ""
-  }
-  arr.splice(index, 1)
-  return arr
-}
-
-
 // 参数修改
-function handleParamChange(val, index) {
-  let id = selectList.value[index].data
-  let type = val[0]
-  let key = val[1]
+function handleParamChange(_, index) { // 参数修改
+  console.log(names.value)
+  let item = selectList.value[index]
+  let id = item.data
+  let param = item.param
+  let type = param[0]
+  let key = param[1]
+  let name = type + key + ':' + id;
 
-  // let name = selectList.value[index];
-  let name = "" + type + key + ":" + id;
+  // 删除旧数据，并更新新数据
+  chartOption.series = chartOption.series.filter(item => names.value.includes(item.name))
+  legendData.data = legendData.data.filter(item => names.value.includes(item))
 
-  // 新选择器选择的数据标志
-  let indexdrawedflag = paramdrawedarray[index] == null
 
-  // 选择器重新选择了新数据则删除原来的曲线，再绘制新曲线
-  if (!indexdrawedflag) {
-    let paramdrawedname = paramdrawedarray[index]
-    chartOption.series = arrRemoveJson(chartOption.series, 'name', paramdrawedname)
-  }
-  // 是新增的选择器选择的数据则直接新增绘制曲线
-  paramdrawedarray[index] = name
-  legendData.data = legendData.data.filter(item => item != "")
   legendData.data.push(name)
   legendData.data.sort()
   let pos = legendData.data.findIndex(item => { if (item.match("模拟量")) return true })
   if (pos != -1) {
     legendData.data.splice(pos, 0, '\n')
-
-    console.log(pos)
   }
-  console.log(legendData.data)
   myChart.setOption({ legend: legendData })
-  if (pos != -1) {
-    legendData.data.splice(pos, 1)
-  }
-  console.log(legendData.data)
-  console.log(type)
+
   if (type == "模拟量") {
-    // let { data } = await paramApi.getParamDataSingle({ id, key })
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
         type: 'line', data, name,
         xAxisIndex: 0, yAxisIndex: 0,
-        // symbol: "none",
-        // symbolSize: 0,
-        // smooth: true,
-        // sampling: 'average',
         large: true,
-        largeThreshold: 3000,
+        largeThreshold: 3000
       })
       myChart.setOption(chartOption)
-      // myChart.setOption({ series: { type: 'line', data, smooth: true } }, true)
     })
   } else if (type == "开关量") {
     paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
       chartOption.series.push({
         type: 'line', data: data.map(i => i + offset), name, //step:'middle'
         xAxisIndex: 1, yAxisIndex: 1,
-
-
+        large: true,
+        largeThreshold: 3000,
         // symbol: "none",
         // symbolSize: 0,
         // smooth: true,
         // sampling: 'average',
-        large: true,
-        largeThreshold: 3000,
       })
       offset += 2
       myChart.setOption(chartOption)
-      // myChart.setOption({ series: { type: 'bar', data, smooth: true } }, true)
     })
   }
-  // }
 }
 
-// 数据图配置信息 -------------------------------------------------------------------------------------
 
-let initOption = {
-  // 关闭动画
-  animation: false,
-
-  // 图例配置
-  // legend: {
-  //   orient: 'horizontal',
-  //   // top: 10,
-
-  //   data: ["a", "b"]
-  // },
-
+/**
+ * echarts
+ */
+const echarts = inject('$echarts')
+const chartDom = ref(null) //dom对象
+let myChart = null  //echats挂载对象
+let paramdrawedarray = []  // 已绘制的参数列表
+let offset = 0; //开关量曲线offset
+let legendData = {  //echarts图例
+  top: 0,
+  orient: 'horizontal',
+  data: ['起飞'],
+  // 使用回调函数
+  formatter: function (name) {
+    return name.match(/(\S*):/)[1];
+  }
+}
+let initOption = {  //echarts初始化配置
+  legend: {
+    top: 0,
+    orient: 'horizontal',
+    data: [],
+    formatter: function (name) {
+      let sep = name.split('-')
+      return sep[0] + '-' + sep[1]
+    }
+  },
+  series: [
+  ],
+  animation: true,  // 关闭动画
   // 鼠标悬停提示
   tooltip: {
-
     show: true,
     trigger: 'axis',
     transitionDuration: 0.6,
@@ -306,7 +350,7 @@ let initOption = {
     valueFormatter: (val) => {
       if (Number.isInteger(val)) {
         return val % 2
-      } else { return val }
+      } else { return val.toFixed(2) }
     }
 
     // showContent: true,
@@ -348,15 +392,6 @@ let initOption = {
     }
   },
 
-  // 未知配置项
-  // brush: {
-  //   xAxisIndex: 'all',
-  //   brushLink: 'all',
-  //   outOfBrush: {
-  //     colorAlpha: 0.1
-  //   }
-  // },
-
   // 图表整体位置
   grid: [
     {
@@ -381,7 +416,7 @@ let initOption = {
       start: 0,
       end: 100,
       // 数据量大后，realtime出现卡顿
-      realtime: false,
+      realtime: true,
     },
     // {
     //   show: true,
@@ -457,7 +492,7 @@ let initOption = {
     },
     axisLabel: {
       formatter: (value) => {
-        return value / 5;
+        return value;
       }
     }
   },
@@ -470,7 +505,7 @@ let initOption = {
     },
     axisLabel: {
       formatter: (value) => {
-        return value / 5;
+        return value;
       }
     }
   },
@@ -490,43 +525,35 @@ let initOption = {
     splitLine: { show: false }
   }],
 }
-
-
-let chartOption = {
+let chartOption = { //echarts更新配置
   series: [
   ]
 }
-
-
-
-// function helpFunc() {
-//   // 根据序列数据获取图例等信息
-//   for (let i = 0; i < seriesData.length; i++) {
-//     var lineItem = new serLineItem();
-//     lineItem.name = seriesData[i].name;
-//     legendData.push(seriesData[i].name);
-//     lineItem.data = seriesData[i].data;
-//     newData.push(lineItem);
-//   }
-// }
 
 // 记录缩放信息
 let zoomStack = []
 let dataZoomEvent = false
 let mouseX = 0;
+
+function dispatchZoom() {
+  myChart.dispatchAction({
+    type: 'takeGlobalCursor',
+    key: 'dataZoomSelect',
+    dataZoomSelectActive: true
+  })
+}
+
 // 图表初始化
 function echartsInit() {
   {
     // 获取图表对象
-    chart.value.focus()
-    // myChart = echarts.init(chart.value, 'dark');
-    myChart = echarts.init(chart.value);
+    myChart = echarts.init(chartDom.value);
 
     // 图表自适应
     var listener = function () {
       myChart.resize()
     }
-    EleResize.on(chart.value, listener)
+    EleResize.on(chartDom.value, listener)
 
     // 设置图表数据
     initOption && myChart.setOption(initOption);
@@ -538,7 +565,7 @@ function echartsInit() {
     })
 
     // 为图表添加鼠标监听事件 鼠标左移动时恢复图像范围
-    chart.value.addEventListener("mousedown", function (val) {
+    chartDom.value.addEventListener("mousedown", function (val) {
       // 判断鼠标在canvas中垂直方向位置
       let targetHeight = this.clientHeight
       let height = val.zrY
@@ -564,7 +591,7 @@ function echartsInit() {
       }
     })
 
-    chart.value.addEventListener("mouseup", function (val) {
+    chartDom.value.addEventListener("mouseup", function (val) {
       if (dataZoomEvent == false) return;
 
       if (val.zrX < mouseX) {
@@ -603,13 +630,11 @@ function echartsInit() {
   }
 }
 
+
+/**
+ * 初始化
+ */
 onMounted(() => {
-  // setFetchMethod(window.fetch)
-  // enableDarkMode({
-  //   brightness: 100,
-  //   contrast: 90,
-  //   sepia: 10,
-  // });
   echartsInit()
 })
 
@@ -636,10 +661,11 @@ emitter.on("chooseNewData", async (data, check) => {
 
   // 如果新数据不在列表中
   if (!inList) {
-    let json = { label, value, id }
+    let json = { label, value, id, select: "", selectList: { '模拟量': [], '开关量': [] } }
 
     // 更新获取dataSource
     dataSource.value.push(json)
+    activeNames.value.push(id)
 
     // 通过data id获取参数列表
     let { data: analogList } = await paramApi.getAnalogList({ id: id })
@@ -661,6 +687,7 @@ emitter.on("chooseNewData", async (data, check) => {
     paramSource.value[id][1]["children"] = switchDisplay
   }
 })
+
 
 // 图表数据显示范围选择初始化 响应式
 const selectdatadisplay = reactive({
@@ -691,7 +718,6 @@ const reSetDataRegiondisplay = () => {
     end: selectdatadisplay.end
   })
 }
-
 </script>
   
 <style lang="scss" scoped>
@@ -699,64 +725,148 @@ const reSetDataRegiondisplay = () => {
 
 $selectboardWitdh: 400px;
 
-:deep(.ivu-select-dropdown span) {
-  float: none;
+.empty-message {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 0px;
+  // padding-bottom: 15px;
+  font-weight: bold;
+  color: #bbb;
 }
 
-.data-area {
+.function-icon {
   display: flex;
+}
+
+
+
+.data-area {
+  padding-top: 50px;
+  display: flex;
+  border-radius: 10px;
+  // background: #fff;
+  // box-shadow: 12px 12px 24px #cccccc,
+  //   -12px -12px 24px #ffffff;
 }
 
 .leftboardWithselector {
   padding: 40px;
   padding-bottom: 80px;
   padding-top: 0px;
-  width: calc(100% - $selectboardWitdh);
   height: $dataDisplayHeight;
+
+  width: calc(100% - $selectboardWitdh);
+
 }
 
 .leftboardWithoutselector {
   padding: 40px;
   padding-bottom: 80px;
   padding-top: 0px;
-  width: 100%;
   height: $dataDisplayHeight;
+
+  width: 100%;
+
+  // flex: 1;
 }
 
-.selector {
-  position: relative;
+.select-container {
   width: $selectboardWitdh;
-  height: $dataDisplayHeight;
-  border: $borderStyle;
-  padding: 10px;
 
+  padding: 10px;
+  padding-right: 5px;
+
+  border-radius: 0px;
+  background: #ffffff;
+  box-shadow: 12px 12px 24px #cccccc,
+    -12px -12px 24px #ffffff;
 }
 
 .selector-close {
   width: 0px;
-  height: 0px;
-
   transform: translate($selectboardWitdh);
 }
 
-img {
-  width: 25px;
-  height: 25px;
+.list-container {
+  user-select: none;
+  font-size: large;
+  overflow: scroll !important;
+  height: 90%;
+  // padding-left: 10px;
+  // padding-right: 10px;
 
+  .tab-title {}
+
+  .tab-subtitle {
+    margin-left: 10px;
+    position: relative;
+    top: 2px;
+  }
+
+  .data-item {
+    border: 1px solid #eee;
+    padding: 0px 10px;
+    border-bottom: none;
+  }
+
+  .data-item:last-child {
+    border-bottom: 2px solid #eee;
+  }
+
+  .panel-select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+
+    button {
+      font-weight: bold;
+      margin-left: 20px;
+    }
+  }
+
+  .left-panel,
+  .right-panel {
+    flex: 1;
+
+    // background-color: red;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+
+    // flex-wrap: column ;
+    .panel-title {
+      display: flex;
+      justify-content: center;
+      font-weight: bold;
+      font-size: medium;
+      margin-top: 5px;
+      width: 80%;
+      // background-color: red;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .panel-item {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 80%;
+      padding: 2px;
+      background-color: #eee;
+
+      .remove-btn {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
 }
 
-img:hover {
-  background-color: $iconSelected;
-  border-radius: 3px;
-  cursor: pointer;
-}
 
-.tips {
-  float: left;
-  position: relative;
-  top: 4px;
-  left: 3px;
-}
 
 .function-icon {
   display: flex;
@@ -767,6 +877,28 @@ img:hover {
   gap: 5px;
 }
 
+
+
+.list-control {
+  margin: 10px;
+  display: flex;
+  justify-content: end;
+  gap: 5px;
+  position: absolute;
+  right: 0px;
+  top: 85px;
+}
+
+.list-control .control-btn {
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+.list-control:hover .control-btn {
+  opacity: 1;
+  transition: 0.2s;
+}
+
 :deep(.ivu-form-inline) {
   display: flex;
 }
@@ -775,53 +907,15 @@ img:hover {
   display: inline-flex;
 }
 
-
-
-.foldicon {
-  margin: 10px;
-  display: flex;
-  justify-content: end;
-  gap: 5px;
-
-  .left {
-    cursor: pointer;
-
-    &:hover {
-      background-color: $iconSelected;
-      border-radius: 3px;
-    }
-  }
-
-  .right {
-    cursor: pointer;
-
-    &:hover {
-      background-color: $iconSelected;
-      border-radius: 3px;
-    }
-  }
-}
-
-.select-list {
-  margin: 1px;
-  margin-top: 10px;
-  display: flex;
-  gap: 5px;
-  user-select: none !important;
-
-  .data {
-    flex: 2 !important;
-  }
-
-  .param {
-    flex: 1;
-  }
+:deep(.ivu-select-dropdown span) {
+  float: none;
 }
 </style >
 <style>
-/* 级联选择器下拉列表宽度修改 */
+.el-cascader {}
+
 .el-cascader-menu {
-  min-width: 120px;
+  /* min-width: 120px; */
   max-width: 120px;
 }
 </style>

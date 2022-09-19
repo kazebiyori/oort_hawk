@@ -48,6 +48,8 @@ import {
   disable
 } from 'darkreader';
 
+
+
 const store = useStore();
 
 let theme = ref(0)
@@ -55,13 +57,13 @@ function changeTheme(type) {
   localStorage.setItem('theme', type)
   theme.value = type
   if (type == 'dark') {
-    store.commit('upDate', { themeType: 'iview' });
+    // store.commit('upDate', { themeType: 'iview' });
     window.document.documentElement.setAttribute("data-theme", 'iview');
     enable();
     return;
   }
   disable();
-  store.commit('upDate', { themeType: type });
+  // store.commit('upDate', { themeType: type });
   window.document.documentElement.setAttribute("data-theme", type);
 }
 
@@ -96,7 +98,7 @@ onMounted(() => {
   position: absolute;
   transition: 0.3s;
 
-  cursor: pointer;
+  // cursor: pointer;
 
   z-index: 2;
 
@@ -183,7 +185,7 @@ onMounted(() => {
       background-color: hsl(250, 50%, 50%);
       transform: translateY(5%);
       padding: 3px;
-      cursor: pointer;
+      // cursor: pointer;
     }
 
     .default {

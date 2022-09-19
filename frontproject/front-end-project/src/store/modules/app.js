@@ -3,8 +3,8 @@ const state = {
     showDataList: false,
     showFilter: false,
   },
-  datadisplayselector:{
-    showSelector:true,
+  datadisplayselector: {
+    showSelector: true,
   },
 };
 
@@ -17,6 +17,7 @@ const getters = {
 const mutations = {
   TOGGLE_SIDEBAR(state, payload) {
     state.sidebar.showDataList = !state.sidebar.showDataList;
+    // state.sidebar.showFilter = false;
   },
   TOGGLE_FILTER(state, payload) {
     state.sidebar.showFilter = !state.sidebar.showFilter;

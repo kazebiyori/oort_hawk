@@ -23,6 +23,7 @@
 body{
   overflow:hidden;
   color:$globalColor;
+  user-select: none;
 }
 
 .icon{

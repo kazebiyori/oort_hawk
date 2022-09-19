@@ -32,12 +32,13 @@
           <MyButton class="clear" @click="sortByPlaneTime" title="排序">
             <Sort width="15" />
           </MyButton>
-        </div>
-
-        <div class="op-right">
           <MyButton class="clear" @click="clearGroup" title="清除分组">
             <CloseBold width="15" />
           </MyButton>
+        </div>
+
+        <div class="op-right">
+
 
           <MyButton class="" @click="TOGGLE_FILTER" title="过滤">
             <Filter width="15" />
@@ -50,10 +51,12 @@
     </div>
 
     <!-- 侧边栏-过滤 -->
+    <!-- <div :class="{ 'filter-panel-active': showDataList, 'filter-panel-close': !showDataList || !showFilter, }">
+      <DataFilter></DataFilter>
+    </div> -->
     <div :class="{ 'filter-panel-active': showDataList, 'filter-panel-close': !showDataList || !showFilter, }">
       <DataFilter></DataFilter>
     </div>
-
   </div>
 </template>
 
@@ -137,7 +140,7 @@ function clearGroup() {
   overflow: hidden;
   border: $borderStyle;
 
-  cursor: pointer;
+  // cursor: pointer;
 
   z-index: 100;
 }
@@ -147,6 +150,11 @@ function clearGroup() {
 
   width: $sidebarActiveWidth;
   height: $sidebarHeight;
+
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  box-shadow: 3px 3px 5px #bebebe,
+    -3px -3px -5px #ffffff;
 
   transition: width $animationTime;
   display: inline-block;
@@ -164,7 +172,7 @@ function clearGroup() {
 
 .filter-panel-active {
   position: absolute;
-  top: $navbarHeight;
+  top: calc($navbarHeight + 1px);
   left: $sidebarFixedWidth+$sidebarActiveWidth;
   z-index: 100;
   width: $sidebarFilterPanelWidth;
@@ -174,20 +182,26 @@ function clearGroup() {
   background-color: white;
   border: $borderStyle;
 
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 3px 3px 5px #bebebe,
+    -3px -3px -5px #ffffff;
+
+  transition: width 0.1s;
+
+  overflow: hidden;
 
 }
 
 .filter-panel-close {
-  position: absolute;
-  top: $navbarHeight;
-  left: $sidebarFixedWidth+$sidebarActiveWidth;
-  z-index: 100;
-  height: $sidebarHeight;
-
-  background-color: white;
-  border: 0px solid black;
-
   width: 0;
-  overflow: hidden;
+
+  border: none;
+
+  transition: width 0.1s;
+}
+
+:deep(.select) {
+  border: none !important;
 }
 </style>

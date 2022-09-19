@@ -23,7 +23,7 @@
   width: 25px;
   height: 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: whitesmoke;
   box-shadow: 1px 1px 3px #bbbbbb, -1px -1px 3px #ffffff;
 }
