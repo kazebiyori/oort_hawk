@@ -1,17 +1,15 @@
 <template>
-
   <div>
-    <el-tabs v-model="activeName" type="border-card" class="demo-tabs" editable @tab-click="handleClick"
-      @edit="handleEdit">
-
+    <el-tabs v-model="activeName" type="card" class="demo-tabs" editable @tab-click="handleClick" @edit="handleEdit">
       <template v-for="tag in tags" :key="tag">
         <el-tab-pane :label="generateTagName(tag)" :name="tag">
+          <template #label>
+            {{generateTagName(tag)}}
+          </template>
         </el-tab-pane>
       </template>
-
     </el-tabs>
   </div>
-
 </template>
 
 <script>
@@ -102,7 +100,6 @@ export default {
       screenfull.toggle();
     },
   },
-
 }
 </script>
 

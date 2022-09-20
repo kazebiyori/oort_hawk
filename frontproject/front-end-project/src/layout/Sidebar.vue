@@ -32,9 +32,10 @@
           <MyButton class="clear" @click="sortByPlaneTime" title="排序">
             <Sort width="15" />
           </MyButton>
-          <MyButton class="clear" @click="clearGroup" title="清除分组">
+
+          <!-- <MyButton class="clear" @click="clearGroup" title="清除分组">
             <CloseBold width="15" />
-          </MyButton>
+          </MyButton> -->
         </div>
 
         <div class="op-right">

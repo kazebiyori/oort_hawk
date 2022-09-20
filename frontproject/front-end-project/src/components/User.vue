@@ -80,6 +80,7 @@ onMounted(() => {
   z-index: 1;
   user-select: none;
   overflow: visible;
+  transform: scale(1.2);
 }
 
 .avatar {

@@ -76,7 +76,7 @@
                   </div>
                 </div>
               </div>
-              <div class="empty-message" v-if="data.selectList['开关量'].length==0 && data.selectList['开关量'].length==0">
+              <div class="empty-message" v-if="data.selectList['开关量'].length==0 && data.selectList['模拟量'].length==0">
                 未选择参数
               </div>
 
@@ -95,6 +95,7 @@ import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 import paramApi from "@/api/param"
 import MyButton from '@/components/MyButton.vue'
+import { p } from "@antfu/utils"
 
 // { label, value, id, select:"", selectList:[]}[]
 
@@ -125,7 +126,51 @@ function clearChart() {
 }
 
 function getLineName({ type, key, id }) {
-  return '' + type + '-' + key + '-' + id
+  return '' + id + '-' + type + '-' + key
+}
+
+// 根据曲线name获取图例配置项
+function getLegendOption(name) {
+  let [id, type, key] = name.split('-')
+  let option = {
+    name: name,
+    icon: type === '模拟量' ? '' : 'circle',
+    tooltip: {
+      show: true,
+      formatter: _ => {
+        return name
+      }
+    }
+  }
+  return option
+}
+
+// 对图例数据项进行排序处理 
+function sortLegendOption(option) {
+  // return option
+  option = option.filter(item => item != '')
+
+  option.sort((a, b) => {
+    let [aid, atype, akey] = a.name.split('-')
+    let [bid, btype, bkey] = b.name.split('-')
+    if (aid > bid) { return 1 }
+    else if (atype < btype) { return 1 }
+    else if (akey > bkey) { return 1 }
+    else { return -1 }
+  })
+
+  let obj = option.reduce((obj, item) => {
+    let [id, type, key] = item.name.split("-");
+    if (!obj[id]) obj[id] = [];
+    obj[id].push(item);
+    return obj;
+  }, {});
+
+  return Object.values(obj).reduce((arr, item) => {
+    item.reduce((p, c) => { p.push(c); return p }, arr)
+    arr.push('')
+    return arr;
+  }, []);
 }
 
 // echarts操作函数
@@ -152,8 +197,8 @@ function addLine({ type, key, id }) {
     }
 
     initOption.series.push(series)
-    initOption.legend.data.push(name)
-    initOption.legend.data.sort()
+    initOption.legend.data.push(getLegendOption(name))
+    initOption.legend.data = sortLegendOption(initOption.legend.data)
     myChart.setOption(initOption)
   })
 }
@@ -173,7 +218,7 @@ function removeLine({ type, key, id }) {
   let name = getLineName({ type, key, id })
 
   initOption.series = initOption.series.filter(i => i.name != name)
-  initOption.legend.data.filter(i => i != name)
+  initOption.legend.data.filter(i => i.name != name)
 
   myChart.setOption(initOption, {
     notMerge: true,
@@ -203,110 +248,6 @@ let paramSource = ref({}) // 数据信息对应的参数信息
 function addSelectList() {
   selectList.value.push({ data: null, param: [] })
 }
-// 重新初始化myChart组件
-function clearSelectList() {
-  offset = 0;
-  selectList.value = []
-  paramdrawedarray = []
-  chartOption.series = []
-  myChart.clear()
-  echartsInit()
-}
-// 从列表删除item
-function deleteItemFromList(index) {
-  let item = selectList.value[index]
-  let id = item.data
-  let param = item.param
-  let type = param[0]
-  let key = param[1]
-  let name = type + key + ':' + id;
-
-  selectList.value = selectList.value.filter((_, i) => i != index)
-  chartOption.series = chartOption.series.filter(item => item.name != name)
-  legendData.data = legendData.data.filter(item => item != name)
-
-  myChart.setOption(chartOption)
-  myChart.setOption({ legend: legendData })
-
-
-  // chartOption.series = arrRemoveIndex(index, chartOption.series)
-  // paramdrawedarray = arrRemoveIndex(index, paramdrawedarray)
-
-  // // echarts 通过dispatch控制图例点击事件
-  // myChart.dispatchAction({
-  //   type: 'legendUnSelect',
-  //   name
-  // })
-}
-function handleDataChange(_, index) { // 数据源修改
-  selectList.value[index].param = []
-
-  // let names = selectList.value.map(item => {
-  //   let id = item.data
-  //   let param = item.param
-  //   let type = param[0]
-  //   let key = param[1]
-  //   let name = type + key + ':' + id;
-  //   return name
-  // })
-
-  // // chartOption.series = chartOption.series.filter(item => names.includes(item.name))
-  // chartOption.series = chartOption.series.filter(item => false)
-  // legendData.data = legendData.data.filter(item => names.includes(item))
-  // myChart.setOption(chartOption)
-  // myChart.setOption({ legend: legendData })
-}
-// 参数修改
-function handleParamChange(_, index) { // 参数修改
-  console.log(names.value)
-  let item = selectList.value[index]
-  let id = item.data
-  let param = item.param
-  let type = param[0]
-  let key = param[1]
-  let name = type + key + ':' + id;
-
-  // 删除旧数据，并更新新数据
-  chartOption.series = chartOption.series.filter(item => names.value.includes(item.name))
-  legendData.data = legendData.data.filter(item => names.value.includes(item))
-
-
-  legendData.data.push(name)
-  legendData.data.sort()
-  let pos = legendData.data.findIndex(item => { if (item.match("模拟量")) return true })
-  if (pos != -1) {
-    legendData.data.splice(pos, 0, '\n')
-  }
-  myChart.setOption({ legend: legendData })
-
-  if (type == "模拟量") {
-    paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
-      chartOption.series.push({
-        type: 'line', data, name,
-        xAxisIndex: 0, yAxisIndex: 0,
-        large: true,
-        largeThreshold: 3000
-      })
-      myChart.setOption(chartOption)
-    })
-  } else if (type == "开关量") {
-    paramApi.getParamDataSingle({ id, key }).then(({ data }) => {
-      chartOption.series.push({
-        type: 'line', data: data.map(i => i + offset), name, //step:'middle'
-        xAxisIndex: 1, yAxisIndex: 1,
-        large: true,
-        largeThreshold: 3000,
-        // symbol: "none",
-        // symbolSize: 0,
-        // smooth: true,
-        // sampling: 'average',
-      })
-      offset += 2
-      myChart.setOption(chartOption)
-    })
-  }
-}
-
 
 /**
  * echarts
@@ -314,25 +255,16 @@ function handleParamChange(_, index) { // 参数修改
 const echarts = inject('$echarts')
 const chartDom = ref(null) //dom对象
 let myChart = null  //echats挂载对象
-let paramdrawedarray = []  // 已绘制的参数列表
 let offset = 0; //开关量曲线offset
-let legendData = {  //echarts图例
-  top: 0,
-  orient: 'horizontal',
-  data: ['起飞'],
-  // 使用回调函数
-  formatter: function (name) {
-    return name.match(/(\S*):/)[1];
-  }
-}
 let initOption = {  //echarts初始化配置
   legend: {
     top: 0,
+    itemGap: 40,
     orient: 'horizontal',
     data: [],
     formatter: function (name) {
       let sep = name.split('-')
-      return sep[0] + '-' + sep[1]
+      return sep[2]
     }
   },
   series: [
@@ -352,20 +284,6 @@ let initOption = {  //echarts初始化配置
         return val % 2
       } else { return val.toFixed(2) }
     }
-
-    // showContent: true,
-
-    // // triggerOn: 'click',    
-    // // enterable: true,
-
-    // // formatter: '{b0}: {c0}<br />{b1}: {c1}',
-
-    // extraCssText: 'width: 170px',
-
-    // axisPointer: {
-    //   animation: false,
-    //   type: 'cross'
-    // }
   },
 
   // 鼠标悬停与坐标轴提示
@@ -395,6 +313,7 @@ let initOption = {  //echarts初始化配置
   // 图表整体位置
   grid: [
     {
+      top: '13%',
       left: '5%',
       right: '5%',
       height: '50%',
@@ -402,7 +321,7 @@ let initOption = {  //echarts初始化配置
     {
       left: '5%',
       right: '5%',
-      bottom: '10%',
+      bottom: '5%',
       height: '25%',
     }
   ],
@@ -418,71 +337,7 @@ let initOption = {  //echarts初始化配置
       // 数据量大后，realtime出现卡顿
       realtime: true,
     },
-    // {
-    //   show: true,
-    //   xAxisIndex: [0, 1],
-    //   type: 'slider',
-    //   top: '85%',
-    //   start: 0,
-    //   end: 100,
-    //   // realtime: true,
-    // },
   ],
-
-  // 横坐标配置 可以配置多条横坐标
-  // xAxis: [{
-  //   type: 'category',
-  //   boundaryGap: false,
-  //   // scale: true,
-  //   boundaryGap: false,
-  //   axisLine: { onZero: false },
-  //   splitLine: { show: false },
-  //   splitNumber: 20,
-  //   min: 'dataMin',
-  //   max: 'dataMax',
-  //   axisPointer: {
-  //     z: 100
-  //   },
-  // },
-  // // 未知配置
-  // {
-  //   type: 'category',
-  //   gridIndex: 1,
-  //   // data: data.categoryData,
-  //   // scale: true,
-  //   boundaryGap: false,
-  //   axisLine: { onZero: false },
-  //   axisTick: { show: false },
-  //   splitLine: { show: false },
-  //   axisLabel: { show: false },
-  //   splitNumber: 20,
-  //   min: 'dataMin',
-  //   max: 'dataMax',
-  //   axisPointer: {
-  //     label: {
-  //       formatter: function (params) {
-  //         var seriesValue = (params.seriesData[0] || {}).value;
-  //         return (
-  //           params.value +
-  //           (seriesValue != null
-  //             ? '\n' + echarts.format.addCommas(seriesValue)
-  //             : '')
-  //         );
-  //       }
-  //     }
-  //   }
-  // }],
-
-
-  // xAxis: [{
-  //   name: "横坐标",
-  //   type: "category"
-  // }, {
-  //   name: "横坐标",
-  //   gridIndex: 1,
-  //   type: "category"
-  // },
-  // ],
 
   xAxis: [{
     name: "时间/s",
@@ -524,10 +379,6 @@ let initOption = {  //echarts初始化配置
     axisTick: { show: false },
     splitLine: { show: false }
   }],
-}
-let chartOption = { //echarts更新配置
-  series: [
-  ]
 }
 
 // 记录缩放信息
@@ -648,7 +499,7 @@ emitter.on("chooseNewData", async (data, check) => {
   let id = data.data.id
   // 飞参数据id
   let value = data.data.dataId
-  // 飞惨测试时间
+  // 飞参数测试时间
   let label = data.data.testTimeStart
   let inList = false
 
@@ -738,10 +589,8 @@ $selectboardWitdh: 400px;
   display: flex;
 }
 
-
-
 .data-area {
-  padding-top: 50px;
+  padding-top: 40px;
   display: flex;
   border-radius: 10px;
   // background: #fff;
@@ -886,7 +735,7 @@ $selectboardWitdh: 400px;
   gap: 5px;
   position: absolute;
   right: 0px;
-  top: 85px;
+  top: 80px;
 }
 
 .list-control .control-btn {
