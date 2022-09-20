@@ -95,7 +95,6 @@ import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 import paramApi from "@/api/param"
 import MyButton from '@/components/MyButton.vue'
-import { p } from "@antfu/utils"
 
 // { label, value, id, select:"", selectList:[]}[]
 

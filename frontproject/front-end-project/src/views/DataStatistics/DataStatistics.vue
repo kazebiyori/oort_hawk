@@ -4,44 +4,57 @@
 
       <!-- 轮播图 -->
       <div class="top-left">
-        <Tabs>
-          <TabPane label="飞机">
-            <Carousel v-model="idSelectedList" scroll>
-              <CarouselItem v-for="item in listPlaneType" :key="item">
-                <img :src="item + '.jpeg'" :alt="item">
+        <Tabs v-model="tabSelect">
+          <TabPane icon="md-jet" label="飞机" name="飞机">
+            <Carousel v-model="planeTypeIDSelect" scroll>
+              <CarouselItem v-for="planeType in planeTypes">
+                <img :src="planeType+'.jpeg'" :alt="planeType">
               </CarouselItem>
-              <!-- <CarouselItem>
-                <img src="@/assets/img/像素-夕阳.jpeg" alt="夕阳">
-              </CarouselItem>
-              <CarouselItem>
-                <img src="@/assets/img/像素-草坪.jpeg" alt="草坪">
-              </CarouselItem> -->
             </Carousel>
           </TabPane>
 
-          <TabPane label="发动机">
-            <Carousel v-model="idSelectedList2" scroll>
-              <CarouselItem>
-                <img src="@/assets/img/像素-街角.png" alt="街角">
-              </CarouselItem>
-              <CarouselItem>
-                <img src="@/assets/img/像素-夕阳.jpeg" alt="夕阳">
+          <TabPane icon="md-cog" label="发动机" name="发动机">
+            <Carousel v-model="engineTypeIDSelect" scroll>
+              <CarouselItem v-for="engineType in engineTypes">
+                <img :src="engineType + '.jpeg'" :alt="engineType">
               </CarouselItem>
             </Carousel>
           </TabPane>
         </Tabs>
 
-        <div class="select-container">
-          <Poptip placement="bottom-start" width="300" trigger="hover" title="数据详情">
-            <label sytle="cursor: pointer;">飞机编号：</label>
-            <template #content>
-              <Table border :columns="columnsInfo" :data="dataInfo" width="500px"></Table>
-            </template>
-          </Poptip>
-          <Select v-model="itemSelectPlaneNumber" style="width: 120px;z-index: 10">
-            <Option v-for="item in selectList" :value="item" :key="item">{{ item }}</Option>
-          </Select>
-        </div>
+        <template v-if="tabSelect == '飞机'">
+          <div class="select-container">
+            <Poptip placement="bottom-start" width="300" trigger="hover" title="数据详情">
+              <label sytle="cursor: pointer;">飞机编号：</label>
+              <template #content>
+                <Table border :columns="columnsInfo" :data="dataInfoPlane" width="500px"></Table>
+              </template>
+            </Poptip>
+
+            <Select v-model="planeIDSelect" style="width: 150px;">
+              <!-- 没有key出现选择框无法修改的问题 -->
+              <Option v-for="item in planeIDsList" :value="item" :key="item">
+                {{ item }}
+              </Option>
+            </Select>
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="select-container">
+            <Poptip placement="bottom-start" width="300" trigger="hover" title="数据详情">
+              <label sytle="cursor: pointer;">发动机编号：</label>
+              <template #content>
+                <Table border :columns="columnsInfo" :data="dataInfoEngine" width="500px"></Table>
+              </template>
+            </Poptip>
+
+            <Select v-model="engineIDSelect" style="width: 150px;">
+              <Option v-for="item in engineIDsList" :value="item" :key="item">{{ item }}</Option>
+            </Select>
+          </div>
+        </template>
+
       </div>
 
       <!-- 日历组件 -->
@@ -55,7 +68,6 @@
 
       <div class="bottom-left">
         <!-- 卡片显示 -->
-
         <div class="wrapper-itmes">
           <template v-for="item in card">
             <div class="card">
@@ -89,85 +101,168 @@ import { getFormatDay } from '@/utils/date';
 import apiParam from '@/api/param';
 import dataInfoApi from '@/api/dataInfo';
 
-onMounted(() => {
-  // getInfo();
-})
-
 const emitter = inject("$emitter")
-
-
-// ----------------------  线形图-右下角  ----------------------------
-let chartData = ref([])
 
 
 // ----------------------  日历-右上角  ----------------------------
 // 数据统计 起止时间
 let startDate = ref('')
 let endDate = ref('')
-watch(startDate, (newVal) => {
-
-})
 function dayChange(payload) {
   startDate.value = getFormatDay(payload[0])
   endDate.value = getFormatDay(payload[1])
 }
 
-
-
 // ----------------------  轮播图-左上角  ----------------------------
-// 鼠标悬停，显示缩略信息
-const columnsInfo = ref([
-  {
-    title: '参数',
-    key: 'param'
-  },
-  {
-    title: '数值',
-    key: 'value'
+// 单一数据源， 飞参数据列表
+let dataSource = ref('')
+// 选中的tab名称
+let tabSelect = ref('飞机')
+
+// 根据key数值，将list[obj]数组进行分类 生成二层obj
+function groupListByKey(listObj, key) {
+  return listObj.reduce((obj, item) => {
+    // if (item[key] == '') return obj; // 假定不存在为‘’的key
+    if (!obj[item[key]]) obj[item[key]] = []
+    obj[item[key]].push(item)
+    return obj
+  }, {})
+}
+
+// 轮播图 标签页（飞机） 相关数据
+
+// 飞机信息结构化数据
+let dataSourcePlane = computed(() => {
+  if (!dataSource.value) return;
+  // 生成结构化数据 存入dataSource中
+  let groupByPlaneType = groupListByKey(dataSource.value, 'planeModel')
+  for (let item in groupByPlaneType) {
+    groupByPlaneType[item] = groupListByKey(groupByPlaneType[item], 'planeId')
   }
-])
-const dataInfo = ref([
-  {
-    param: '飞机编号',
-    value: 1
-  }, {
-    param: '试车类型',
-    value: 'AAA'
-  }, {
-    param: 'xxx',
-    value: 'xxx'
-  },
-])
-
-// 轮播图 标签页（飞机） 列表序号
-let idSelectedList = ref(0)
-// 轮播图 标签页（发动机） 列表序号
-let idSelectedList2 = ref(0)
-
-// 轮播图 飞机类型 图片数量
-let listPlaneType = ref([])
-
-// 轮播图 选项列表 全部内容
-// let listPlaneNumber = ref([['路径', '路灯', '草坪'], ['夕阳', '背影'], ['海', '自行车', '红蓝']])
-let listPlaneNumber = ref([])
-let listEngineNumber = ref([]);
-
-// 轮播图 选项列表 选择项
-const itemSelectPlaneNumber = ref('init')
-
-// 轮播图 选项列表 显示内容
-let selectList = computed(() => {
-  return listPlaneNumber.value[idSelectedList.value]
+  return groupByPlaneType;
 })
 
-// 初始化 数据请求
-function getInfo() {
-  apiParam.getInfoByPage({ page: "1", pageSize: "10" }).then((res) => {
-    console.log('success', res);
-  }).catch((err) => {
-    console.log('err', err);
-  })
-}
+// 轮播图选中的飞机类型 下标
+let planeTypeIDSelect = ref(0)
+// 选择框选择的飞机编号
+let planeIDSelect = ref(null)
+
+// 轮播图正在展示的飞机类型
+let planeTypeShow = computed(() => {
+  return planeTypes.value[planeTypeIDSelect.value]
+})
+
+// 轮播图的飞机类型列表
+let planeTypes = computed(() => {
+  if (!dataSourcePlane.value) return  // 注意为空时返回
+  return Object.keys(dataSourcePlane.value)
+})
+
+// 选择框中显示的数据列表
+let planeIDsList = computed(() => {
+  if (!dataSourcePlane.value) return // 注意为空时返回
+  let list = dataSourcePlane.value[planeTypeShow.value]
+  return Object.keys(list)
+})
+
+// 当前选中的飞机数据信息
+let planeInfo = computed(() => {
+  if (planeIDSelect.value == null) return ''
+  let planeIdInfos = dataSourcePlane.value[planeTypeShow.value][planeIDSelect.value]
+  // if (!planeIdInfos) return ''
+  return planeIdInfos
+})
+
+// 鼠标悬停，显示缩略信息
+const columnsInfo = ref([{
+  title: '参数',
+  key: 'param'
+}, {
+  title: '数值',
+  key: 'value'
+}])
+
+// 鼠标悬停的缩略信息
+let dataInfoPlane = computed(() => {
+  if (!planeInfo.value) return
+  return [{
+    param: '飞机编号',
+    value: planeInfo.value[0]['planeId']
+  }, {
+    param: '试车类型',
+    value: planeInfo.value[0]['testType']
+  }]
+})
+
+
+// 轮播图 标签页（发动机） 相关数据
+
+let dataSourceEngine = computed(() => {
+  if (!dataSource.value) return;
+
+  // 生成结构化数据 存入dataSource中
+  let groupByEngine1Type = groupListByKey(dataSource.value, 'engine1Model')
+  for (let item in groupByEngine1Type) {
+    groupByEngine1Type[item] = groupListByKey(groupByEngine1Type[item], 'engine1Id')
+  }
+
+  let groupByEngine2Type = groupListByKey(dataSource.value, 'engine2Model')
+  for (let item in groupByEngine2Type) {
+    groupByEngine2Type[item] = groupListByKey(groupByEngine2Type[item], 'engine2Id')
+  }
+
+  // 合并两组结构化数据
+  for (let key in groupByEngine2Type) {
+    if (!groupByEngine1Type[key]) groupByEngine1Type[key] = groupByEngine2Type[key]
+    else groupByEngine1Type[key] = groupByEngine2Type[key].concat(groupByEngine1Type[key])
+  }
+
+  return groupByEngine1Type;
+})
+
+// 轮播图选中的发动机类型 下标
+let engineTypeIDSelect = ref(0)
+// 选择框选择的发动机编号
+let engineIDSelect = ref(null)
+
+// 轮播图正在展示的飞机类型
+let engineTypeShow = computed(() => {
+  return engineTypes.value[engineTypeIDSelect.value]
+})
+
+// 轮播图的飞机类型列表
+let engineTypes = computed(() => {
+  if (!dataSourceEngine.value) return  // 注意为空时返回
+  return Object.keys(dataSourceEngine.value)
+})
+
+// 选择框中显示的数据列表
+let engineIDsList = computed(() => {
+  if (!dataSourceEngine.value) return // 注意为空时返回
+  let list = dataSourceEngine.value[engineTypeShow.value]
+  return Object.keys(list)
+})
+
+// 当前选中的飞机数据信息
+let engineInfo = computed(() => {
+  if (engineIDSelect.value == null) return undefined
+  let engineIdInfos = dataSourceEngine.value[engineTypeShow.value][engineIDSelect.value]
+  // if (!engineIdInfos) return ''
+  return engineIdInfos
+})
+
+// 鼠标悬停的缩略信息
+let dataInfoEngine = computed(() => {
+  if (!engineInfo.value) return
+  return [{
+    param: '发动机编号',
+    value: engineInfo.value[0]['planeId']
+  }, {
+    param: '试车类型',
+    value: engineInfo.value[0]['testType']
+  }]
+})
+
 
 // ----------------------  统计信息-左下角  ----------------------------
 import planeSvg from "@/assets/plane.svg"
@@ -179,64 +274,93 @@ let card = ref([
   { name: '试飞时间', iconPath: planeSvg, info: null },
   { name: '试飞类型', iconPath: planeSvg, info: null },])
 
-// ----------------------  执行初始化mounted操作  ----------------------------
-onMounted(async () => {
-  // 加载飞机类型
-  await dataInfoApi.getPlaneType()
-    .then((res) => {
-      listPlaneType.value = res.data
-    }).catch((err) => {
-      this.$Message.info(err.msg || err);
-    })
 
-  // 获取飞机类型对应编号
-  for (let i = 0; i < listPlaneType.value.length; i++) {
-    let res = await dataInfoApi.getPlaneNumber({ planeModel: listPlaneType.value[i] })
-    listPlaneNumber.value.push(res.data)
+// ----------------------  线形图-右下角  ----------------------------
+let chartData = ref([])
 
+// 监听当前选中的飞机数据信息
+watch([planeInfo, tabSelect], ([newInfo, newTab]) => {
+  if (!newInfo || newTab == '发动机') {
+
+    planeIDSelect.value = undefined
+    planeTypeIDSelect.value = 0
+
+    card.value[0].info = ''
+    card.value[1].info = ''
+    card.value[3].info = ''
+    card.value[2].info = ''
+    card.value[4].info = ''
+    card.value[5].info = ''
+    chartData.value = []
+    return
   }
+
+  console.log(newTab)
+
+  let info = newInfo[0]
+  card.value[0].info = info.planeModel
+  card.value[1].info = info.planeId
+  card.value[2].info = info.engine1Model + " " + info.engine2Model
+  card.value[3].info = info.engine1Id + " " + info.engine2Id
+  card.value[4].info = info.testTimeStart
+  card.value[5].info = info.testType
+
+  chartData.value = newInfo.reduce((arr, item) => {
+    let tmp = [item.testTimeStart.split(" ")[0], item.testDuration]
+    arr.push(tmp)
+    return arr
+  }, [])
 })
 
-watch(itemSelectPlaneNumber, async (newVal) => {
+// 监听当前选中的发动机数据信息
+watch([engineInfo, tabSelect], ([newInfo, newTab]) => {
+  if (newInfo == undefined || newTab == '飞机') {
+    engineIDSelect.value = undefined
+    engineTypeIDSelect.value = 0
 
-  if (!newVal) return
-  emitter.emit("getNewStatistics", {})
+    card.value[0].info = ''
+    card.value[1].info = ''
+    card.value[3].info = ''
+    card.value[2].info = ''
+    card.value[4].info = ''
+    card.value[5].info = ''
+    chartData.value = []
+    return
+  }
+
+  let info = newInfo[0]
+  card.value[0].info = info.planeModel
+  card.value[1].info = info.planeId
+  card.value[2].info = info.engine1Model + " " + info.engine2Model
+  card.value[3].info = info.engine1Id + " " + info.engine2Id
+  card.value[4].info = info.testTimeStart
+  card.value[5].info = info.testType
+
+  chartData.value = newInfo.reduce((arr, item) => {
+    let tmp = [item.testTimeStart.split(" ")[0], item.testDuration]
+    arr.push(tmp)
+    return arr
+  }, [])
+})
 
 
-  // 通过飞机类型和飞机编号 获取飞参数据信息
-  let { data: listId } = await dataInfoApi.getParamID({ planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal })
-  console.log(listId);
-  let id = listId[0].id
 
-  let { data } = await dataInfoApi.getParamInfoSingle({ id: id })
 
-  // 更新左下数据
-  card.value[0].info = data.planeModel
-  card.value[1].info = data.planeId
-  card.value[2].info = data.engine1Model + " " + data.engine2Model
-  card.value[3].info = data.engine1Id + " " + data.engine2Id
-  card.value[4].info = data.testTimeStart
-  card.value[5].info = data.testType
 
-  // 更新右下数据
+// ----------------------  执行初始化mounted操作  ----------------------------
+onMounted(async () => {
+  // 加载数据
+  let { data } = await dataInfoApi.getParamInfoList({
+    planeModel: "",
+    planeId: ""
+  })
 
-  dataInfoApi.getParamInfoList({ planeModel: listPlaneType.value[[idSelectedList.value]], planeID: newVal })
-    .then((res) => {
-      console.log(res);
-      let { data } = res
-      let tmp = [];
-      data.forEach((item) => {
-        tmp.push([item.testTimeStart.split(" ")[0], item.testDuration])
-      })
-      chartData.value = tmp;
+  dataSource.value = data;
 
-      emitter.emit("finishNewStatistics", {})
 
-    })
-    .catch((err) => {
-      console.log(err);
-    })
 
+  // let groupByEngine1Type = groupListByKey(data, 'engine1Model')
+  // let groupByEngine2Type = groupListByKey(data, 'engine2Model')
 })
 
 
@@ -251,7 +375,8 @@ watch(itemSelectPlaneNumber, async (newVal) => {
 
 .card {
   user-select: none;
-  width: 180px;
+  flex: 1 180px;
+  // width: 180px;
   height: 80px;
   padding: 10px;
 
@@ -321,8 +446,6 @@ watch(itemSelectPlaneNumber, async (newVal) => {
   width: $dataDisplayTopLeftWidth;
   height: $dataDisplayTopHeight;
 
-
-  overflow: scroll;
 }
 
 .top-right {
@@ -337,10 +460,13 @@ watch(itemSelectPlaneNumber, async (newVal) => {
   overflow: auto;
   z-index: 100;
 
+
 }
 
 .bottom-left {
   display: inline-block;
+
+  z-index: -1;
 
   //  float: left;
   border: $borderStyle;
@@ -362,9 +488,7 @@ watch(itemSelectPlaneNumber, async (newVal) => {
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
-
   padding: 20px;
-
 }
 
 .bottom-right {
@@ -387,6 +511,11 @@ img {
   height: 150px;
   width: 270px;
   cursor: pointer;
+}
+
+.img {
+  height: 150px;
+  width: 270px;
 }
 
 .select-container {
