@@ -90,7 +90,7 @@
 </template>
   
 <script setup>
-import { ref, computed, onMounted, inject, watch, unref, nextTick, reactive } from "vue"
+import { ref, computed, onMounted, inject, watch, unref, nextTick, reactive, onActivated, onDeactivated } from "vue"
 import { useStore } from 'vuex'
 import { EleResize } from '@/utils/esresize'// 图表自适应
 import paramApi from "@/api/param"
@@ -486,57 +486,66 @@ function echartsInit() {
  */
 onMounted(() => {
   echartsInit()
+
+})
+
+onActivated(() => {
+  emitter.on("chooseNewData", async (data, check) => {
+    // 如果是取消勾选 或 父组件选择 则不添加到dataSource
+    if (!data.checked) return
+    if (data.data.children) return
+    // 飞参信息id
+    let id = data.data.id
+    // 飞参数据id
+    let value = data.data.dataId
+    // 飞参数测试时间
+    let label = data.data.testTimeStart
+    let inList = false
+
+    dataSource.value.forEach(item => {
+      if (item.value == value || item.id == id) {
+        inList = true;
+        return
+      }
+    })
+
+    // 如果新数据不在列表中
+    if (!inList) {
+      let json = { label, value, id, select: "", selectList: { '模拟量': [], '开关量': [] } }
+
+      // 更新获取dataSource
+      dataSource.value.push(json)
+      activeNames.value.push(id)
+
+      // 通过data id获取参数列表
+      let { data: analogList } = await paramApi.getAnalogList({ id: id })
+      let { data: switchList } = await paramApi.getSwitchList({ id: id })
+
+      let analogDisplay = []
+      let switchDisplay = []
+
+      analogList.forEach(item => {
+        analogDisplay.push({ label: item, value: item })
+      })
+      switchList.forEach(item => {
+        switchDisplay.push({ label: item, value: item })
+      })
+
+      // 在参数数据源中添加对应参数列表
+      paramSource.value[id] = [{ value: '模拟量', label: "模拟量" }, { value: '开关量', label: "开关量" }]
+      paramSource.value[id][0]["children"] = analogDisplay
+      paramSource.value[id][1]["children"] = switchDisplay
+    }
+  })
+})
+
+onDeactivated(() => {
+  emitter.off("chooseNewData")
 })
 
 // {checked:bollean, data:{id:string, dataId:string, testTimeStart: string}}  data
 // 选择新数据源事件
-emitter.on("chooseNewData", async (data, check) => {
-  // 如果是取消勾选 或 父组件选择 则不添加到dataSource
-  if (!data.checked) return
-  if (data.data.children) return
-  // 飞参信息id
-  let id = data.data.id
-  // 飞参数据id
-  let value = data.data.dataId
-  // 飞参数测试时间
-  let label = data.data.testTimeStart
-  let inList = false
 
-  dataSource.value.forEach(item => {
-    if (item.value == value || item.id == id) {
-      inList = true;
-      return
-    }
-  })
-
-  // 如果新数据不在列表中
-  if (!inList) {
-    let json = { label, value, id, select: "", selectList: { '模拟量': [], '开关量': [] } }
-
-    // 更新获取dataSource
-    dataSource.value.push(json)
-    activeNames.value.push(id)
-
-    // 通过data id获取参数列表
-    let { data: analogList } = await paramApi.getAnalogList({ id: id })
-    let { data: switchList } = await paramApi.getSwitchList({ id: id })
-
-    let analogDisplay = []
-    let switchDisplay = []
-
-    analogList.forEach(item => {
-      analogDisplay.push({ label: item, value: item })
-    })
-    switchList.forEach(item => {
-      switchDisplay.push({ label: item, value: item })
-    })
-
-    // 在参数数据源中添加对应参数列表
-    paramSource.value[id] = [{ value: '模拟量', label: "模拟量" }, { value: '开关量', label: "开关量" }]
-    paramSource.value[id][0]["children"] = analogDisplay
-    paramSource.value[id][1]["children"] = switchDisplay
-  }
-})
 
 
 // 图表数据显示范围选择初始化 响应式
